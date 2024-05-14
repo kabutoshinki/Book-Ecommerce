@@ -1,4 +1,5 @@
-import { SubCategory } from 'src/sub_categories/entities/sub_category.entity';
+import { BookCategory } from 'src/book_categories/entities/book_category.entity';
+
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -25,6 +26,6 @@ export class Category {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => SubCategory, (subCategory) => subCategory.parent_id)
-  subCategories: SubCategory[];
+  @OneToMany(() => BookCategory, (bookCategory) => bookCategory.category)
+  bookCategories: BookCategory[];
 }

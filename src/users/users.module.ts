@@ -5,13 +5,10 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Address } from 'src/addresses/entities/address.entity';
-import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 import { Cart } from 'src/cart/entities/cart.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Address, Wishlist, Cart, OrderDetail]),
-  ],
+  imports: [TypeOrmModule.forFeature([User, Address, Cart, OrderDetail])],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

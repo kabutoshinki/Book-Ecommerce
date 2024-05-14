@@ -5,31 +5,38 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { UsersModule } from './users/users.module';
-import { ProductsModule } from './products/products.module';
+
 import { AuthModule } from './auth/auth.module';
 import { AddressesModule } from './addresses/addresses.module';
 import { CategoriesModule } from './categories/categories.module';
 import { CartModule } from './cart/cart.module';
-import { WishlistsModule } from './wishlists/wishlists.module';
 import { User } from './users/entities/user.entity';
 import { OrderDetailsModule } from './order_details/order_details.module';
 import { OrderItemModule } from './order_item/order_item.module';
-import { SubCategoriesModule } from './sub_categories/sub_categories.module';
-import { ProductAttributesModule } from './product_attributes/product_attributes.module';
-import { ProductSkusModule } from './product_skus/product_skus.module';
+
 import { CartItemModule } from './cart_item/cart_item.module';
 import configuration from '../config/configuration';
-import { Product } from './products/entities/product.entity';
+
 import { Address } from './addresses/entities/address.entity';
 import { Cart } from './cart/entities/cart.entity';
 import { CartItem } from './cart_item/entities/cart_item.entity';
-import { ProductSku } from './product_skus/entities/product_skus.entity';
-import { ProductAttribute } from './product_attributes/entities/product_attribute.entity';
+
 import { OrderDetail } from './order_details/entities/order_detail.entity';
 import { OrderItem } from './order_item/entities/order_item.entity';
 import { Category } from './categories/entities/category.entity';
-import { SubCategory } from './sub_categories/entities/sub_category.entity';
-import { Wishlist } from './wishlists/entities/wishlist.entity';
+import { AuthorsModule } from './authors/authors.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { DiscountsModule } from './discounts/discounts.module';
+import { PublishersModule } from './publishers/publishers.module';
+import { BookAuthorsModule } from './book_authors/book_authors.module';
+import { BookCategoriesModule } from './book_categories/book_categories.module';
+import { BooksModule } from './books/books.module';
+import { Discount } from './discounts/entities/discount.entity';
+import { Book } from './books/entities/book.entity';
+import { Review } from './reviews/entities/review.entity';
+import { Author } from './authors/entities/author.entity';
+import { BookAuthor } from './book_authors/entities/book_author.entity';
+import { BookCategory } from './book_categories/entities/book_category.entity';
 
 @Module({
   imports: [
@@ -49,17 +56,18 @@ import { Wishlist } from './wishlists/entities/wishlist.entity';
         database: configService.get('database.name'),
         entities: [
           User,
-          Product,
           Address,
           Cart,
           CartItem,
-          ProductSku,
-          ProductAttribute,
           OrderDetail,
           OrderItem,
           Category,
-          SubCategory,
-          Wishlist,
+          Discount,
+          Book,
+          Review,
+          Author,
+          BookAuthor,
+          BookCategory,
         ],
         synchronize: true,
       }),
@@ -67,16 +75,18 @@ import { Wishlist } from './wishlists/entities/wishlist.entity';
     AuthModule,
     UsersModule,
     AddressesModule,
-    ProductsModule,
     CategoriesModule,
     CartModule,
-    WishlistsModule,
     OrderDetailsModule,
     OrderItemModule,
-    SubCategoriesModule,
-    ProductAttributesModule,
-    ProductSkusModule,
     CartItemModule,
+    AuthorsModule,
+    ReviewsModule,
+    DiscountsModule,
+    PublishersModule,
+    BookAuthorsModule,
+    BookCategoriesModule,
+    BooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

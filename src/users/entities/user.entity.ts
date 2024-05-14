@@ -7,7 +7,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 import { Cart } from 'src/cart/entities/cart.entity';
 import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
 
@@ -54,9 +53,6 @@ export class User {
 
   @OneToMany(() => Address, (address) => address.user)
   addresses: Address[];
-
-  @OneToMany(() => Wishlist, (wishlist) => wishlist.user)
-  wishlists: Wishlist[];
 
   @OneToMany(() => Cart, (cart) => cart.user)
   carts: Cart[];
