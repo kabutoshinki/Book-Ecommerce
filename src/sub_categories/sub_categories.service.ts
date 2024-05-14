@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateSubCategoryDto } from './dto/create-sub_category.dto';
 import { UpdateSubCategoryDto } from './dto/update-sub_category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +16,7 @@ export class SubCategoriesService {
   constructor(
     @InjectRepository(SubCategory)
     private readonly subCategoryRepository: Repository<SubCategory>,
+    @Inject(forwardRef(() => CategoriesService))
     private readonly categoryService: CategoriesService,
   ) {}
   async create(createSubCategoryDto: CreateSubCategoryDto) {
@@ -21,7 +27,7 @@ export class SubCategoriesService {
       throw new NotFoundException('Category not exist');
     }
     const subCategory = { ...createSubCategoryDto, parent_id: categoryExist };
-    await this.subCategoryRepository.save(subCategory);
+    this.subCategoryRepository.save(subCategory);
     return 'SubCategory created';
   }
 
@@ -48,7 +54,15 @@ export class SubCategoriesService {
     return 'SubCategory updated';
   }
 
-  remove(id: string) {
-    return this.subCategoryRepository.delete(id);
+  async remove(id: string) {
+    await this.subCategoryRepository.delete(id);
+
+    return 'SubCategory deleted';
+  }
+
+  async countByCategoryId(categoryId: string): Promise<number> {
+    return this.subCategoryRepository.count({
+      where: { parent_id: { id: categoryId } },
+    });
   }
 }

@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,12 +10,15 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
+import { SubCategoriesService } from 'src/sub_categories/sub_categories.service';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @Inject(forwardRef(() => SubCategoriesService))
+    private readonly subCategoryService: SubCategoriesService,
   ) {}
   async create(createCategoryDto: CreateCategoryDto): Promise<string> {
     try {
@@ -48,7 +53,20 @@ export class CategoriesService {
     }
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: string) {
+    const category = await this.categoryRepository.findOneBy({ id: id });
+    if (!category) {
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
+    const subCategoryCount = await this.subCategoryService.countByCategoryId(
+      id,
+    );
+    if (subCategoryCount > 0) {
+      throw new BadRequestException(
+        `Category with id ${id} cannot be deleted because it is referenced by subcategories`,
+      );
+    }
+    await this.categoryRepository.remove(category);
+    return 'Category deleted';
   }
 }
