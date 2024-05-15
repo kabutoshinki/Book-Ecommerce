@@ -1,26 +1,78 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Author } from './entities/author.entity';
+import { In, Repository } from 'typeorm';
+import { Book } from 'src/books/entities/book.entity';
 
 @Injectable()
 export class AuthorsService {
-  create(createAuthorDto: CreateAuthorDto) {
-    return 'This action adds a new author';
+  constructor(
+    @InjectRepository(Author)
+    private readonly authorRepository: Repository<Author>,
+    @InjectRepository(Book)
+    private readonly bookRepository: Repository<Book>,
+  ) {}
+  async create(createAuthorDto: CreateAuthorDto) {
+    try {
+      await this.authorRepository.save(createAuthorDto);
+      return 'Author created';
+    } catch (error) {
+      throw new BadRequestException('Name author is already exist');
+    }
   }
 
-  findAll() {
-    return `This action returns all authors`;
+  async findByIds(ids: string[]): Promise<Author[]> {
+    const authors = await this.authorRepository.findBy({ id: In(ids) });
+    if (authors.length !== ids.length) {
+      throw new NotFoundException('Some authors not found');
+    }
+    return authors;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} author`;
+  async findAll() {
+    return await this.authorRepository.find();
   }
 
-  update(id: number, updateAuthorDto: UpdateAuthorDto) {
-    return `This action updates a #${id} author`;
+  async findOne(id: string) {
+    const author = await this.authorRepository.findOneBy({ id: id });
+    if (!author) {
+      throw new NotFoundException('Author not exist');
+    }
+    return author;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} author`;
+  async update(id: string, updateAuthorDto: UpdateAuthorDto) {
+    const author = await this.authorRepository.findOneBy({ id: id });
+    if (!author) {
+      throw new NotFoundException('Author not exist');
+    }
+    author.name = updateAuthorDto.name;
+    await this.authorRepository.save(author);
+    return `Author updated`;
+  }
+
+  async remove(id: string) {
+    const author = await this.authorRepository.findOneBy({ id: id });
+    if (!author) {
+      throw new NotFoundException('Author not exist');
+    }
+
+    const books = await this.bookRepository.find({
+      where: { authors: { id } },
+    });
+    if (books.length > 0) {
+      throw new BadRequestException(
+        'Author is associated with books and cannot be deleted',
+      );
+    }
+
+    await this.authorRepository.remove(author);
+    return `Author removed`;
   }
 }

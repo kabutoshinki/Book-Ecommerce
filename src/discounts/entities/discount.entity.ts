@@ -6,18 +6,35 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class Discount {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  name: string;
 
   @Column('decimal')
   amount: number;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
+
+  @Column({ type: 'date' })
+  startAt: Date;
+
+  @Column({ type: 'date' })
+  expiresAt: Date;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @OneToMany(() => Book, (book) => book.discount)
   books: Book[];

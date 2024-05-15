@@ -9,7 +9,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriesService {
@@ -28,6 +28,14 @@ export class CategoriesService {
 
   async findAll() {
     return await this.categoryRepository.find();
+  }
+
+  async findByIds(ids: string[]): Promise<Category[]> {
+    const categories = await this.categoryRepository.findBy({ id: In(ids) });
+    if (categories.length !== ids.length) {
+      throw new NotFoundException('Some categories not found');
+    }
+    return categories;
   }
 
   async findOne(id: string) {

@@ -1,5 +1,3 @@
-import { BookCategory } from 'src/book_categories/entities/book_category.entity';
-
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -25,7 +23,4 @@ export class Category {
 
   @UpdateDateColumn()
   updated_at: Date;
-
-  @OneToMany(() => BookCategory, (bookCategory) => bookCategory.category)
-  bookCategories: BookCategory[];
 }

@@ -28,15 +28,12 @@ import { AuthorsModule } from './authors/authors.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { DiscountsModule } from './discounts/discounts.module';
 import { PublishersModule } from './publishers/publishers.module';
-import { BookAuthorsModule } from './book_authors/book_authors.module';
-import { BookCategoriesModule } from './book_categories/book_categories.module';
 import { BooksModule } from './books/books.module';
 import { Discount } from './discounts/entities/discount.entity';
 import { Book } from './books/entities/book.entity';
 import { Review } from './reviews/entities/review.entity';
 import { Author } from './authors/entities/author.entity';
-import { BookAuthor } from './book_authors/entities/book_author.entity';
-import { BookCategory } from './book_categories/entities/book_category.entity';
+import { Publisher } from './publishers/entities/publisher.entity';
 
 @Module({
   imports: [
@@ -66,8 +63,7 @@ import { BookCategory } from './book_categories/entities/book_category.entity';
           Book,
           Review,
           Author,
-          BookAuthor,
-          BookCategory,
+          Publisher,
         ],
         synchronize: true,
       }),
@@ -84,8 +80,7 @@ import { BookCategory } from './book_categories/entities/book_category.entity';
     ReviewsModule,
     DiscountsModule,
     PublishersModule,
-    BookAuthorsModule,
-    BookCategoriesModule,
+
     BooksModule,
   ],
   controllers: [AppController],
