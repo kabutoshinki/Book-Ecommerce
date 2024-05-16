@@ -10,4 +10,10 @@ export default () => ({
   },
   client_id: process.env.CLIENT_ID,
   client_secret: process.env.CLIENT_SECRET,
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    secret: process.env.REDIS_SECRET,
+    uri: process.env.REDIS_URI,
+  },
 });

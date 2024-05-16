@@ -1,13 +1,11 @@
 import { Book } from 'src/books/entities/book.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Review {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  reviewer: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   content: string;
@@ -17,4 +15,7 @@ export class Review {
 
   @ManyToOne(() => Book, (book) => book.reviews)
   book: Book;
+
+  @ManyToOne(() => User, (user) => user.reviews)
+  reviewer: User;
 }

@@ -11,29 +11,39 @@ import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { RefreshTokenDto } from './dto/request/refresh-token.dto';
 import { UserValidateDto } from './dto/request/user-validate.dto';
 import { LoginResponseDto } from './dto/response/login-response.dto';
+import { CartService } from 'src/cart/cart.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private cartService: CartService,
   ) {}
 
   async login(authPayload: AuthPayloadDto) {
-    const user = await this.userService.findOne(authPayload);
-    if (!user) {
-      throw new NotFoundException('Email not exist');
-    }
-    const passwordMatched = await bcrypt.compare(
-      authPayload.password,
-      user.password,
-    );
+    try {
+      const user = await this.userService.findOne(authPayload);
 
-    if (!passwordMatched) {
-      throw new UnauthorizedException('Password does not match');
-    }
+      if (!user) {
+        throw new NotFoundException('Email not exist');
+      }
+      const passwordMatched = await bcrypt.compare(
+        authPayload.password,
+        user.password,
+      );
 
-    return this.generateLoginResponse(user);
+      if (!passwordMatched) {
+        throw new UnauthorizedException('Password does not match');
+      }
+      const guestCartKey = `cart:guest`;
+      const userCartKey = `cart:${user.id}`;
+      await this.cartService.mergeCarts(guestCartKey, userCartKey);
+
+      return this.generateLoginResponse(user);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async refresh(refreshTokenDto: RefreshTokenDto) {

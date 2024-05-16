@@ -1,5 +1,4 @@
 import { Author } from 'src/authors/entities/author.entity';
-import { CartItem } from 'src/cart_item/entities/cart_item.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Discount } from 'src/discounts/entities/discount.entity';
 import { OrderItem } from 'src/order_item/entities/order_item.entity';
@@ -48,9 +47,6 @@ export class Book {
   @ManyToMany((type) => Author)
   @JoinTable()
   authors: Author[];
-
-  @OneToMany(() => CartItem, (cartItem) => cartItem.book)
-  cartItems: CartItem[];
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.book)
   orderItems: OrderItem[];

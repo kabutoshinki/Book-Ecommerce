@@ -1,5 +1,12 @@
 import { User } from 'src/users/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Address {
@@ -16,25 +23,16 @@ export class Address {
   address_line_2: string;
 
   @Column()
-  country: string;
-
-  @Column()
   city: string;
-
-  @Column()
-  postal_code: string;
-
-  @Column()
-  landmark: string;
 
   @Column()
   phone_number: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column({ nullable: true })
-  deleted_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @ManyToOne(() => User, (user) => user.addresses)
   user: User;

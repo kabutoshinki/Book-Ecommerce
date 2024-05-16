@@ -48,7 +48,7 @@ export class UsersService {
   async findOne(data: Partial<User>): Promise<User> {
     return await this.usersRepository.findOneBy({ email: data.email });
   }
-  async findById(@Param('id') userId: string): Promise<UserResponseDto> {
+  async findById(@Param('id') userId: string): Promise<User> {
     const user = await this.usersRepository.findOneBy({ id: userId });
     if (!user) {
       throw new NotFoundException({
@@ -57,8 +57,8 @@ export class UsersService {
         status: HttpStatus.NOT_FOUND,
       });
     }
-    const { id, firstName, lastName, avatar, email } = user;
-    return { id, firstName, lastName, avatar, email };
+
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

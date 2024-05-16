@@ -6,9 +6,12 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { Cart } from 'src/cart/entities/cart.entity';
+
 import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
+import { Review } from 'src/reviews/entities/review.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -33,14 +36,9 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Exclude({ toPlainOnly: true })
   @Column({ nullable: true })
   password: string;
-
-  // @Column()
-  // birth_of_date: Date;
-
-  // @Column()
-  // phone_number: string;
 
   @Column({ default: Role.USER })
   roles: Role;
@@ -48,14 +46,14 @@ export class User {
   @CreateDateColumn()
   created_at: Date;
 
-  @Column({ nullable: true })
-  deleted_at: Date;
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @OneToMany(() => Address, (address) => address.user)
   addresses: Address[];
 
-  @OneToMany(() => Cart, (cart) => cart.user)
-  carts: Cart[];
+  @OneToMany(() => Review, (review) => review.reviewer)
+  reviews: Review[];
 
   @OneToMany(() => OrderDetail, (orderDetails) => orderDetails.user)
   orderDetails: OrderDetail[];

@@ -6,6 +6,8 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -19,15 +21,15 @@ export class OrderDetail {
   @OneToMany(() => OrderItem, (item) => item.order)
   items: OrderItem[];
 
-  @Column()
-  payment_id: number;
+  // @Column()
+  // payment_id: number;
 
   @Column()
   total: number;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column()
+  @UpdateDateColumn()
   updated_at: Date;
 }

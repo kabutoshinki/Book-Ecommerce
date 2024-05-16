@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { GoogleStrategy } from './strategy/google.strategy';
+import { CartModule } from 'src/cart/cart.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { GoogleStrategy } from './strategy/google.strategy';
       inject: [ConfigService],
     }),
     PassportModule,
+    CartModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, GoogleStrategy],

@@ -18,5 +18,6 @@ import { PublishersModule } from 'src/publishers/publishers.module';
   ],
   controllers: [BooksController],
   providers: [BooksService],
+  exports: [BooksService],
 })
 export class BooksModule {}
