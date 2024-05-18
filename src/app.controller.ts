@@ -4,6 +4,7 @@ import {
   Param,
   Post,
   Query,
+  Render,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AppService } from './app.service';
@@ -17,6 +18,22 @@ import { CacheKey } from '@nestjs/cache-manager';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get()
+  @Render('pages/index')
+  root() {
+    return { title: 'Index Page', layout: 'layouts/layout', name: 'Guest' };
+  }
+
+  @Get('about')
+  @Render('pages/about')
+  about() {
+    return { title: 'About Page', name: 'huy' };
+  }
+  @Get('login')
+  @Render('pages/login')
+  login() {
+    return { title: 'Login Page', name: 'huy' };
+  }
   @Post()
   async setCacheKey(@Query('key') key: string, @Query('value') value: string) {
     await this.appService.setCacheKey(key, value);

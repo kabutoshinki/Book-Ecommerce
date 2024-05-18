@@ -1,11 +1,18 @@
 import { Book } from 'src/books/entities/book.entity';
 import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class OrderItem {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => OrderDetail, (order) => order.items)
   order: OrderDetail;
@@ -16,9 +23,9 @@ export class OrderItem {
   @Column()
   quantity: number;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column()
+  @UpdateDateColumn()
   updated_at: Date;
 }

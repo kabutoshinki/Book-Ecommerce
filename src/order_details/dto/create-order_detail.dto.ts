@@ -1,11 +1,13 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
-import { OrderItem } from 'src/order_item/entities/order_item.entity';
+import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateOrderItemDto } from 'src/order_item/dto/create-order_item.dto';
 
 export class CreateOrderDetailDto {
   @IsNumber()
   @IsNotEmpty()
   totalAmount: number;
 
-  @IsNotEmpty()
-  orderItems: OrderItem[];
+  @IsArray()
+  @Type(() => CreateOrderItemDto)
+  orderItems: CreateOrderItemDto[];
 }

@@ -25,6 +25,7 @@ import { getTypeOrmConfig } from 'config/database.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { CartModule } from './cart/cart.module';
+import { LayoutMiddleware } from './middleware/layout.middleware';
 // import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -43,10 +44,9 @@ import { CartModule } from './cart/cart.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const store = await redisStore({
-          ttl: 60 * 60 * 24 * 7,
           socket: {
             host: 'localhost',
-            port: 6380,
+            port: 6379,
           },
         });
         return { store };
@@ -73,6 +73,6 @@ export class AppModule implements NestModule {
     console.log('db Name: ', dataSource.driver.database);
   }
   configure(consumer: MiddlewareConsumer) {
-    console.log('');
+    consumer.apply(LayoutMiddleware).forRoutes('*');
   }
 }

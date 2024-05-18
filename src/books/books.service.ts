@@ -7,7 +7,7 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { PublishersService } from 'src/publishers/publishers.service';
 import { AuthorsService } from 'src/authors/authors.service';
 import { DiscountsService } from 'src/discounts/discounts.service';
@@ -68,6 +68,14 @@ export class BooksService {
       throw new NotFoundException('Book not exist');
     }
     return book;
+  }
+
+  async findByIds(ids: string[]) {
+    const books = await this.bookRepository.findBy({ id: In(ids) });
+    if (books.length !== ids.length) {
+      throw new NotFoundException('Some books not found');
+    }
+    return books;
   }
 
   async update(id: string, updateBookDto: UpdateBookDto) {

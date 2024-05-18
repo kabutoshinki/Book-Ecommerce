@@ -1,0 +1,77 @@
+<div class="d-flex" id="wrapper">
+  <!-- Sidebar -->
+  <div class="bg-light border-right" id="sidebar-wrapper">
+    <div class="sidebar-heading">My Application</div>
+    <div class="list-group list-group-flush">
+      <a href="#" class="list-group-item list-group-item-action bg-light"
+        >Dashboard</a
+      >
+      <a href="#" class="list-group-item list-group-item-action bg-light"
+        >Profile</a
+      >
+      <a href="#" class="list-group-item list-group-item-action bg-light"
+        >Settings</a
+      >
+      <a href="#" class="list-group-item list-group-item-action bg-light"
+        >Logout</a
+      >
+    </div>
+  </div>
+  <!-- /#sidebar-wrapper -->
+
+  <!-- Page Content -->
+  <div id="page-content-wrapper">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+      <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link" href="#"
+              >Home <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <!-- /#page-content-wrapper -->
+</div>
+
+<!-- Custom JavaScript for toggling the sidebar -->
+<script>
+  document.getElementById('menu-toggle').addEventListener('click', function () {
+    document.getElementById('wrapper').classList.toggle('toggled');
+  });
+</script>
+
+<style>
+  #wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  #sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin 0.25s ease-out;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    #sidebar-wrapper {
+      margin-left: 0;
+    }
+  }
+</style>

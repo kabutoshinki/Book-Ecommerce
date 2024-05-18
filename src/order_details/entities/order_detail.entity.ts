@@ -12,8 +12,8 @@ import {
 
 @Entity()
 export class OrderDetail {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => User, (user) => user.orderDetails)
   user: User;
@@ -24,7 +24,7 @@ export class OrderDetail {
   // @Column()
   // payment_id: number;
 
-  @Column()
+  @Column('decimal', { precision: 10, scale: 2 })
   total: number;
 
   @CreateDateColumn()
