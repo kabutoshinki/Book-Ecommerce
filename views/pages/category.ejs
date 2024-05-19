@@ -1,0 +1,108 @@
+<div>
+  <div class="d-flex justify-content-between align-content-center mt-3">
+    <h1 class="text-muted">List of Categories</h1>
+    <button
+      type="button"
+      class="btn btn-success"
+      data-bs-toggle="modal"
+      data-bs-target="#nationAdd"
+    >
+      Create Book
+    </button>
+  </div>
+  <div class="container">
+    <table class="table table-hover" style="cursor: pointer">
+      <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Status</th>
+          <th scope="col">Created At</th>
+          <th scope="col">Updated At</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% categories.forEach(category => { %>
+        <tr>
+          
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= category.id %>"
+            >
+              <%= category.id%>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= category.name %>"
+            >
+              <%= category.name %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= category.description %>"
+            >
+              <%= category.description %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= category.status %>"
+            >
+              <%= category.status %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= category.created_at %>"
+            >
+              <%= category.created_at %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= category.updated_at %>"
+            >
+              <%= category.updated_at %>
+            </p>
+          </td>
+           
+          <td>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#nationUp_<%= category.id %>"
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#nationDel_<%= category.id %>"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

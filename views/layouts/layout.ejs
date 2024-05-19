@@ -2,72 +2,158 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%- title %></title>
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <title><%= title %></title>
-  </head>
-  <body>
-    <div class="d-flex" id="wrapper">
-      <!-- Sidebar -->
-      <div class="bg-dark border-right" id="sidebar-wrapper">
-        <div
-          class="sidebar-heading text-white py-4 primary-text fs-4 fw-bold text-uppercase border-bottom"
-        >
-          <i class="bi bi-book"></i>My Application
-        </div>
-        <div class="list-group list-group-flush my-3">
-          <a
-            href="/"
-            class="list-group-item list-group-item-action bg-transparent text-white"
-          >
-            <i class="bi bi-speedometer"></i> Dashboard
-          </a>
-          <a
-            href="/about"
-            class="list-group-item list-group-item-action bg-transparent text-white fw-bold"
-          >
-            <i class="bi bi-info-circle-fill"></i> About
-          </a>
-          <a
-            href="#"
-            class="list-group-item list-group-item-action bg-transparent text-white fw-bold"
-          >
-            <i class="fas fa-user me-2"></i>Profile
-          </a>
-          <a
-            href="#"
-            class="list-group-item list-group-item-action bg-transparent text-white fw-bold"
-          >
-            <i class="fas fa-cogs me-2"></i>Settings
-          </a>
-          <a
-            href="#"
-            class="list-group-item list-group-item-action bg-transparent text-white fw-bold"
-          >
-            <i class="fas fa-sign-out-alt me-2"></i>Logout
-          </a>
-        </div>
-      </div>
-      <!-- /#sidebar-wrapper -->
 
-      <!-- Page Content -->
-      <div id="page-content-wrapper">
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <aside id="sidebar" class="expand">
+        <div class="d-flex">
+          <button class="toggle-btn" type="button">
+            <i class="lni lni-menu"></i>
+          </button>
+          <div class="sidebar-logo">
+            <a href="#">BookWorm</a>
+          </div>
+        </div>
+        <ul class="sidebar-nav">
+          <li class="sidebar-item <%- title=='Dashboard Page'? 'active':'' %>">
+            <a href="/" class="sidebar-link">
+              <i class="lni lni-dashboard"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="sidebar-item <%- title=='About Page'? 'active':'' %>">
+            <a href="/page/about" class="sidebar-link">
+              <i class="lni lni-information"></i>
+              <span>About Us</span>
+            </a>
+          </li>
+
+          <li
+            class="sidebar-item <%- title=='User Page' || title=='Order Page' ? 'open' : '' %>"
+          >
+            <a
+              href="#"
+              class="sidebar-link collapsed has-dropdown"
+              data-bs-toggle="collapse"
+              data-bs-target="#user"
+              aria-expanded="false"
+              aria-controls="user"
+            >
+              <i class="lni lni-users"></i>
+              <span>User</span>
+            </a>
+            <ul
+              id="user"
+              class="sidebar-dropdown list-unstyled collapse <%- title=='User Page' || title=='Order Page' ? 'show' : '' %>"
+            >
+              <li
+                class="sidebar-item ms-3 <%- title=='User Page'? 'active':'' %>"
+              >
+                <a href="/page/user" class="sidebar-link">
+                  <i class="lni lni-user"></i> Profile
+                </a>
+              </li>
+              <li
+                class="sidebar-item ms-3 <%- title=='Order Page'? 'active':'' %>"
+              >
+                <a href="/page/order" class="sidebar-link">
+                  <i class="lni lni-clipboard"></i> Order
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li
+            class="sidebar-item <%- title=='Book Page' || title=='Category Page' || title=='Author Page' || title=='Publisher Page' || title=='Discount Page' ? 'open' : '' %>"
+          >
+            <a
+              href="#"
+              class="sidebar-link collapsed has-dropdown"
+              data-bs-toggle="collapse"
+              data-bs-target="#store"
+              aria-expanded="false"
+              aria-controls="store"
+            >
+              <i class="lni lni-shopify"></i>
+              <span>Store</span>
+            </a>
+            <ul
+              id="store"
+              class="sidebar-dropdown list-unstyled collapse <%- title=='Book Page' || title=='Category Page' || title=='Author Page' || title=='Publisher Page' || title=='Discount Page' ? 'show' : '' %>"
+            >
+              <li
+                class="sidebar-item ms-3 <%- title=='Book Page'? 'active':'' %>"
+              >
+                <a
+                  href="/page/book"
+                  class="sidebar-link justify-content-center align-items-center"
+                >
+                  <i class="lni lni-book"></i>
+                  Book
+                </a>
+              </li>
+              <li
+                class="sidebar-item ms-3 <%- title=='Category Page'? 'active':'' %>"
+              >
+                <a href="/page/category" class="sidebar-link">
+                  <i class="lni lni-grid-alt"></i>
+                  Category
+                </a>
+              </li>
+              <li
+                class="sidebar-item ms-3 <%- title=='Author Page'? 'active':'' %>"
+              >
+                <a href="/page/author" class="sidebar-link">
+                  <i class="lni lni-license"></i>
+                  Author
+                </a>
+              </li>
+              <li
+                class="sidebar-item ms-3 <%- title=='Publisher Page'? 'active':'' %>"
+              >
+                <a href="/page/publisher" class="sidebar-link">
+                  <i class="lni lni-producthunt"></i>
+                  Publisher
+                </a>
+              </li>
+              <li
+                class="sidebar-item ms-3 <%- title=='Discount Page'? 'active':'' %>"
+              >
+                <a href="/page/discount" class="sidebar-link">
+                  <i class="lni lni-offer"></i>
+                  Discount
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <div class="sidebar-footer">
+          <a href="#" class="sidebar-link">
+            <i class="lni lni-exit"></i>
+            <span>Logout</span>
+          </a>
+        </div>
+      </aside>
+      <div class="main p-3">
         <nav
           class="navbar navbar-expand-lg navbar-light bg-light border-bottom"
         >
           <div class="container-fluid">
-            <button class="btn btn-primary" id="menu-toggle">
+            <!-- <button class="btn btn-primary" id="menu-toggle">
               Toggle Menu
-            </button>
+            </button> -->
             <button
               class="navbar-toggler"
               type="button"
@@ -82,119 +168,31 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link" href="/">Home</a>
+                  <a class="nav-link" href="/">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="/about">About</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
+                  <a class="nav-link" href="/page/about">About</a>
                 </li>
               </ul>
             </div>
           </div>
         </nav>
-
         <div class="container-fluid"><%- body %></div>
       </div>
-      <!-- /#page-content-wrapper -->
     </div>
     <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
       crossorigin="anonymous"
     ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
+
+    <!-- <script src="/js/script.js"></script> -->
     <script>
-      document
-        .getElementById('menu-toggle')
-        .addEventListener('click', function () {
-          document.getElementById('wrapper').classList.toggle('toggled');
-        });
+      const hamBurger = document.querySelector('.toggle-btn');
+
+      hamBurger.addEventListener('click', function () {
+        document.querySelector('#sidebar').classList.toggle('expand');
+      });
     </script>
-
-    <!-- Custom CSS for styling -->
-    <style>
-      #wrapper {
-        display: flex;
-        width: 100%;
-        align-items: stretch;
-      }
-
-      #sidebar-wrapper {
-        min-height: 100vh;
-        margin-left: -15rem;
-        transition: margin 0.25s ease-out;
-        background: #1a1a1a;
-      }
-
-      #wrapper.toggled #sidebar-wrapper {
-        margin-left: 0;
-      }
-
-      #page-content-wrapper {
-        width: 100%;
-      }
-
-      .sidebar-heading {
-        font-size: 1.5rem;
-        padding: 1rem;
-        text-align: center;
-      }
-
-      .list-group-item {
-        border: none;
-        padding: 20px 30px;
-      }
-
-      .list-group-item.active {
-        background: #6c757d;
-        color: white;
-      }
-
-      .list-group-item:hover {
-        background: #343a40;
-        color: white;
-      }
-
-      @media (min-width: 768px) {
-        #sidebar-wrapper {
-          margin-left: 0;
-        }
-      }
-
-      .text-white {
-        color: white !important;
-      }
-
-      .primary-text {
-        color: #adb5bd;
-      }
-
-      .bg-transparent {
-        background: transparent !important;
-      }
-
-      .bg-dark {
-        background-color: #343a40 !important;
-      }
-
-      .border-bottom {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
-
-      .fw-bold {
-        font-weight: 700;
-      }
-    </style>
   </body>
 </html>
