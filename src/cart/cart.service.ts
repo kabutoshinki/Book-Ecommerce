@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AddToCartDto } from './dto/add-to-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { AddToCartDto } from './dto/requests/add-to-cart.dto';
+import { UpdateCartDto } from './dto/requests/update-cart.dto';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CartItem } from './interfaces/CartItem';
 

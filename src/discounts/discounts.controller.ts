@@ -9,8 +9,8 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { DiscountsService } from './discounts.service';
-import { CreateDiscountDto } from './dto/create-discount.dto';
-import { UpdateDiscountDto } from './dto/update-discount.dto';
+import { CreateDiscountDto } from './dto/requests/create-discount.dto';
+import { UpdateDiscountDto } from './dto/requests/update-discount.dto';
 
 @Controller('discounts')
 export class DiscountsController {

@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import { CreateReviewDto } from './dto/requests/create-review.dto';
+import { UpdateReviewDto } from './dto/requests/update-review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from './entities/review.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { BooksService } from 'src/books/books.service';
+import { ReviewMapper } from './reviews.mapper';
 
 @Injectable()
 export class ReviewsService {
@@ -16,15 +17,12 @@ export class ReviewsService {
     private readonly bookService: BooksService,
   ) {}
   async create(createReviewDto: CreateReviewDto) {
-    const { userId, bookId, content, rating } = createReviewDto;
+    const { userId, bookId } = createReviewDto;
     const book = await this.bookService.findOne(bookId);
 
     const reviewer = await this.userService.findById(userId);
-    const review = new Review();
-    review.content = content;
-    review.rating = rating;
-    review.book = book;
-    review.reviewer = reviewer;
+
+    const review = ReviewMapper.toReviewEntity(createReviewDto, book, reviewer);
     await this.reviewRepository.save(review);
     return 'Review created';
   }
@@ -48,15 +46,18 @@ export class ReviewsService {
 
   async update(id: string, updateReviewDto: UpdateReviewDto) {
     const review = await this.findOne(id);
-    const { userId, bookId, content, rating } = updateReviewDto;
+    const { userId, bookId } = updateReviewDto;
     const book = await this.bookService.findOne(bookId);
 
-    const reviewer = await this.userService.findById(userId);
-    review.content = content;
-    review.rating = rating;
-    review.book = book;
-    review.reviewer = reviewer;
-    await this.reviewRepository.save(review);
+    const reviewer = await this.userService.findUserById(userId);
+    const updatedReview = ReviewMapper.toUpdatedReviewEntity(
+      updateReviewDto,
+      review,
+      book,
+      reviewer,
+    );
+
+    await this.reviewRepository.save(updatedReview);
     return `Review updated`;
   }
 

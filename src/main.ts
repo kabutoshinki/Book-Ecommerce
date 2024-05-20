@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
-
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Ecommerce')
     .setDescription('The Ecommerce Api documentation')

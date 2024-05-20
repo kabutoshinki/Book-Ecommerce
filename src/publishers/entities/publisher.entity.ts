@@ -19,6 +19,9 @@ export class Publisher {
   @Column()
   address: string;
 
+  @Column({ default: true })
+  isActive: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 

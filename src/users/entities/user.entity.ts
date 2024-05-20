@@ -43,6 +43,9 @@ export class User {
   @Column({ default: Role.USER })
   roles: Role;
 
+  @Column({ default: true })
+  isActive: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 

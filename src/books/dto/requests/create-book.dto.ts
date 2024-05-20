@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
@@ -6,7 +7,9 @@ import {
   IsUUID,
   IsArray,
   IsNumber,
+  isUUID,
 } from 'class-validator';
+import { IsUuidArray } from 'src/decorators/arrayUuid-validator';
 
 export class CreateBookDto {
   @IsNotEmpty()
@@ -21,12 +24,14 @@ export class CreateBookDto {
   @IsString()
   summary: string;
 
-  @IsNotEmpty()
   @IsNumber()
+  @Transform(({ value }) => parseFloat(value))
+  @IsNotEmpty()
   price: number;
 
-  @IsNotEmpty()
   @IsNumber()
+  @Transform(({ value }) => parseInt(value, 10))
+  @IsNotEmpty()
   quantity: number;
 
   @IsOptional()
@@ -41,13 +46,15 @@ export class CreateBookDto {
   @IsUUID()
   publisherId?: string;
 
-  @IsArray()
-  @IsUUID('all', { each: true })
+  @IsUuidArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   @IsOptional()
+  @IsArray()
   categoryIds: string[] = [];
 
   @IsArray()
   @IsUUID('all', { each: true })
   @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   authorIds: string[] = [];
 }

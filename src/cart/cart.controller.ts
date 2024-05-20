@@ -12,8 +12,8 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { AddToCartDto } from './dto/add-to-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { AddToCartDto } from './dto/requests/add-to-cart.dto';
+import { UpdateCartDto } from './dto/requests/update-cart.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 

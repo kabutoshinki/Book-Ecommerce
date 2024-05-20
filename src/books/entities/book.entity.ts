@@ -40,6 +40,9 @@ export class Book {
   @Column()
   image: string;
 
+  @Column({ default: true })
+  isActive: boolean;
+
   @ManyToMany((type) => Category)
   @JoinTable()
   categories: Category[];

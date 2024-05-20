@@ -23,6 +23,8 @@ export class OrderDetail {
 
   // @Column()
   // payment_id: number;
+  @Column({ default: true })
+  status: string;
 
   @Column('decimal', { precision: 10, scale: 2 })
   total: number;

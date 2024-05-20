@@ -7,19 +7,29 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
+  ValidationPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { CreateBookDto } from './dto/requests/create-book.dto';
+import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { CacheKey } from '@nestjs/cache-manager';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
-  create(@Body() createBookDto: CreateBookDto) {
-    return this.booksService.create(createBookDto);
+  @UseInterceptors(FileInterceptor('file'))
+  @UsePipes(new ValidationPipe({ transform: true }))
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createBookDto: CreateBookDto,
+  ) {
+    return this.booksService.create(createBookDto, file);
   }
 
   @Get()

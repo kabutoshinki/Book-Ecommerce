@@ -9,15 +9,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthPayloadDto } from './dto/request/auth.dto';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { AuthPayloadDto } from './dto/requests/auth.dto';
+import { CreateUserDto } from '../users/dto/requests/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enums/role.enum';
 import { RolesGuard } from 'src/guard/role.guard';
-import { RefreshTokenDto } from './dto/request/refresh-token.dto';
+import { RefreshTokenDto } from './dto/requests/refresh-token.dto';
 import { GoogleAuthGuard } from 'src/guard/google.guard';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -26,6 +26,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { UserResponseDto } from 'src/users/dto/response/user-response.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -56,7 +57,9 @@ export class AuthController {
   }
 
   @Post('signup')
-  async register(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async register(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     return this.usersService.create(createUserDto);
   }
 

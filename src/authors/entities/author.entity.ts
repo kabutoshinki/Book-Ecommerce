@@ -15,6 +15,15 @@ export class Author {
   @Column({ unique: true })
   name: string;
 
+  @Column()
+  image: string;
+
+  @Column()
+  description: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 

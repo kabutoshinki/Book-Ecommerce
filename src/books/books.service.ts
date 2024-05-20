@@ -1,10 +1,11 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { CreateBookDto } from './dto/requests/create-book.dto';
+import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
 import { In, Repository } from 'typeorm';
@@ -12,6 +13,7 @@ import { PublishersService } from 'src/publishers/publishers.service';
 import { AuthorsService } from 'src/authors/authors.service';
 import { DiscountsService } from 'src/discounts/discounts.service';
 import { CategoriesService } from 'src/categories/categories.service';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class BooksService {
@@ -22,40 +24,55 @@ export class BooksService {
     private readonly categoryService: CategoriesService,
     private readonly authorService: AuthorsService,
     private readonly publisherService: PublishersService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
-  async create(createBookDto: CreateBookDto) {
+  async create(createBookDto: CreateBookDto, file: Express.Multer.File) {
     const { discountId, publisherId, categoryIds, authorIds, ...bookData } =
       createBookDto;
 
     const book = this.bookRepository.create(bookData);
-
-    if (discountId) {
-      const discount = await this.discountService.findOne(discountId);
-      if (!discount) {
-        throw new NotFoundException('Discount not found');
+    let uploadResult;
+    try {
+      if (file) {
+        uploadResult = await this.cloudinaryService.uploadFile(file, 'books');
+        book.image = uploadResult.secure_url;
       }
-      book.discount = discount;
-    }
-
-    if (publisherId) {
-      const publisher = await this.publisherService.findOne(publisherId);
-      if (!publisher) {
-        throw new NotFoundException('Publisher not found');
+      if (discountId) {
+        const discount = await this.discountService.findOne(discountId);
+        if (!discount) {
+          throw new NotFoundException('Discount not found');
+        }
+        book.discount = discount;
       }
-      book.publisher = publisher;
-    }
 
-    if (categoryIds && categoryIds.length > 0) {
-      const categories = await this.categoryService.findByIds(categoryIds);
-      book.categories = categories;
-    }
+      if (publisherId) {
+        const publisher = await this.publisherService.findOne(publisherId);
+        if (!publisher) {
+          throw new NotFoundException('Publisher not found');
+        }
+        book.publisher = publisher;
+      }
 
-    if (authorIds && authorIds.length > 0) {
-      const authors = await this.authorService.findByIds(authorIds);
-      book.authors = authors;
-    }
+      if (categoryIds && categoryIds.length > 0) {
+        const categories = await this.categoryService.findByIds(categoryIds);
+        book.categories = categories;
+      }
 
-    return this.bookRepository.save(book);
+      if (authorIds && authorIds.length > 0) {
+        const authors = await this.authorService.findByIds(authorIds);
+        book.authors = authors;
+      }
+
+      return this.bookRepository.save(book);
+    } catch (error) {
+      if (uploadResult) {
+        // Delete the uploaded image if an error occurred after uploading the image
+        await this.cloudinaryService.deleteFile(uploadResult.public_id);
+      }
+      throw new InternalServerErrorException(
+        'Error creating book, changes reverted',
+      );
+    }
   }
 
   async findAll() {

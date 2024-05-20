@@ -1,0 +1,111 @@
+<div>
+  <div class="d-flex justify-content-between align-content-center my-3">
+    <h1 class="text-muted">List of Orders</h1>
+  </div>
+  <div class="container">
+    <table class="table table-hover" style="cursor: pointer">
+      <thead class="table-info rounded-top">
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Address</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Total</th>
+          <th scope="col">Status</th>
+          <th scope="col">Created At</th>
+          <th scope="col">Updated At</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orders.forEach(order => { %>
+        <tr>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order.id %>"
+            >
+              <%= order.id%>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order?.user?.firstName + '' +order?.user?.lastName %>"
+            >
+              <%= order?.user?.firstName + '' +order?.user?.lastName %>
+            </p>
+          </td>
+          <td></td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order.items.length %>"
+            >
+              <%= order.items.length %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order.total %>"
+            >
+              <%= order.total %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order.status %>"
+            >
+              <%= order.status %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order.created_at %>"
+            >
+              <%= order.created_at %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order.updated_at %>"
+            >
+              <%= order.updated_at %>
+            </p>
+          </td>
+
+          <td>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#nationUp_<%= order.id %>"
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#nationDel_<%= order.id %>"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

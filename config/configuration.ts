@@ -16,4 +16,10 @@ export default () => ({
     secret: process.env.REDIS_SECRET,
     uri: process.env.REDIS_URI,
   },
+  cloudinary: {
+    name: process.env.CLOUD_NAME,
+    key: process.env.API_KEY,
+    secret: process.env.API_SECRET,
+    url: process.env.CLOUDINARY_URL,
+  },
 });

@@ -26,6 +26,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { CartModule } from './cart/cart.module';
 import { LayoutMiddleware } from './middleware/layout.middleware';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 // import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -64,6 +65,7 @@ import { LayoutMiddleware } from './middleware/layout.middleware';
     PublishersModule,
     BooksModule,
     CartModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

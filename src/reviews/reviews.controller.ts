@@ -9,8 +9,8 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import { CreateReviewDto } from './dto/requests/create-review.dto';
+import { UpdateReviewDto } from './dto/requests/update-review.dto';
 
 @Controller('reviews')
 export class ReviewsController {

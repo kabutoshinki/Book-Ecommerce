@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateOrderDetailDto } from './dto/create-order_detail.dto';
-import { UpdateOrderDetailDto } from './dto/update-order_detail.dto';
+import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
+import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderDetail } from './entities/order_detail.entity';
 import { Repository } from 'typeorm';
@@ -23,7 +23,7 @@ export class OrderDetailsService {
     userId: string,
     createOrderDetailDto: CreateOrderDetailDto,
   ) {
-    const user = await this.userService.findById(userId);
+    const user = await this.userService.findUserById(userId);
     const bookIds = await createOrderDetailDto.orderItems.map(
       (item) => item.bookId,
     );

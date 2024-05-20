@@ -1,16 +1,17 @@
 import { PayloadType } from './types';
-import { AuthPayloadDto } from './dto/request/auth.dto';
+import { AuthPayloadDto } from './dto/requests/auth.dto';
 import { UsersService } from './../users/users.service';
 import {
   Injectable,
+  NotAcceptableException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
-import { RefreshTokenDto } from './dto/request/refresh-token.dto';
-import { UserValidateDto } from './dto/request/user-validate.dto';
-import { LoginResponseDto } from './dto/response/login-response.dto';
+import { RefreshTokenDto } from './dto/requests/refresh-token.dto';
+import { UserValidateDto } from './dto/requests/user-validate.dto';
+import { LoginResponseDto } from './dto/responses/login-response.dto';
 import { CartService } from 'src/cart/cart.service';
 
 @Injectable()
@@ -27,6 +28,9 @@ export class AuthService {
 
       if (!user) {
         throw new NotFoundException('Email not exist');
+      }
+      if (!user.isActive) {
+        throw new NotAcceptableException('Email cannot login');
       }
       const passwordMatched = await bcrypt.compare(
         authPayload.password,
@@ -82,10 +86,10 @@ export class AuthService {
     };
   }
   async validateUser(details: UserValidateDto) {
-    let user = await this.userService.findOne(details);
+    const user = await this.userService.findOne(details);
 
     if (!user) {
-      user = await this.userService.createByEmail(details);
+      await this.userService.createByEmail(details);
     }
 
     return this.generateLoginResponse(user);

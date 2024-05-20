@@ -30,6 +30,9 @@ export class Discount {
   @Column({ type: 'date' })
   expiresAt: Date;
 
+  @Column({ default: true })
+  isActive: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 

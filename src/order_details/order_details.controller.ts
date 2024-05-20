@@ -11,8 +11,8 @@ import {
   Request,
 } from '@nestjs/common';
 import { OrderDetailsService } from './order_details.service';
-import { CreateOrderDetailDto } from './dto/create-order_detail.dto';
-import { UpdateOrderDetailDto } from './dto/update-order_detail.dto';
+import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
+import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 
 @Controller('order-details')

@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -6,6 +7,8 @@ import {
   Query,
   Render,
   UnauthorizedException,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -14,6 +17,13 @@ import { RedisService } from 'nestjs-redis';
 import { CacheKey } from '@nestjs/cache-manager';
 import { BooksService } from './books/books.service';
 import { CategoriesService } from './categories/categories.service';
+import { UsersService } from './users/users.service';
+import { OrderDetailsService } from './order_details/order_details.service';
+import { DiscountsService } from './discounts/discounts.service';
+import { AuthorsService } from './authors/authors.service';
+import { PublishersService } from './publishers/publishers.service';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 @ApiTags('Default')
@@ -22,10 +32,16 @@ export class AppController {
     private readonly appService: AppService,
     private readonly bookService: BooksService,
     private readonly categoryService: CategoriesService,
+    private readonly userService: UsersService,
+    private readonly orderService: OrderDetailsService,
+    private readonly discountService: DiscountsService,
+    private readonly authorService: AuthorsService,
+    private readonly publisherService: PublishersService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   @Get()
-  @Render('pages/index')
+  @Render('pages/dashboard')
   root() {
     return {
       title: 'Dashboard Page',
@@ -48,8 +64,10 @@ export class AppController {
 
   @Get('page/user')
   @Render('pages/user')
-  user() {
-    return { title: 'User Page', name: 'huy' };
+  async user() {
+    const users = await this.userService.findAll();
+
+    return { title: 'User Page', users: users };
   }
 
   @Get('page/book')
@@ -61,8 +79,9 @@ export class AppController {
 
   @Get('page/author')
   @Render('pages/author')
-  author() {
-    return { title: 'Author Page', name: 'huy' };
+  async author() {
+    const authors = await this.authorService.findAll();
+    return { title: 'Author Page', authors: authors };
   }
 
   @Get('page/category')
@@ -74,24 +93,39 @@ export class AppController {
 
   @Get('page/order')
   @Render('pages/order')
-  order() {
-    return { title: 'Order Page', name: 'huy' };
+  async order() {
+    const orders = await this.orderService.getAllOrderDetails();
+    return { title: 'Order Page', orders: orders };
   }
 
   @Get('page/discount')
   @Render('pages/discount')
-  discount() {
-    return { title: 'Discount Page', layout: 'layouts/layout', name: 'huy' };
+  async discount() {
+    const discounts = await this.discountService.findAll();
+    return { title: 'Discount Page', discounts: discounts };
   }
 
   @Get('page/publisher')
   @Render('pages/publisher')
-  publisher() {
-    return { title: 'Publisher Page', name: 'huy' };
+  async publisher() {
+    const publishers = await this.publisherService.findAll();
+    return { title: 'Publisher Page', publishers: publishers };
   }
 
   @Get('test/errors')
   testErrors(): string {
     throw new UnauthorizedException({ message: 'unknown error' });
+  }
+
+  @Post('test/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async testUpload(@UploadedFile() file: Express.Multer.File, @Body() data) {
+    const image = await this.cloudinaryService.uploadFile(file, 'test');
+    try {
+      throw new Error('error');
+    } catch (error) {
+      await this.cloudinaryService.deleteFile(image.public_id);
+      console.log(error);
+    }
   }
 }

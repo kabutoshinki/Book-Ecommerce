@@ -7,6 +7,7 @@ import { DiscountsModule } from 'src/discounts/discounts.module';
 import { AuthorsModule } from 'src/authors/authors.module';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { PublishersModule } from 'src/publishers/publishers.module';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PublishersModule } from 'src/publishers/publishers.module';
     AuthorsModule,
     CategoriesModule,
     PublishersModule,
+    CloudinaryModule,
   ],
   controllers: [BooksController],
   providers: [BooksService],

@@ -1,1 +1,107 @@
-<h2>Publisher</h2>
+<div>
+  <div class="d-flex justify-content-between align-content-center my-3">
+    <h1 class="text-muted">List of Publisher</h1>
+    <button
+      type="button"
+      class="btn btn-success"
+      data-bs-toggle="modal"
+      data-bs-target="#nationAdd"
+    >
+      Create Publisher
+    </button>
+  </div>
+  <div class="container">
+    <table class="table table-hover" style="cursor: pointer">
+      <thead class="table-info rounded-top">
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Status</th>
+          <th scope="col">Created At</th>
+          <th scope="col">Updated At</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% publishers.forEach(publisher => { %>
+        <tr>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= publisher.id %>"
+            >
+              <%= publisher.id%>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= publisher.name %>"
+            >
+              <%= publisher.name %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= publisher.description %>"
+            >
+              <%= publisher.description %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= publisher.status %>"
+            >
+              <%= publisher.status %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= publisher.created_at %>"
+            >
+              <%= publisher.created_at %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= publisher.updated_at %>"
+            >
+              <%= publisher.updated_at %>
+            </p>
+          </td>
+
+          <td>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#nationUp_<%= publisher.id %>"
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#nationDel_<%= publisher.id %>"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

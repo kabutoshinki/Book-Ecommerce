@@ -1,0 +1,64 @@
+import { UpdateUserDto } from './dto/requests/update-user.dto';
+import { Injectable } from '@nestjs/common';
+import { User } from './entities/user.entity';
+import { UserResponseDto } from './dto/response/user-response.dto';
+import { CreateUserDto } from './dto/requests/create-user.dto';
+import { UserResponseForAdminDto } from './dto/response/user-resoponse-for-admin.dto';
+
+@Injectable()
+export class UserMapper {
+  static toUserResponseDto(user: User): UserResponseDto {
+    const userResponseDto = new UserResponseDto();
+    userResponseDto.id = user.id;
+    userResponseDto.firstName = user.firstName;
+    userResponseDto.lastName = user.lastName;
+    userResponseDto.avatar = user.avatar;
+    userResponseDto.email = user.email;
+    return userResponseDto;
+  }
+
+  static toUserResponseForAdminDto(user: User): UserResponseForAdminDto {
+    const userResponseDto = new UserResponseForAdminDto();
+    userResponseDto.id = user.id;
+    userResponseDto.firstName = user.firstName;
+    userResponseDto.lastName = user.lastName;
+    userResponseDto.avatar = user.avatar;
+    userResponseDto.email = user.email;
+    userResponseDto.isActive = user.isActive;
+    userResponseDto.created_at = user.created_at;
+    userResponseDto.updated_at = user.updated_at;
+    return userResponseDto;
+  }
+
+  static toUserResponseForAdminDtoList(
+    users: User[],
+  ): UserResponseForAdminDto[] {
+    return users.map((user) => this.toUserResponseForAdminDto(user));
+  }
+
+  static toUserEntity(createUserDto: CreateUserDto): User {
+    const user = new User();
+    user.firstName = createUserDto.firstName;
+    user.lastName = createUserDto.lastName;
+    user.username = createUserDto.username;
+    user.avatar = createUserDto.avatar
+      ? createUserDto.avatar
+      : 'https://static-00.iconduck.com/assets.00/avatar-default-icon-2048x2048-h6w375ur.png';
+    user.email = createUserDto.email;
+    user.password = createUserDto.password;
+    return user;
+  }
+  static toUpdateUserEntity(
+    existingUser: User,
+    updateUserDto: UpdateUserDto,
+  ): User {
+    existingUser.firstName = updateUserDto.firstName ?? existingUser.firstName;
+    existingUser.lastName = updateUserDto.lastName ?? existingUser.lastName;
+    existingUser.avatar = updateUserDto.avatar
+      ? updateUserDto.avatar
+      : 'https://static-00.iconduck.com/assets.00/avatar-default-icon-2048x2048-h6w375ur.png';
+
+    existingUser.password = updateUserDto.password ?? existingUser.password;
+    return existingUser;
+  }
+}

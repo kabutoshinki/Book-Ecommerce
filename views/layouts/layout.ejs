@@ -58,6 +58,7 @@
             <ul
               id="user"
               class="sidebar-dropdown list-unstyled collapse <%- title=='User Page' || title=='Order Page' ? 'show' : '' %>"
+              data-bs-parent="#sidebar"
             >
               <li
                 class="sidebar-item ms-3 <%- title=='User Page'? 'active':'' %>"
@@ -92,6 +93,7 @@
             <ul
               id="store"
               class="sidebar-dropdown list-unstyled collapse <%- title=='Book Page' || title=='Category Page' || title=='Author Page' || title=='Publisher Page' || title=='Discount Page' ? 'show' : '' %>"
+              data-bs-parent="#sidebar"
             >
               <li
                 class="sidebar-item ms-3 <%- title=='Book Page'? 'active':'' %>"
