@@ -1,0 +1,140 @@
+<div
+  class="modal fade"
+  id="publisherAdd"
+  tabindex="-1"
+  aria-labelledby="publisherAddLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="publisherAddLabel">Create Publisher</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="publisherCreateForm">
+          <div class="mb-3">
+            <label for="publisherName" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="publisherName"
+              name="name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="publisherAddress" class="form-label">Address</label>
+            <textarea
+              class="form-control"
+              id="publisherAddress"
+              name="description"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success"
+              id="createPublisherBtn"
+            >
+              <span id="createPublisherBtnText">Create Publisher</span>
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                id="createPublisherBtnSpinner"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function turnOffSpinner(
+    createPublisherBtn,
+    createPublisherBtnText,
+    createPublisherBtnSpinner,
+  ) {
+    createPublisherBtnText.classList.remove('d-none');
+    createPublisherBtnSpinner.classList.add('d-none');
+    createPublisherBtn.disabled = false;
+  }
+
+  document
+    .getElementById('publisherCreateForm')
+    .addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const createPublisherBtn = document.getElementById('createPublisherBtn');
+      const createPublisherBtnText = document.getElementById(
+        'createPublisherBtnText',
+      );
+      const createPublisherBtnSpinner = document.getElementById(
+        'createPublisherBtnSpinner',
+      );
+
+      // Show the spinner and disable the button
+      createPublisherBtnText.classList.add('d-none');
+      createPublisherBtnSpinner.classList.remove('d-none');
+      createPublisherBtn.disabled = true;
+
+      // Get form data
+      const name = document.getElementById('publisherName').value;
+      const address = document.getElementById('publisherAddress').value;
+
+      // Construct payload
+      const payload = {
+        name: name,
+        address: address,
+      };
+
+      fetch('/publishers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success) {
+            location.reload(); // Reload the page to see the new publisher
+          } else {
+            alert(data.message);
+            turnOffSpinner(
+              createPublisherBtn,
+              createPublisherBtnText,
+              createPublisherBtnSpinner,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert(error.message || 'Publisher create fail');
+          turnOffSpinner(
+            createPublisherBtn,
+            createPublisherBtnText,
+            createPublisherBtnSpinner,
+          );
+        });
+    });
+</script>

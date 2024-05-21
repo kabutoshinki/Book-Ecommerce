@@ -81,17 +81,22 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
     const user = await this.findUserById(id);
     const updatedUser = UserMapper.toUpdateUserEntity(user, updateUserDto);
 
-    return await this.usersRepository.save(updatedUser);
+    const savedUser = await this.usersRepository.save(updatedUser);
+    return UserMapper.toUserResponseDto(savedUser);
   }
 
-  async remove(id: string): Promise<void> {
-    const result = await this.usersRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException({ message: `User with ID ${id} not found` });
-    }
+  async remove(id: string) {
+    const user = await this.findUserById(id);
+    user.isActive = false;
+
+    await this.usersRepository.save(user);
+    return 'User deleted';
   }
 }

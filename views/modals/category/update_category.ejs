@@ -1,0 +1,153 @@
+<!-- Update category Modal -->
+<div
+  class="modal fade"
+  id="updateCategoryModal_<%= category.id %>"
+  tabindex="-1"
+  aria-labelledby="categoryUploadLabel_<%= category.id %>"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="categoryUploadLabel_<%= category.id %>">
+          Update Category
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="categoryUpdateForm_<%= category.id %>">
+          <div class="mb-3">
+            <label for="name_<%= category.id %>" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name_<%= category.id %>"
+              value="<%= category.name %>"
+              name="name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="description_<%= category.id %>" class="form-label"
+              >Description</label
+            >
+            <textarea
+              class="form-control"
+              id="description_<%= category.id %>"
+              name="description"
+              rows="3"
+              required
+            >
+<%= category.description %></textarea
+            >
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-warning"
+              id="updateCategoryBtn_<%= category.id %>"
+            >
+              <span id="updateCategoryBtnText_<%= category.id %>"
+                >Update Category</span
+              >
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                id="updateCategoryBtnSpinner_<%= category.id %>"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function turnOffSpinner(
+    updateCategoryBtn,
+    updateCategoryBtnText,
+    updateCategoryBtnSpinner,
+  ) {
+    updateCategoryBtnText.classList.remove('d-none');
+    updateCategoryBtnSpinner.classList.add('d-none');
+    updateCategoryBtn.disabled = false;
+  }
+
+  document
+    .getElementById('categoryUpdateForm_<%= category.id %>')
+    .addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const updateCategoryBtn = document.getElementById(
+        'updateCategoryBtn_<%= category.id %>',
+      );
+      const updateCategoryBtnText = document.getElementById(
+        'updateCategoryBtnText_<%= category.id %>',
+      );
+      const updateCategoryBtnSpinner = document.getElementById(
+        'updateCategoryBtnSpinner_<%= category.id %>',
+      );
+
+      // Show the spinner and disable the button
+      updateCategoryBtnText.classList.add('d-none');
+      updateCategoryBtnSpinner.classList.remove('d-none');
+      updateCategoryBtn.disabled = true;
+
+      // Get form data
+      const name = document.getElementById('name_<%= category.id %>').value;
+      const description = document.getElementById(
+        'description_<%= category.id %>',
+      ).value;
+
+      // Construct payload
+      const payload = {
+        name: name,
+        description: description,
+      };
+
+      fetch('/categories/<%= category.id %>', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload(); // Reload the page to see the updated category
+          } else {
+            alert(data.message || 'Failed to update category');
+            turnOffSpinner(
+              updateCategoryBtn,
+              updateCategoryBtnText,
+              updateCategoryBtnSpinner,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Error updating category');
+          turnOffSpinner(
+            updateCategoryBtn,
+            updateCategoryBtnText,
+            updateCategoryBtnSpinner,
+          );
+        });
+    });
+</script>

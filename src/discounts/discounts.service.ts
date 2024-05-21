@@ -10,6 +10,7 @@ import { Discount } from './entities/discount.entity';
 import { In, Repository } from 'typeorm';
 import { Book } from 'src/books/entities/book.entity';
 import { validateDiscountDates } from 'src/utils/validate';
+import { DiscountMapper } from './discounts,mapper';
 
 @Injectable()
 export class DiscountsService {
@@ -20,20 +21,17 @@ export class DiscountsService {
     private readonly bookRepository: Repository<Book>,
   ) {}
   async create(createDiscountDto: CreateDiscountDto) {
-    const { name, amount, description, startAt, expiresAt, bookIds } =
-      createDiscountDto;
+    const { bookIds } = createDiscountDto;
     try {
-      const discount = this.discountRepository.create({
-        name,
-        amount,
-        description,
-        startAt,
-        expiresAt,
-      });
+      const discount = DiscountMapper.toDiscountEntity(createDiscountDto);
+      console.log('Created discount:', discount);
 
       await this.discountRepository.save(discount);
-      if (bookIds.length === 0) {
-        return 'Discount created';
+      if (!bookIds?.length) {
+        return {
+          success: true,
+          message: 'Discount created',
+        };
       }
       const books = await this.bookRepository.find({
         where: { id: In(bookIds) },
@@ -44,14 +42,27 @@ export class DiscountsService {
 
       await this.bookRepository.save(books);
 
-      return 'Discount created';
+      return {
+        success: true,
+        message: 'Discount created',
+      };
     } catch (error) {
+      console.log(error);
+
       throw new BadRequestException('Discount name already exist');
     }
   }
 
   async findAll() {
-    return await this.discountRepository.find();
+    const discounts = await this.discountRepository.find({
+      where: { isActive: true },
+    });
+    return DiscountMapper.toDiscountResponseDtoList(discounts);
+  }
+  async findAllForAdmin() {
+    const discounts = await this.discountRepository.find();
+
+    return DiscountMapper.toDiscountResponseForAdminDtoList(discounts);
   }
 
   async findOne(id: string) {
@@ -71,13 +82,16 @@ export class DiscountsService {
       if (!discount) {
         throw new NotFoundException('Discount not exist');
       }
-      discount.name = name;
-      discount.amount = amount;
-      discount.description = description;
-      discount.startAt = startAt;
-      discount.expiresAt = expiresAt;
-
-      await this.discountRepository.save(discount);
+      // discount.name = name;
+      // discount.amount = amount;
+      // discount.description = description;
+      // discount.startAt = startAt;
+      // discount.expiresAt = expiresAt;
+      const savedDiscount = DiscountMapper.toUpdateDiscountEntity(
+        discount,
+        updateDiscountDto,
+      );
+      await this.discountRepository.save(savedDiscount);
       if (bookIds == undefined || bookIds.length === 0) {
         return 'Discount created';
       }
@@ -112,8 +126,8 @@ export class DiscountsService {
     });
 
     await this.bookRepository.save(books);
-
-    await this.discountRepository.remove(discount);
+    discount.isActive = false;
+    await this.discountRepository.save(discount);
     return 'Discount deleted';
   }
 }

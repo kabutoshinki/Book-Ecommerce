@@ -1,0 +1,117 @@
+<div
+  class="modal fade"
+  id="authorAdd"
+  tabindex="-1"
+  aria-labelledby="authorAddLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="authorAddLabel">Create Author</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="authorCreateForm" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="authorName" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="authorName"
+              name="name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="authorDescription" class="form-label"
+              >Description</label
+            >
+            <textarea
+              class="form-control"
+              id="authorDescription"
+              name="description"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="authorImage" class="form-label">Image</label>
+            <input
+              type="file"
+              class="form-control"
+              id="authorImage"
+              name="file"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-success" id="createAuthorBtn">
+              <span id="createAuthorBtnText">Create Author</span>
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                id="createAuthorBtnSpinner"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+<script>
+  document
+    .getElementById('authorCreateForm')
+    .addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const createAuthorBtn = document.getElementById('createAuthorBtn');
+      const createAuthorBtnText = document.getElementById(
+        'createAuthorBtnText',
+      );
+      const createAuthorBtnSpinner = document.getElementById(
+        'createAuthorBtnSpinner',
+      );
+
+      // Show the spinner and disable the button
+      createAuthorBtnText.classList.add('d-none');
+      createAuthorBtnSpinner.classList.remove('d-none');
+      createAuthorBtn.disabled = true;
+
+      const formData = new FormData(this);
+
+      fetch('/authors', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // alert('Author created successfully');
+            location.reload(); // Reload the page to see the new author
+          } else {
+            alert('Failed to create author');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Error creating author');
+        });
+    });
+</script>

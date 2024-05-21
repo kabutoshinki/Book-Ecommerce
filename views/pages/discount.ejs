@@ -5,7 +5,7 @@
       type="button"
       class="btn btn-success"
       data-bs-toggle="modal"
-      data-bs-target="#nationAdd"
+      data-bs-target="#discountAdd"
     >
       Create Discounts
     </button>
@@ -19,8 +19,8 @@
           <th scope="col">Description</th>
           <th scope="col">Percent</th>
           <th scope="col">Status</th>
-          <th scope="col">Created At</th>
-          <th scope="col">Updated At</th>
+          <th scope="col">Started At</th>
+          <th scope="col">Expired At</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -60,34 +60,32 @@
               style="max-width: 150px"
               title="<%= discount.amount %>"
             >
-              <%= discount.amount %>
+              <%= discount.amount + ' ' +'%'%>
+            </p>
+          </td>
+          <td>
+            <% if (discount.isActive === true) { %>
+            <span class="badge bg-success">Active</span>
+            <% } else { %>
+            <span class="badge bg-secondary">Inactive</span>
+            <% } %>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= discount.startAt %>"
+            >
+              <%= (discount.startAt) %>
             </p>
           </td>
           <td>
             <p
               class="text-truncate"
               style="max-width: 150px"
-              title="<%= discount.status %>"
+              title="<%= discount.expiresAt %>"
             >
-              <%= discount.status %>
-            </p>
-          </td>
-          <td>
-            <p
-              class="text-truncate"
-              style="max-width: 150px"
-              title="<%= discount.created_at %>"
-            >
-              <%= discount.created_at %>
-            </p>
-          </td>
-          <td>
-            <p
-              class="text-truncate"
-              style="max-width: 150px"
-              title="<%= discount.updated_at %>"
-            >
-              <%= discount.updated_at %>
+              <%= (discount.expiresAt) %>
             </p>
           </td>
 
@@ -96,22 +94,25 @@
               type="button"
               class="btn btn-primary"
               data-bs-toggle="modal"
-              data-bs-target="#nationUp_<%= discount.id %>"
+              data-bs-target="#updateDiscountModal_<%= discount.id %>"
             >
-              Update
+              <i class="lni lni-pencil-alt"></i>
             </button>
             <button
               type="button"
-              class="btn btn-danger"
+              class="<%= discount.isActive===true? 'btn btn-danger':'btn btn-secondary disabled ' %>"
               data-bs-toggle="modal"
-              data-bs-target="#nationDel_<%= discount.id %>"
+              data-bs-target="#deleteDiscountModal_<%= discount.id %>"
             >
-              Delete
+              <i class="lni lni-trash-can"></i>
             </button>
           </td>
         </tr>
+
+        <%- include('../modals/discount/delete_discount.ejs', { discount }) %>
         <% }) %>
       </tbody>
     </table>
   </div>
 </div>
+<%- include('../modals/discount/create_discount.ejs') %>

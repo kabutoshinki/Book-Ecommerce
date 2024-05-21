@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Publisher } from './entities/publisher.entity';
 import { Repository } from 'typeorm';
 import { Book } from 'src/books/entities/book.entity';
+import { PublisherMapper } from './publishers.mapper';
+import { PublisherResponseForAdminDto } from './dto/responses/publisher-resoponse-for-admin.dto';
 
 @Injectable()
 export class PublishersService {
@@ -22,13 +24,22 @@ export class PublishersService {
   async create(createPublisherDto: CreatePublisherDto) {
     try {
       await this.publisherRepository.save(createPublisherDto);
-      return 'Publisher created';
+      return {
+        success: true,
+        message: 'Publisher created successfully',
+      };
     } catch (error) {
       throw new BadRequestException('Publisher name already exist');
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<PublisherResponseForAdminDto[]> {
+    const publishers = await this.publisherRepository.find({
+      where: { isActive: true },
+    });
+    return PublisherMapper.toUserResponseForAdminDtoList(publishers);
+  }
+  async findAllForAdmin() {
     return await this.publisherRepository.find();
   }
 
@@ -47,31 +58,33 @@ export class PublishersService {
       if (!publisher) {
         throw new NotFoundException('Publisher not exist');
       }
-      publisher.name = updatePublisherDto.name;
-      publisher.address = updatePublisherDto.address;
-      await this.publisherRepository.save(publisher);
-      return 'Publisher updated';
+      const updatedPublisher = PublisherMapper.toUpdateUserEntity(
+        publisher,
+        updatePublisherDto,
+      );
+
+      await this.publisherRepository.save(updatedPublisher);
+      return {
+        success: true,
+        message: 'Publisher updated successfully',
+      };
     } catch (error) {
       throw new BadRequestException('publisher name is already exist');
     }
   }
 
   async remove(id: string) {
-    const publisher = await this.publisherRepository.findOneBy({ id: id });
-    if (!publisher) {
-      throw new NotFoundException('Publisher not exist');
-    }
-
+    const publisher = await this.findOne(id);
     const books = await this.bookRepository.find({
-      where: { authors: { id } },
+      where: { publisher: { id } },
     });
     if (books.length > 0) {
       throw new BadRequestException(
         'Publisher is associated with books and cannot be deleted',
       );
     }
-
-    await this.publisherRepository.remove(publisher);
-    return `Author removed`;
+    publisher.isActive = false;
+    await this.publisherRepository.save(publisher);
+    return `Publisher removed`;
   }
 }

@@ -80,7 +80,7 @@ export class AppController {
   @Get('page/author')
   @Render('pages/author')
   async author() {
-    const authors = await this.authorService.findAll();
+    const authors = await this.authorService.findAllAuthorsByAdmin();
     return { title: 'Author Page', authors: authors };
   }
 
@@ -101,14 +101,14 @@ export class AppController {
   @Get('page/discount')
   @Render('pages/discount')
   async discount() {
-    const discounts = await this.discountService.findAll();
+    const discounts = await this.discountService.findAllForAdmin();
     return { title: 'Discount Page', discounts: discounts };
   }
 
   @Get('page/publisher')
   @Render('pages/publisher')
   async publisher() {
-    const publishers = await this.publisherService.findAll();
+    const publishers = await this.publisherService.findAllForAdmin();
     return { title: 'Publisher Page', publishers: publishers };
   }
 

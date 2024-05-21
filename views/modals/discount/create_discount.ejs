@@ -1,0 +1,201 @@
+<div
+  class="modal fade"
+  id="discountAdd"
+  tabindex="-1"
+  aria-labelledby="discountAddLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="discountAddLabel">Create Discount</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="discountCreateForm">
+          <div class="mb-3">
+            <label for="discountName" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="discountName"
+              name="name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="discountAmount" class="form-label">Amount</label>
+            <input
+              type="number"
+              class="form-control"
+              id="discountAmount"
+              name="amount"
+              max="100"
+              min="0"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="discountDescription" class="form-label"
+              >Description</label
+            >
+            <textarea
+              class="form-control"
+              id="discountDescription"
+              name="description"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="startDate" class="form-label">Start Date</label>
+            <input
+              type="date"
+              class="form-control"
+              id="startDate"
+              name="start_date"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="expireDate" class="form-label">Expire Date</label>
+            <input
+              type="date"
+              class="form-control"
+              id="expireDate"
+              name="expire_date"
+              required
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success"
+              id="createDiscountBtn"
+            >
+              <span id="createDiscountBtnText">Create Discount</span>
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                id="createDiscountBtnSpinner"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function turnOffSpinner(
+    createDiscountBtn,
+    createDiscountBtnText,
+    createDiscountBtnSpinner,
+  ) {
+    createDiscountBtnText.classList.remove('d-none');
+    createDiscountBtnSpinner.classList.add('d-none');
+    createDiscountBtn.disabled = false;
+  }
+
+  document
+    .getElementById('discountCreateForm')
+    .addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const createDiscountBtn = document.getElementById('createDiscountBtn');
+      const createDiscountBtnText = document.getElementById(
+        'createDiscountBtnText',
+      );
+      const createDiscountBtnSpinner = document.getElementById(
+        'createDiscountBtnSpinner',
+      );
+
+      // Show the spinner and disable the button
+      createDiscountBtnText.classList.add('d-none');
+      createDiscountBtnSpinner.classList.remove('d-none');
+      createDiscountBtn.disabled = true;
+
+      // Get form data
+      const name = document.getElementById('discountName').value;
+      const amount = document.getElementById('discountAmount').value;
+      const description = document.getElementById('discountDescription').value;
+      const startDate = document.getElementById('startDate').value;
+      const expireDate = document.getElementById('expireDate').value;
+
+      const currentDate = new Date().toISOString().split('T')[0];
+
+      // Validate dates
+      if (new Date(expireDate) <= new Date(currentDate)) {
+        alert('Expire date must be in the future.');
+        turnOffSpinner(
+          createDiscountBtn,
+          createDiscountBtnText,
+          createDiscountBtnSpinner,
+        );
+        return;
+      }
+
+      if (new Date(startDate) > new Date(expireDate)) {
+        alert('Start date cannot be after the expire date.');
+        turnOffSpinner(
+          createDiscountBtn,
+          createDiscountBtnText,
+          createDiscountBtnSpinner,
+        );
+        return;
+      }
+
+      // Construct payload
+      const payload = {
+        name: name,
+        amount: parseInt(amount),
+        description: description,
+        startAt: startDate,
+        expiresAt: expireDate,
+      };
+
+      fetch('/discounts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload(); // Reload the page to see the new discount
+          } else {
+            alert(data.message);
+            turnOffSpinner(
+              createDiscountBtn,
+              createDiscountBtnText,
+              createDiscountBtnSpinner,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert(error.message || 'Failed to create discount');
+          turnOffSpinner(
+            createDiscountBtn,
+            createDiscountBtnText,
+            createDiscountBtnSpinner,
+          );
+        });
+    });
+</script>

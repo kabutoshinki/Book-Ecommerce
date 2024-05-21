@@ -1,0 +1,142 @@
+<div
+  class="modal fade"
+  id="categoryAdd"
+  tabindex="-1"
+  aria-labelledby="categoryAddLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="categoryAddLabel">Create Category</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="categoryCreateForm">
+          <div class="mb-3">
+            <label for="categoryName" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="categoryName"
+              name="name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="categoryDescription" class="form-label"
+              >Description</label
+            >
+            <textarea
+              class="form-control"
+              id="categoryDescription"
+              name="description"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-success"
+              id="createCategoryBtn"
+            >
+              <span id="createCategoryBtnText">Create Category</span>
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                id="createCategoryBtnSpinner"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function turnOffSpinner(
+    createCategoryBtn,
+    createCategoryBtnText,
+    createCategoryBtnSpinner,
+  ) {
+    createCategoryBtnText.classList.remove('d-none');
+    createCategoryBtnSpinner.classList.add('d-none');
+    createCategoryBtn.disabled = false;
+  }
+
+  document
+    .getElementById('categoryCreateForm')
+    .addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const createCategoryBtn = document.getElementById('createCategoryBtn');
+      const createCategoryBtnText = document.getElementById(
+        'createCategoryBtnText',
+      );
+      const createCategoryBtnSpinner = document.getElementById(
+        'createCategoryBtnSpinner',
+      );
+
+      // Show the spinner and disable the button
+      createCategoryBtnText.classList.add('d-none');
+      createCategoryBtnSpinner.classList.remove('d-none');
+      createCategoryBtn.disabled = true;
+
+      // Get form data
+      const name = document.getElementById('categoryName').value;
+      const description = document.getElementById('categoryDescription').value;
+
+      // Construct payload
+      const payload = {
+        name: name,
+        description: description,
+      };
+
+      fetch('/categories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success) {
+            location.reload(); // Reload the page to see the new category
+          } else {
+            alert(data.message);
+            turnOffSpinner(
+              createCategoryBtn,
+              createCategoryBtnText,
+              createCategoryBtnSpinner,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert(error.message || 'Category create fail');
+          turnOffSpinner(
+            createCategoryBtn,
+            createCategoryBtnText,
+            createCategoryBtnSpinner,
+          );
+        });
+    });
+</script>

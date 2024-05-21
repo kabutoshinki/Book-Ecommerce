@@ -10,19 +10,25 @@ import { UpdateCategoryDto } from './dto/requests/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { In, Repository } from 'typeorm';
+import { Book } from 'src/books/entities/book.entity';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Book)
+    private readonly bookRepository: Repository<Book>,
   ) {}
-  async create(createCategoryDto: CreateCategoryDto): Promise<string> {
+  async create(createCategoryDto: CreateCategoryDto) {
     try {
       await this.categoryRepository.save(createCategoryDto);
-      return 'Category created';
+      return {
+        success: true,
+        message: 'Category created successfully',
+      };
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException({ message: 'Category name already exist' });
     }
   }
 
@@ -50,16 +56,30 @@ export class CategoriesService {
       }
       category.name = updateCategoryDto.name;
       category.description = updateCategoryDto.description;
-
+      category.isActive = true;
       await this.categoryRepository.save(category);
-      return `Category updated`;
+      return {
+        success: true,
+        message: 'Category updated successfully',
+      };
     } catch (error) {
-      throw new BadRequestException('Category name already exist');
+      throw new BadRequestException({ message: 'Category name already exist' });
     }
   }
 
   async remove(id: string) {
-    await this.categoryRepository.delete(id);
-    return 'Category deleted';
+    const category = await this.findOne(id);
+
+    const books = await this.bookRepository.find({
+      where: { categories: { id } },
+    });
+    if (books.length > 0) {
+      throw new BadRequestException(
+        'Category is associated with books and cannot be deleted',
+      );
+    }
+    category.isActive = false;
+    await this.categoryRepository.save(category);
+    return `Category deleted`;
   }
 }

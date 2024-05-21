@@ -1,0 +1,155 @@
+<!-- Update publisher Modal -->
+<div
+  class="modal fade"
+  id="updatePublisherModal_<%= publisher.id %>"
+  tabindex="-1"
+  aria-labelledby="publisherUploadLabel_<%= publisher.id %>"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="publisherUploadLabel_<%= publisher.id %>">
+          Update Publisher
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="publisherUpdateForm_<%= publisher.id %>">
+          <div class="mb-3">
+            <label for="name_<%= publisher.id %>" class="form-label"
+              >Name</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="name_<%= publisher.id %>"
+              value="<%= publisher.name %>"
+              name="name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="description_<%= publisher.id %>" class="form-label"
+              >Address</label
+            >
+            <textarea
+              class="form-control"
+              id="address_<%= publisher.id %>"
+              name="address"
+              rows="3"
+              required
+            >
+<%= publisher.address %></textarea
+            >
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-warning"
+              id="updatePublisherBtn_<%= publisher.id %>"
+            >
+              <span id="updatePublisherBtnText_<%= publisher.id %>"
+                >Update Publisher</span
+              >
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                id="updatePublisherBtnSpinner_<%= publisher.id %>"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function turnOffSpinner(
+    updatePublisherBtn,
+    updatePublisherBtnText,
+    updatePublisherBtnSpinner,
+  ) {
+    updatePublisherBtnText.classList.remove('d-none');
+    updatePublisherBtnSpinner.classList.add('d-none');
+    updatePublisherBtn.disabled = false;
+  }
+
+  document
+    .getElementById('publisherUpdateForm_<%= publisher.id %>')
+    .addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const updatePublisherBtn = document.getElementById(
+        'updatePublisherBtn_<%= publisher.id %>',
+      );
+      const updatePublisherBtnText = document.getElementById(
+        'updatePublisherBtnText_<%= publisher.id %>',
+      );
+      const updatePublisherBtnSpinner = document.getElementById(
+        'updatePublisherBtnSpinner_<%= publisher.id %>',
+      );
+
+      // Show the spinner and disable the button
+      updatePublisherBtnText.classList.add('d-none');
+      updatePublisherBtnSpinner.classList.remove('d-none');
+      updatePublisherBtn.disabled = true;
+
+      // Get form data
+      const name = document.getElementById('name_<%= publisher.id %>').value;
+      const address = document.getElementById(
+        'address_<%= publisher.id %>',
+      ).value;
+
+      // Construct payload
+      const payload = {
+        name: name,
+        address: address,
+      };
+      console.log(payload);
+      fetch('/publishers/<%= publisher.id %>', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload(); // Reload the page to see the updated publisher
+          } else {
+            alert(data.message || 'Failed to update publisher');
+            turnOffSpinner(
+              updatePublisherBtn,
+              updatePublisherBtnText,
+              updatePublisherBtnSpinner,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Error updating publisher');
+          turnOffSpinner(
+            updatePublisherBtn,
+            updatePublisherBtnText,
+            updatePublisherBtnSpinner,
+          );
+        });
+    });
+</script>

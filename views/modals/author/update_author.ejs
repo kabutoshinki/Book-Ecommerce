@@ -1,0 +1,153 @@
+<!-- Update Author Modal -->
+<div
+  class="modal fade"
+  id="updateAuthorModal_<%= author.id %>"
+  tabindex="-1"
+  aria-labelledby="authorUploadLabel_<%= author.id %>"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="authorUploadLabel_<%= author.id %>">
+          Update Author
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          id="authorUpdateForm_<%= author.id %>"
+          enctype="multipart/form-data"
+        >
+          <div class="mb-3">
+            <label for="name_<%= author.id %>" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name_<%= author.id %>"
+              value="<%= author.name %>"
+              name="name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="description_<%= author.id %>" class="form-label"
+              >Description</label
+            >
+            <textarea
+              class="form-control"
+              id="description_<%= author.id %>"
+              name="description"
+              rows="3"
+              required
+            >
+<%= author.description %></textarea
+            >
+          </div>
+          <div class="mb-3">
+            <label for="image_<%= author.id %>" class="form-label"
+              >Image (Optional)</label
+            >
+            <input
+              type="file"
+              class="form-control"
+              id="image_<%= author.id %>"
+              name="file"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              class="btn btn-warning"
+              id="updateAuthorBtn_<%= author.id %>"
+            >
+              <span id="updateAuthorBtnText_<%= author.id %>"
+                >Update Author</span
+              >
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                id="updateAuthorBtnSpinner_<%= author.id %>"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function turnOffSpinner(
+    updateAuthorBtn,
+    updateAuthorBtnText,
+    updateAuthorBtnSpinner,
+  ) {
+    updateAuthorBtnText.classList.remove('d-none');
+    updateAuthorBtnSpinner.classList.add('d-none');
+    updateAuthorBtn.disabled = false;
+  }
+
+  document
+    .getElementById('authorUpdateForm_<%= author.id %>')
+    .addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const updateAuthorBtn = document.getElementById(
+        'updateAuthorBtn_<%= author.id %>',
+      );
+      const updateAuthorBtnText = document.getElementById(
+        'updateAuthorBtnText_<%= author.id %>',
+      );
+      const updateAuthorBtnSpinner = document.getElementById(
+        'updateAuthorBtnSpinner_<%= author.id %>',
+      );
+
+      // Show the spinner and disable the button
+      updateAuthorBtnText.classList.add('d-none');
+      updateAuthorBtnSpinner.classList.remove('d-none');
+      updateAuthorBtn.disabled = true;
+
+      const formData = new FormData(this);
+
+      fetch('/authors/<%= author.id %>', {
+        method: 'PATCH',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload(); // Reload the page to see the updated author
+          } else {
+            alert('Failed to update author');
+            turnOffSpinner(
+              updateAuthorBtn,
+              updateAuthorBtnText,
+              updateAuthorBtnSpinner,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Error updating author');
+          turnOffSpinner(
+            updateAuthorBtn,
+            updateAuthorBtnText,
+            updateAuthorBtnSpinner,
+          );
+        });
+    });
+</script>

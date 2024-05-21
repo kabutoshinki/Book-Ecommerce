@@ -5,7 +5,7 @@
       type="button"
       class="btn btn-success"
       data-bs-toggle="modal"
-      data-bs-target="#nationAdd"
+      data-bs-target="#publisherAdd"
     >
       Create Publisher
     </button>
@@ -16,7 +16,7 @@
         <tr>
           <th scope="col">Id</th>
           <th scope="col">Name</th>
-          <th scope="col">Description</th>
+          <th scope="col">Address</th>
           <th scope="col">Status</th>
           <th scope="col">Created At</th>
           <th scope="col">Updated At</th>
@@ -48,19 +48,17 @@
             <p
               class="text-truncate"
               style="max-width: 150px"
-              title="<%= publisher.description %>"
+              title="<%= publisher.address %>"
             >
-              <%= publisher.description %>
+              <%= publisher.address %>
             </p>
           </td>
           <td>
-            <p
-              class="text-truncate"
-              style="max-width: 150px"
-              title="<%= publisher.status %>"
-            >
-              <%= publisher.status %>
-            </p>
+            <% if (publisher.isActive === true) { %>
+            <span class="badge bg-success">Active</span>
+            <% } else { %>
+            <span class="badge bg-secondary">Inactive</span>
+            <% } %>
           </td>
           <td>
             <p
@@ -86,22 +84,25 @@
               type="button"
               class="btn btn-primary"
               data-bs-toggle="modal"
-              data-bs-target="#nationUp_<%= publisher.id %>"
+              data-bs-target="#updatePublisherModal_<%= publisher.id %>"
             >
-              Update
+              <i class="lni lni-pencil-alt"></i>
             </button>
             <button
               type="button"
-              class="btn btn-danger"
+              class="<%= publisher.isActive===true? 'btn btn-danger':'btn btn-secondary disabled ' %>"
               data-bs-toggle="modal"
-              data-bs-target="#nationDel_<%= publisher.id %>"
+              data-bs-target="#deletePublisherModal_<%= publisher.id %>"
             >
-              Delete
+              <i class="lni lni-trash-can"></i>
             </button>
           </td>
         </tr>
+        <%- include('../modals/publisher/update_publisher.ejs', { publisher})%>
+        <%- include('../modals/publisher/delete_publisher.ejs', { publisher}) %>
         <% }) %>
       </tbody>
     </table>
   </div>
 </div>
+<%- include('../modals/publisher/create_publisher.ejs') %>
