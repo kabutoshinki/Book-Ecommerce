@@ -92,8 +92,11 @@ export class DiscountsService {
         updateDiscountDto,
       );
       await this.discountRepository.save(savedDiscount);
-      if (bookIds == undefined || bookIds.length === 0) {
-        return 'Discount created';
+      if (!bookIds?.length) {
+        return {
+          success: true,
+          message: `Discount updated`,
+        };
       }
       const books = await this.bookRepository.find({
         where: { id: In(bookIds) },
@@ -103,7 +106,10 @@ export class DiscountsService {
       });
 
       await this.bookRepository.save(books);
-      return `Discount updated`;
+      return {
+        success: true,
+        message: `Discount updated`,
+      };
     } catch (error) {
       throw new BadRequestException('Discount name already exist');
     }

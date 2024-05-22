@@ -1,47 +1,55 @@
 import { Transform } from 'class-transformer';
 import {
-  IsString,
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsEmail,
   IsNotEmpty,
   IsOptional,
-  IsDecimal,
   IsUUID,
-  IsArray,
-  IsNumber,
-  isUUID,
 } from 'class-validator';
 import { IsUuidArray } from 'src/decorators/arrayUuid-validator';
 
-export class CreateBookDto {
+export class BookResponseForAdminDto {
   @IsNotEmpty()
-  @IsString()
+  id: string;
+
+  @IsNotEmpty()
   title: string;
 
   @IsNotEmpty()
-  @IsString()
   description: string;
 
   @IsNotEmpty()
-  @IsString()
   summary: string;
 
-  @IsNumber()
-  @Transform(({ value }) => parseFloat(value))
   @IsNotEmpty()
   price: number;
 
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value, 10))
   @IsNotEmpty()
   quantity: number;
 
-  @IsOptional()
-  @IsString()
+  @IsNotEmpty()
   image: string;
 
+  @IsBoolean()
+  @IsNotEmpty()
+  isActive: boolean;
+
+  @IsDate()
+  @IsNotEmpty()
+  created_at: Date;
+
+  @IsDate()
+  @IsNotEmpty()
+  updated_at: Date;
+
   @IsOptional()
+  @IsUUID()
   discountId?: string;
 
   @IsOptional()
+  @IsUUID()
   publisherId?: string;
 
   @IsUuidArray()

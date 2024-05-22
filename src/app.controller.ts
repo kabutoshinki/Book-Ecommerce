@@ -73,8 +73,20 @@ export class AppController {
   @Get('page/book')
   @Render('pages/book')
   async book() {
-    const books = await this.bookService.findAll();
-    return { title: 'Book Page', books: books };
+    const books = await this.bookService.findAllForAdmin();
+    const discounts = await this.discountService.findAll();
+    const categories = await this.categoryService.findAll();
+    const authors = await this.authorService.findAll();
+    const publishers = await this.publisherService.findAll();
+
+    return {
+      title: 'Book Page',
+      books: books,
+      discounts: discounts,
+      categories: categories,
+      authors: authors,
+      publishers: publishers,
+    };
   }
 
   @Get('page/author')

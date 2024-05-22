@@ -37,7 +37,10 @@ export class Book {
   @Column('decimal')
   quantity: number;
 
-  @Column()
+  @Column({
+    default:
+      'https://www.ribabooks.com/images/thumbs/def/default-image_600.png',
+  })
   image: string;
 
   @Column({ default: true })

@@ -5,18 +5,19 @@
       type="button"
       class="btn btn-success"
       data-bs-toggle="modal"
-      data-bs-target="#nationAdd"
+      data-bs-target="#addBook"
     >
       Create Book
     </button>
   </div>
   <div class="container">
     <table class="table table-hover" style="cursor: pointer">
-      <thead>
+      <thead class="table-info">
         <tr>
           <th scope="col">Image</th>
           <th scope="col">Title</th>
-          <th scope="col">Description</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
           <th scope="col">Status</th>
           <th scope="col">Created At</th>
           <th scope="col">Updated At</th>
@@ -27,7 +28,11 @@
         <% books.forEach(book => { %>
         <tr>
           <td>
-            <img src="<%= book.image%>" style="width: 50px; height: 50px" />
+            <img
+              src="<%= book.image%>"
+              class="rounded"
+              style="width: 70px; height: 70px"
+            />
           </td>
           <td>
             <p
@@ -42,12 +47,27 @@
             <p
               class="text-truncate"
               style="max-width: 150px"
-              title="<%= book.description %>"
+              title="<%= book.price %>"
             >
-              <%= book.description %>
+              <%= book.price %>
             </p>
           </td>
-          <td></td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= book.quantity %>"
+            >
+              <%= book.quantity %>
+            </p>
+          </td>
+          <td>
+            <% if (book.isActive === true) { %>
+            <span class="badge bg-success">Active</span>
+            <% } else { %>
+            <span class="badge bg-secondary">Inactive</span>
+            <% } %>
+          </td>
           <td>
             <p
               class="text-truncate"
@@ -69,24 +89,35 @@
           <td>
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-info"
               data-bs-toggle="modal"
-              data-bs-target="#nationUp_<%= book.id %>"
+              data-bs-target="#viewBookModal_<%= book.id %>"
             >
-              Update
+              <i class="lni lni-eye text-white"></i>
             </button>
             <button
               type="button"
-              class="btn btn-danger"
+              class="btn btn-primary"
               data-bs-toggle="modal"
-              data-bs-target="#nationDel_<%= book.id %>"
+              data-bs-target="#updateBookModal_<%= book.id %>"
             >
-              Delete
+              <i class="lni lni-pencil-alt"></i>
+            </button>
+            <button
+              type="button"
+              class="<%= book.isActive===true? 'btn btn-danger':'btn btn-secondary disabled ' %>"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteBookModal_<%= book.id %>"
+            >
+              <i class="lni lni-trash-can"></i>
             </button>
           </td>
         </tr>
-        <% }) %>
+
+        <%-include('../modals/book/update_book.ejs', { book }) %>
+        <%-include('../modals/book/delete_book.ejs', { book }) %> <% }) %>
       </tbody>
     </table>
   </div>
 </div>
+<%- include('../modals/book/create_book.ejs') %>

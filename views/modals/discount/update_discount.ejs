@@ -1,16 +1,16 @@
-<!-- Update publisher Modal -->
+<!-- Update discount Modal -->
 <div
   class="modal fade"
-  id="updatePublisherModal_<%= publisher.id %>"
+  id="updateDiscountModal_<%= discount.id %>"
   tabindex="-1"
-  aria-labelledby="publisherUploadLabel_<%= publisher.id %>"
+  aria-labelledby="discountUpdateLabel_<%= discount.id %>"
   aria-hidden="true"
 >
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="publisherUploadLabel_<%= publisher.id %>">
-          Update Publisher
+        <h5 class="modal-title" id="discountUpdateLabel_<%= discount.id %>">
+          Update Discount
         </h5>
         <button
           type="button"
@@ -20,33 +20,68 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form id="publisherUpdateForm_<%= publisher.id %>">
+        <form id="discountUpdateForm_<%= discount.id %>">
           <div class="mb-3">
-            <label for="name_<%= publisher.id %>" class="form-label"
-              >Name</label
-            >
+            <label for="name_<%= discount.id %>" class="form-label">Name</label>
             <input
               type="text"
               class="form-control"
-              id="name_<%= publisher.id %>"
-              value="<%= publisher.name %>"
+              id="name_<%= discount.id %>"
+              value="<%= discount.name %>"
               name="name"
               required
             />
           </div>
           <div class="mb-3">
-            <label for="description_<%= publisher.id %>" class="form-label"
-              >Address</label
+            <label for="description_<%= discount.id %>" class="form-label"
+              >Description</label
             >
             <textarea
               class="form-control"
-              id="address_<%= publisher.id %>"
-              name="address"
+              id="description_<%= discount.id %>"
+              name="description"
               rows="3"
               required
             >
-<%= publisher.address %></textarea
+<%= discount.description %></textarea
             >
+          </div>
+          <div class="mb-3">
+            <label for="amount_<%= discount.id %>" class="form-label"
+              >Amount</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="amount_<%= discount.id %>"
+              value="<%= discount.amount %>"
+              name="amount"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="startAt_<%= discount.id %>" class="form-label"
+              >Start Date</label
+            >
+            <input
+              type="date"
+              class="form-control"
+              id="startAt_<%= discount.id %>"
+              name="startAt"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="expiresAt_<%= discount.id %>" class="form-label"
+              >Expires At</label
+            >
+            <input
+              type="date"
+              class="form-control"
+              id="expiresAt_<%= discount.id %>"
+              name="expiresAt"
+              required
+            />
           </div>
 
           <div class="modal-footer">
@@ -60,14 +95,14 @@
             <button
               type="submit"
               class="btn btn-warning"
-              id="updatePublisherBtn_<%= publisher.id %>"
+              id="updateDiscountBtn_<%= discount.id %>"
             >
-              <span id="updatePublisherBtnText_<%= publisher.id %>"
-                >Update Publisher</span
+              <span id="updateDiscountBtnText_<%= discount.id %>"
+                >Update Discount</span
               >
               <span
                 class="spinner-border spinner-border-sm d-none"
-                id="updatePublisherBtnSpinner_<%= publisher.id %>"
+                id="updateDiscountBtnSpinner_<%= discount.id %>"
                 role="status"
                 aria-hidden="true"
               ></span>
@@ -81,75 +116,124 @@
 
 <script>
   function turnOffSpinner(
-    updatePublisherBtn,
-    updatePublisherBtnText,
-    updatePublisherBtnSpinner,
+    updateDiscountBtn,
+    updateDiscountBtnText,
+    updateDiscountBtnSpinner,
   ) {
-    updatePublisherBtnText.classList.remove('d-none');
-    updatePublisherBtnSpinner.classList.add('d-none');
-    updatePublisherBtn.disabled = false;
+    updateDiscountBtnText.classList.remove('d-none');
+    updateDiscountBtnSpinner.classList.add('d-none');
+    updateDiscountBtn.disabled = false;
   }
 
-  document
-    .getElementById('publisherUpdateForm_<%= publisher.id %>')
-    .addEventListener('submit', function (event) {
-      event.preventDefault();
+  function formatDateToISO(dateString) {
+    const [day, month, year] = dateString.split('-');
+    return `${year}-${month}-${day}`;
+  }
 
-      const updatePublisherBtn = document.getElementById(
-        'updatePublisherBtn_<%= publisher.id %>',
-      );
-      const updatePublisherBtnText = document.getElementById(
-        'updatePublisherBtnText_<%= publisher.id %>',
-      );
-      const updatePublisherBtnSpinner = document.getElementById(
-        'updatePublisherBtnSpinner_<%= publisher.id %>',
-      );
+  document.addEventListener('DOMContentLoaded', function () {
+    // Set initial values for date inputs
+    const startAtField = document.getElementById('startAt_<%= discount.id %>');
+    const expiresAtField = document.getElementById(
+      'expiresAt_<%= discount.id %>',
+    );
 
-      // Show the spinner and disable the button
-      updatePublisherBtnText.classList.add('d-none');
-      updatePublisherBtnSpinner.classList.remove('d-none');
-      updatePublisherBtn.disabled = true;
+    startAtField.value = formatDateToISO('<%= discount.startAt %>');
+    expiresAtField.value = formatDateToISO('<%= discount.expiresAt %>');
 
-      // Get form data
-      const name = document.getElementById('name_<%= publisher.id %>').value;
-      const address = document.getElementById(
-        'address_<%= publisher.id %>',
-      ).value;
+    document
+      .getElementById('discountUpdateForm_<%= discount.id %>')
+      .addEventListener('submit', function (event) {
+        event.preventDefault();
 
-      // Construct payload
-      const payload = {
-        name: name,
-        address: address,
-      };
-      console.log(payload);
-      fetch('/publishers/<%= publisher.id %>', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            location.reload(); // Reload the page to see the updated publisher
-          } else {
-            alert(data.message || 'Failed to update publisher');
-            turnOffSpinner(
-              updatePublisherBtn,
-              updatePublisherBtnText,
-              updatePublisherBtnSpinner,
-            );
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          alert('Error updating publisher');
+        const updateDiscountBtn = document.getElementById(
+          'updateDiscountBtn_<%= discount.id %>',
+        );
+        const updateDiscountBtnText = document.getElementById(
+          'updateDiscountBtnText_<%= discount.id %>',
+        );
+        const updateDiscountBtnSpinner = document.getElementById(
+          'updateDiscountBtnSpinner_<%= discount.id %>',
+        );
+
+        // Show the spinner and disable the button
+        updateDiscountBtnText.classList.add('d-none');
+        updateDiscountBtnSpinner.classList.remove('d-none');
+        updateDiscountBtn.disabled = true;
+
+        // Get form data
+        const name = document.getElementById('name_<%= discount.id %>').value;
+        const description = document.getElementById(
+          'description_<%= discount.id %>',
+        ).value;
+        const amount = document.getElementById(
+          'amount_<%= discount.id %>',
+        ).value;
+        const startAt = document.getElementById(
+          'startAt_<%= discount.id %>',
+        ).value;
+        const expiresAt = document.getElementById(
+          'expiresAt_<%= discount.id %>',
+        ).value;
+        const currentDate = new Date().toISOString().split('T')[0];
+
+        // Validate dates
+        if (new Date(expiresAt) <= new Date(currentDate)) {
+          alert('Expire date must be in the future.');
           turnOffSpinner(
-            updatePublisherBtn,
-            updatePublisherBtnText,
-            updatePublisherBtnSpinner,
+            updateDiscountBtn,
+            updateDiscountBtnText,
+            updateDiscountBtnSpinner,
           );
-        });
-    });
+          return;
+        }
+
+        if (new Date(startAt) > new Date(expiresAt)) {
+          alert('Start date cannot be after the expire date.');
+          turnOffSpinner(
+            updateDiscountBtn,
+            updateDiscountBtnText,
+            updateDiscountBtnSpinner,
+          );
+          return;
+        }
+        // Construct payload
+        const payload = {
+          name: name,
+          description: description,
+          amount: parseInt(amount),
+          startAt: startAt,
+          expiresAt: expiresAt,
+        };
+
+        fetch('/discounts/<%= discount.id %>', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              location.reload(); // Reload the page to see the updated discount
+            } else {
+              alert(data.message || 'Failed to update discount');
+              turnOffSpinner(
+                updateDiscountBtn,
+                updateDiscountBtnText,
+                updateDiscountBtnSpinner,
+              );
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('Error updating discount');
+            turnOffSpinner(
+              updateDiscountBtn,
+              updateDiscountBtnText,
+              updateDiscountBtnSpinner,
+            );
+          });
+      });
+  });
 </script>

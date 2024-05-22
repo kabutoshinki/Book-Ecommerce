@@ -1,0 +1,193 @@
+<!-- Modal for updating book -->
+<div class="modal fade" id="updateBookModal_<%= book.id %>" tabindex="-1" aria-labelledby="updateBookLabel_<%= book.id %>" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateBookLabel_<%= book.id %>">Update Book</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="updateBookForm_<%= book.id %>" enctype="multipart/form-data">
+          <div class="row">
+            <!-- Book Image -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="updateImage_<%= book.id %>" class="form-label">Book Image</label>
+                <div class="mb-3">
+                  <img
+                    id="profileImg_<%= book.id %>"
+                    src="<%= book.image %>"
+                    class="rounded mx-auto d-block"
+                    style="max-width: 100%; max-height: 200px; margin-top: 10px"
+                  />
+                </div>
+                <input class="form-control" onchange="previewNewImage(this, '<%= book.id %>')" type="file" id="formFile_<%= book.id %>" name="file" />
+              </div>
+            </div>
+
+            <!-- Book Details -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="title_<%= book.id %>" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title_<%= book.id %>" name="title" value="<%= book.title %>" required />
+              </div>
+              <div class="mb-3">
+                <label for="updateSummary_<%= book.id %>" class="form-label">Summary</label>
+                <textarea class="form-control" id="updateSummary_<%= book.id %>" name="summary" rows="3" required><%= book.summary %></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="updatePrice_<%= book.id %>" class="form-label">Price</label>
+                <input type="number" class="form-control" id="updatePrice_<%= book.id %>" name="price" value="<%= book.price %>" required />
+              </div>
+              <div class="mb-3">
+                <label for="updateQuantity_<%= book.id %>" class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="updateQuantity_<%= book.id %>" name="quantity" value="<%= book.quantity %>" min="1" max="100" required />
+              </div>
+            </div>
+
+            <!-- Book Relations -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="updateDescription_<%= book.id %>" class="form-label">Description</label>
+                <textarea class="form-control" id="updateDescription_<%= book.id %>" name="description" rows="3" required><%= book.description %></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="publisherId" class="form-label">Publisher</label>
+                <select id="publisherId" name="publisherId" data-search="true" data-silent-initial-value-set="true" placeholder="Publisher Select" required>
+                  <% publishers.forEach((publisher) => { %>
+                    <option value="<%= publisher.id %>" <%= publisher.id === book.publisherId ? 'selected' : '' %>><%= publisher.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="categoryIds" class="form-label">Categories</label>
+                <select multiple id="categoryIds" name="categoryIds" placeholder="Category Select" data-search="true" required>
+                  <% categories.forEach((category) => { %>
+                    <option value="<%= category.id %>" <%= book.categoryIds.includes(category.id) ? 'selected' : '' %>><%= category.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="authorIds" class="form-label">Authors</label>
+                <select multiple id="authorIds" name="authorIds" placeholder="Authors Select" data-search="true" data-silent-initial-value-set="true" required>
+                  <% authors.forEach((author) => { %>
+                    <option value="<%= author.id %>" <%= book.authorIds.includes(author.id) ? 'selected' : '' %>><%= author.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="discountId" class="form-label">Discount</label>
+                <select id="discountId" name="discountId">
+                  <% discounts.forEach((discount) => { %>
+                    <option value="<%= discount.id %>" <%= discount.id === book.discountId ? 'selected' : '' %>><%= discount.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-warning" id="updateBookBtn_<%= book.id %>">
+              <span id="updateBookBtnText_<%= book.id %>">Update Book</span>
+              <span class="spinner-border spinner-border-sm d-none" id="updateBookBtnSpinner_<%= book.id %>" role="status" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Virtual Select Script -->
+<script src="/js/virtual-select.min.js"></script>
+<style>
+  #authorIds,
+  #discountId,
+  #categoryIds,
+  #publisherId {
+    max-width: 100%;
+  }
+
+  .vscomp-toggle-button {
+    border-radius: 5px;
+  }
+</style>
+
+<script>
+  function previewNewImage(input, bookId) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById("profileImg_" + bookId).src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize VirtualSelect for each form element
+    VirtualSelect.init({
+      ele: '#authorIds',
+    });
+    VirtualSelect.init({
+      ele: '#categoryIds',
+    });
+    VirtualSelect.init({
+      ele: '#publisherId',
+    });
+    VirtualSelect.init({
+      ele: '#discountId',
+    });
+
+    function turnOffSpinner(updateBookBtn, updateBookBtnText, updateBookBtnSpinner) {
+      updateBookBtnText.classList.remove('d-none');
+      updateBookBtnSpinner.classList.add('d-none');
+      updateBookBtn.disabled = false;
+    }
+  
+
+    document.getElementById('updateBookForm_<%= book.id %>').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const updateBookBtn = document.getElementById('updateBookBtn_<%= book.id %>');
+      const updateBookBtnText = document.getElementById('updateBookBtnText_<%= book.id %>');
+      const updateBookBtnSpinner = document.getElementById('updateBookBtnSpinner_<%= book.id %>');
+
+      // Show the spinner and disable the button
+      updateBookBtnText.classList.add('d-none');
+      updateBookBtnSpinner.classList.remove('d-none');
+      updateBookBtn.disabled = true;
+
+      const formData = new FormData(event.target);
+
+      const authorIds = document.getElementById(`authorIds`).value;
+      const categoryIds = document.getElementById(`categoryIds`).value;
+      const publisherId = document.getElementById(`publisherId`).value;
+      const discountId = document.getElementById(`discountId`).value;
+      console.log(authorIds)
+      formData.set('authorIds', (authorIds));
+      formData.set('categoryIds', (categoryIds));
+      formData.set('publisherId', publisherId);
+      formData.set('discountId', discountId);
+
+      fetch(`/books/<%= book.id %>`, {
+        method: 'PATCH',
+        body: formData,
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          location.reload(); // Reload the page to see the updated book
+        } else {
+          alert(data.message);
+          turnOffSpinner(updateBookBtn, updateBookBtnText, updateBookBtnSpinner);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert(error.message || 'Failed to update book');
+        turnOffSpinner(updateBookBtn, updateBookBtnText, updateBookBtnSpinner);
+      });
+    });
+  });
+</script>

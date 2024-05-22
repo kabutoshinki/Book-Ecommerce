@@ -1,0 +1,277 @@
+<div
+  class="modal fade"
+  id="addBook"
+  tabindex="-1"
+  aria-labelledby="createBookLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createBookLabel">Create Book</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="createBookForm" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="image" class="form-label">Book Image</label>
+                <div class="mb-3">
+                  <img
+                    id="preview"
+                    src="https://www.ribabooks.com/images/thumbs/def/default-image_600.png"
+                    class="rounded mx-auto d-block"
+                    style="max-width: 100%; max-height: 200px; margin-top: 10px"
+                  />
+                </div>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  name="file"
+                  onchange="previewImage(event)"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  name="title"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="summary" class="form-label">Summary</label>
+                <textarea
+                  class="form-control"
+                  id="summary"
+                  name="summary"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="price"
+                  name="price"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="price" class="form-label">Quantity</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="quantity"
+                  name="quantity"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="publisherId" class="form-label">Publisher</label>
+                <select
+                  id="publisherId"
+                  name="publisherId"
+                  data-search="true"
+                  data-silent-initial-value-set="false"
+                  placeholder="Publisher Select"
+                  required
+                >
+                  <% publishers.forEach(publisher => { %>
+                  <option value="<%= publisher.id %>" name="publisher">
+                    <%= publisher.name %>
+                  </option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="categoryIds" class="form-label">Categories</label>
+                <select
+                  multiple
+                  id="categoryIds"
+                  name="categoryIds"
+                  placeholder="Category Select"
+                  data-search="true"
+                  required
+                >
+                  <% categories.forEach(category => { %>
+                  <option value="<%= category.id %>" name="category">
+                    <%= category.name %>
+                  </option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="authorIds" class="form-label">Authors</label>
+
+                <select
+                  multiple
+                  id="authorIds"
+                  name="authorIds"
+                  placeholder="Authors Select"
+                  data-search="true"
+                  data-silent-initial-value-set="true"
+                  required
+                >
+                  <% authors.forEach(author => { %>
+                  <option value="<%= author.id %>" name="author">
+                    <%= author.name %>
+                  </option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="discountId" class="form-label">Discount</label>
+                <select id="discountId" name="discountId">
+                  <% discounts.forEach(discount => { %>
+                  <option value="<%= discount.id %>" name="discount">
+                    <%= discount.name %>
+                  </option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-success" id="createBookBtn">
+              <span id="createBookBtnText">Create Book</span>
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                id="createBookBtnSpinner"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/virtual-select.min.js"></script>
+<style>
+  #authorIds,
+  #discountId,
+  #categoryIds,
+  #publisherId {
+    max-width: 100%;
+  }
+  .vscomp-toggle-button {
+    border-radius: 5px;
+  }
+</style>
+<script>
+  function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var preview = document.getElementById('preview');
+      preview.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    VirtualSelect.init({
+      ele: '#authorIds',
+    });
+  });
+  VirtualSelect.init({
+    ele: '#categoryIds',
+  });
+  VirtualSelect.init({
+    ele: '#publisherId',
+  });
+  VirtualSelect.init({
+    ele: '#discountId',
+  });
+  function turnOffSpinner(
+    createCategoryBtn,
+    createCategoryBtnText,
+    createCategoryBtnSpinner,
+  ) {
+    createCategoryBtnText.classList.remove('d-none');
+    createCategoryBtnSpinner.classList.add('d-none');
+    createCategoryBtn.disabled = false;
+  }
+
+  document
+    .getElementById('createBookForm')
+    .addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const createBookBtn = document.getElementById('createBookBtn');
+      const createBookBtnText = document.getElementById('createBookBtnText');
+      const createBookBtnSpinner = document.getElementById(
+        'createBookBtnSpinner',
+      );
+
+      // Show the spinner and disable the button
+      createBookBtnText.classList.add('d-none');
+      createBookBtnSpinner.classList.remove('d-none');
+      createBookBtn.disabled = true;
+
+      const formData = new FormData(event.target);
+
+      fetch('/books', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload(); // Reload the page to see the new book
+          } else {
+            alert(data.message);
+            turnOffSpinner(
+              createBookBtn,
+              createBookBtnText,
+              createBookBtnSpinner,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert(error.message || 'Failed to create book');
+          turnOffSpinner(
+            createBookBtn,
+            createBookBtnText,
+            createBookBtnSpinner,
+          );
+        });
+    });
+</script>

@@ -33,6 +33,9 @@ export class CategoriesService {
   }
 
   async findAll() {
+    return await this.categoryRepository.find({ where: { isActive: true } });
+  }
+  async findAllForAdmin() {
     return await this.categoryRepository.find();
   }
 
