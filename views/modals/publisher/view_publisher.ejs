@@ -1,0 +1,91 @@
+<!-- view publisher Modal -->
+<div
+  class="modal fade"
+  id="viewPublisherModal_<%= publisher.id %>"
+  tabindex="-1"
+  aria-labelledby="publisherUploadLabel_<%= publisher.id %>"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5
+          class="modal-title fw-bold"
+          id="publisherUploadLabel_<%= publisher.id %>"
+        >
+          <%= publisher.name %>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="publisherviewForm_<%= publisher.id %>">
+          <div class="mb-3">
+            <label for="name_<%= publisher.id %>" class="form-label"
+              >Name</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="name_<%= publisher.id %>"
+              value="<%= publisher.name %>"
+              name="name"
+              disabled
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="description_<%= publisher.id %>" class="form-label"
+              >Address</label
+            >
+            <textarea
+              class="form-control"
+              id="address_<%= publisher.id %>"
+              name="address"
+              rows="3"
+              disabled
+            >
+<%= publisher.address %></textarea
+            >
+          </div>
+          <div class="mb-3">
+            <label for="name_<%= publisher.id %>" class="form-label"
+              >Created At</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              value="<%= publisher.created_at %>"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="name_<%= publisher.id %>" class="form-label"
+              >Updated At</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="name_<%= publisher.id %>"
+              value="<%= publisher.updated_at %>"
+              disabled
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

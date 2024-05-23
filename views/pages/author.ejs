@@ -90,11 +90,19 @@
           <td>
             <button
               type="button"
+              class="btn btn-info"
+              data-bs-toggle="modal"
+              data-bs-target="#viewAuthorModal_<%= author.id %>"
+            >
+              <i class="lni lni-eye text-white"></i>
+            </button>
+            <button
+              type="button"
               class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#updateAuthorModal_<%= author.id %>"
             >
-              Update
+              <i class="lni lni-pencil-alt"></i>
             </button>
             <button
               type="button"
@@ -102,12 +110,14 @@
               data-bs-toggle="modal"
               data-bs-target="#deleteAuthorModal_<%= author.id %>"
             >
-              Delete
+              <i class="lni lni-trash-can"></i>
             </button>
           </td>
         </tr>
-        <%- include('../modals/author//update_author.ejs', { author }) %> <%-
-        include('../modals/author//delete_author.ejs', { author }) %> <% }) %>
+        <%- include('../modals/author/view_author.ejs', { author }) %> <%-
+        include('../modals/author//update_author.ejs', { author }) %>
+        <%-include('../modals/author//delete_author.ejs', { author }) %> <% })
+        %>
       </tbody>
     </table>
   </div>

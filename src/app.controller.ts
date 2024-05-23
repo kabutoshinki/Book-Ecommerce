@@ -24,6 +24,8 @@ import { AuthorsService } from './authors/authors.service';
 import { PublishersService } from './publishers/publishers.service';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { BookResponseForAdminDto } from './books/dto/responses/book-response-for-admin.dto';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller()
 @ApiTags('Default')
@@ -65,15 +67,31 @@ export class AppController {
   @Get('page/user')
   @Render('pages/user')
   async user() {
-    const users = await this.userService.findAll();
+    const users = await this.userService.findAllForAdmin();
 
     return { title: 'User Page', users: users };
   }
 
   @Get('page/book')
   @Render('pages/book')
-  async book() {
-    const books = await this.bookService.findAllForAdmin();
+  async book(@Query() query: any): Promise<any> {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+      route: '/books/page/book',
+    };
+
+    let paginatedBooks: Pagination<BookResponseForAdminDto>;
+    if (query.q) {
+      // If there's a search query, paginate with search
+      paginatedBooks = await this.bookService.paginateBookAdmin(
+        options,
+        query.q,
+      );
+    } else {
+      // Otherwise, paginate without search
+      paginatedBooks = await this.bookService.paginateBookAdmin(options);
+    }
     const discounts = await this.discountService.findAll();
     const categories = await this.categoryService.findAll();
     const authors = await this.authorService.findAll();
@@ -81,11 +99,14 @@ export class AppController {
 
     return {
       title: 'Book Page',
-      books: books,
+      books: paginatedBooks.items,
+      meta: paginatedBooks.meta,
+      links: paginatedBooks.links,
       discounts: discounts,
       categories: categories,
       authors: authors,
       publishers: publishers,
+      query: query,
     };
   }
 
@@ -99,7 +120,7 @@ export class AppController {
   @Get('page/category')
   @Render('pages/category')
   async category() {
-    const categories = await this.categoryService.findAll();
+    const categories = await this.categoryService.findAllForAdmin();
     return { title: 'Category Page', categories: categories };
   }
 
@@ -107,7 +128,16 @@ export class AppController {
   @Render('pages/order')
   async order() {
     const orders = await this.orderService.getAllOrderDetails();
+    console.log(orders);
+
     return { title: 'Order Page', orders: orders };
+  }
+  @Get('page/order/:id')
+  @Render('pages/order_detail')
+  async order_detail(@Param('id') id: string) {
+    const order = await this.orderService.getOrderDetailById(id);
+
+    return { title: 'Order Page', order: order };
   }
 
   @Get('page/discount')

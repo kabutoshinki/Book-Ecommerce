@@ -1,0 +1,112 @@
+<!-- Modal for updating book -->
+<div class="modal fade" id="viewBookModal_<%= book.id %>" tabindex="-1" aria-labelledby="viewBookLabel_<%= book.id %>" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold " id="viewBookLabel_<%= book.id %>"><%= book.title %></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="viewBookForm_<%= book.id %>" enctype="multipart/form-data">
+          <div class="row">
+            <!-- Book Image -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="viewImage_<%= book.id %>" class="form-label">Book Image</label>
+                <div class="mb-3">
+                  <img
+                 
+                    src="<%= book.image %>"
+                    class="rounded mx-auto d-block"
+                    style="max-width: 100%; max-height: 200px; margin-top: 10px"
+                  />
+                </div>
+                
+              </div>
+            </div>
+
+            <!-- Book Details -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="title_<%= book.id %>" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title_<%= book.id %>"   value="<%= book.title %>" disabled />
+              </div>
+              <div class="mb-3">
+                <label for="viewSummary_<%= book.id %>" class="form-label">Summary</label>
+                <textarea class="form-control" id="viewSummary_<%= book.id %>" rows="3" disabled><%= book.summary %></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="viewPrice_<%= book.id %>" class="form-label">Price</label>
+                <input type="number" class="form-control" id="viewPrice_<%= book.id %>"   value="<%= book.price %>" disabled />
+              </div>
+              <div class="mb-3">
+                <label for="viewQuantity_<%= book.id %>" class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="viewQuantity_<%= book.id %>"   value="<%= book.quantity %>" min="1" max="100" disabled />
+              </div>
+            </div>
+
+            <!-- Book Relations -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="viewDescription_<%= book.id %>" class="form-label">Description</label>
+                <textarea class="form-control" id="viewDescription_<%= book.id %>"  rows="3" disabled><%= book.description %></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="publisherId" class="form-label">Publisher</label>
+                <select id="publisherId"  data-search="true" data-silent-initial-value-set="true" placeholder="Publisher Select" disabled>
+                  <% publishers.forEach((publisher) => { %>
+                    <option value="<%= publisher.id %>" <%= publisher.id === book.publisherId ? 'selected' : '' %>><%= publisher.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="categoryIds" class="form-label">Categories</label>
+                <select multiple id="categoryIds"   placeholder="Category Select" data-search="true" disabled>
+                  <% categories.forEach((category) => { %>
+                    <option value="<%= category.id %>" <%= book.categoryIds.includes(category.id) ? 'selected' : '' %>><%= category.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="authorIds" class="form-label">Authors</label>
+                <select multiple id="authorIds"  placeholder="Authors Select" data-search="true" data-silent-initial-value-set="true" disabled>
+                  <% authors.forEach((author) => { %>
+                    <option value="<%= author.id %>" <%= book.authorIds.includes(author.id) ? 'selected' : '' %>><%= author.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="discountId" class="form-label">Discount</label>
+                <select id="discountId"  disabled>
+                  <% discounts.forEach((discount) => { %>
+                    <option value="<%= discount.id %>" <%= discount.id === book.discountId ? 'selected' : '' %>><%= discount.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Virtual Select Script -->
+<script src="/js/virtual-select.min.js"></script>
+<style>
+  #authorIds,
+  #discountId,
+  #categoryIds,
+  #publisherId {
+    max-width: 100%;
+  }
+
+  .vscomp-toggle-button {
+    border-radius: 5px;
+  }
+</style>
+
+ 

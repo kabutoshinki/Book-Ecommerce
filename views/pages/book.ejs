@@ -11,6 +11,18 @@
     </button>
   </div>
   <div class="container">
+    <div class="float-end mb-3">
+      <form class="d-flex" action="/page/book" method="GET">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          name="q"
+          aria-label="Search"
+        />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
     <table class="table table-hover" style="cursor: pointer">
       <thead class="table-info">
         <tr>
@@ -113,11 +125,58 @@
             </button>
           </td>
         </tr>
-
+        <%-include('../modals/book/view_book.ejs', { book }) %>
         <%-include('../modals/book/update_book.ejs', { book }) %>
         <%-include('../modals/book/delete_book.ejs', { book }) %> <% }) %>
       </tbody>
     </table>
+    <ul class="pagination float-end">
+      <% if (meta.totalPages > 1) { %>
+      <li class="page-item <%= meta.currentPage === 1 ? 'disabled' : '' %>">
+        <a
+          class="page-link"
+          href="?page=1&limit=<%= meta.itemsPerPage %>&q=<%= query.q %>"
+          >First</a
+        >
+      </li>
+      <li class="page-item <%= meta.currentPage === 1 ? 'disabled' : '' %>">
+        <a
+          class="page-link"
+          href="?page=<%= meta.currentPage - 1 %>&limit=<%= meta.itemsPerPage %>&q=<%= query.q %>"
+          >Previous</a
+        >
+      </li>
+
+      <% for (let a = 1; a <= meta.totalPages; a++) { %>
+      <li class="page-item <%= a === meta.currentPage ? 'active' : '' %>">
+        <a
+          class="page-link"
+          href="?page=<%= a %>&limit=<%= meta.itemsPerPage %>&q=<%= query.q %>"
+          ><%= a %></a
+        >
+      </li>
+      <% } %>
+
+      <li
+        class="page-item <%= meta.currentPage === meta.totalPages ? 'disabled' : '' %>"
+      >
+        <a
+          class="page-link"
+          href="?page=<%= meta.currentPage + 1 %>&limit=<%= meta.itemsPerPage %>&q=<%= query.q %>"
+          >Next</a
+        >
+      </li>
+      <li
+        class="page-item <%= meta.currentPage === meta.totalPages ? 'disabled' : '' %>"
+      >
+        <a
+          class="page-link"
+          href="?page=<%= meta.totalPages %>&limit=<%= meta.itemsPerPage %>&q=<%= query.q %>"
+          >Last</a
+        >
+      </li>
+      <% } %>
+    </ul>
   </div>
 </div>
 <%- include('../modals/book/create_book.ejs') %>

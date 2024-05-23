@@ -1,0 +1,108 @@
+<!-- view Author Modal -->
+<div
+  class="modal fade"
+  id="viewAuthorModal_<%= author.id %>"
+  tabindex="-1"
+  aria-labelledby="authorUploadLabel_<%= author.id %>"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="authorUploadLabel_<%= author.id %>">
+          <%= author.name %>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          id="authorviewForm_<%= author.id %>"
+          enctype="multipart/form-data"
+        >
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="updateImage_<%= author.id %>" class="form-label"
+                  >Author Image</label
+                >
+                <div class="mb-3">
+                  <img
+                    id="profileImg_<%= author.id %>"
+                    src="<%= author.image %>"
+                    class="rounded mx-auto d-block"
+                    style="max-width: 100%; max-height: 200px; margin-top: 10px"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="name_<%= author.id %>" class="form-label"
+                  >Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name_<%= author.id %>"
+                  value="<%= author.name %>"
+                  name="name"
+                  disabled
+                />
+              </div>
+              <div class="mb-3">
+                <label for="description_<%= author.id %>" class="form-label"
+                  >Description</label
+                >
+                <textarea
+                  class="form-control"
+                  id="description_<%= author.id %>"
+                  name="description"
+                  rows="3"
+                  disabled
+                >
+<%= author.description %></textarea
+                >
+              </div>
+              <div class="mb-3">
+                <label for="name_<%= author.id %>" class="form-label"
+                  >Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  value="<%= author.created_at %>"
+                  disabled
+                />
+              </div>
+              <div class="mb-3">
+                <label for="name_<%= author.id %>" class="form-label"
+                  >Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  value="<%= author.updated_at %>"
+                  disabled
+                />
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

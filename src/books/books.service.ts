@@ -16,6 +16,11 @@ import { CategoriesService } from 'src/categories/categories.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { BookResponseForAdminDto } from './dto/responses/book-response-for-admin.dto';
 import { BookMapper } from './books.mapper';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class BooksService {
@@ -119,10 +124,7 @@ export class BooksService {
     const { discountId, publisherId, categoryIds, authorIds, ...bookData } =
       updateBookDto;
     let uploadResult;
-    console.log('====================================');
-    console.log(id);
-    console.log(updateBookDto);
-    console.log('====================================');
+
     try {
       const book = await this.findOne(id);
       if (file) {
@@ -155,7 +157,7 @@ export class BooksService {
         const authors = await this.authorService.findByIds(authorIds);
         book.authors = authors;
       }
-
+      book.isActive = true;
       Object.assign(book, bookData);
       await this.bookRepository.save(book);
       return {
@@ -176,5 +178,62 @@ export class BooksService {
     book.isActive = false;
     await this.bookRepository.save(book);
     return 'Book deleted';
+  }
+
+  async paginateBookAdmin(
+    options: IPaginationOptions,
+    searchQuery?: string,
+  ): Promise<Pagination<BookResponseForAdminDto>> {
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 6;
+
+    let queryBuilder = this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.publisher', 'publisher')
+      .leftJoinAndSelect('book.discount', 'discount')
+      .leftJoinAndSelect('book.authors', 'authors')
+      .leftJoinAndSelect('book.categories', 'categories')
+      .orderBy('book.created_at', 'DESC');
+
+    if (searchQuery) {
+      queryBuilder = queryBuilder
+        .where('book.title LIKE :searchQuery', {
+          searchQuery: `%${searchQuery}%`,
+        })
+        .orWhere('book.description LIKE :searchQuery', {
+          searchQuery: `%${searchQuery}%`,
+        });
+    }
+
+    const [books, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const paginatedBooksDto = BookMapper.toBookResponseForAdminDtoList(books);
+
+    const paginationMeta = {
+      totalItems: totalItems,
+      itemCount: books.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+    const paginationLinks = {
+      first: `${options.route}?page=1&limit=${limit}`,
+      previous:
+        page > 1 ? `${options.route}?page=${page - 1}&limit=${limit}` : '',
+      next:
+        page < paginationMeta.totalPages
+          ? `${options.route}?page=${page + 1}&limit=${limit}`
+          : '',
+      last: `${options.route}?page=${paginationMeta.totalPages}&limit=${limit}`,
+    };
+
+    return new Pagination<BookResponseForAdminDto>(
+      paginatedBooksDto,
+      paginationMeta,
+      paginationLinks,
+    );
   }
 }

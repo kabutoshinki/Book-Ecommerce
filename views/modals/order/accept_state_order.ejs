@@ -1,0 +1,69 @@
+<!-- Delete publisher Modal -->
+<div
+  class="modal fade"
+  id="stateOrderAcceptModal_<%= order.id %>"
+  tabindex="-1"
+  aria-labelledby="stateOrderModalLabel_<%= order.id %>_accept"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5
+          class="modal-title fw-bold"
+          id="stateOrderModalLabel_<%= order.id %>_accept"
+        >
+          Accept Order
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body text-center">
+        <p>Are you sure you want to accept Order</p>
+        <p><strong><%= order.id %></strong>?</p>
+        <p class="fw-bold text-danger">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-success"
+          data-bs-dismiss="modal"
+          onclick="changeOrderAcceptStatus('<%= order.id %>')"
+        >
+          Accept
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function changeOrderAcceptStatus(orderId) {
+    fetch(`/order-details/change-status/${orderId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ state: true }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          location.reload();
+        } else {
+          response.json().then((data) => {
+            alert(data.message.join(', '));
+          });
+        }
+      })
+      .catch((error) => {
+        console.error('Error changing user state:', error);
+        alert('Error changing user state');
+      });
+  }
+</script>

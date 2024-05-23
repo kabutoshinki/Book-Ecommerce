@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { UserResponseDto } from './dto/response/user-response.dto';
 import { CreateUserDto } from './dto/requests/create-user.dto';
 import { UserResponseForAdminDto } from './dto/response/user-resoponse-for-admin.dto';
+import { AddressMapper } from 'src/addresses/addresses.mapper';
 
 @Injectable()
 export class UserMapper {
@@ -14,6 +15,9 @@ export class UserMapper {
     userResponseDto.lastName = user.lastName;
     userResponseDto.avatar = user.avatar;
     userResponseDto.email = user.email;
+    userResponseDto.address = AddressMapper.toAddressResponseDtoList(
+      user.addresses,
+    );
     return userResponseDto;
   }
 
@@ -25,11 +29,17 @@ export class UserMapper {
     userResponseDto.avatar = user.avatar;
     userResponseDto.email = user.email;
     userResponseDto.isActive = user.isActive;
+    userResponseDto.address = AddressMapper.toAddressResponseDtoList(
+      user.addresses,
+    );
     userResponseDto.created_at = user.created_at;
     userResponseDto.updated_at = user.updated_at;
     return userResponseDto;
   }
 
+  static toUserResponseDtoList(users: User[]): UserResponseDto[] {
+    return users.map((user) => this.toUserResponseDto(user));
+  }
   static toUserResponseForAdminDtoList(
     users: User[],
   ): UserResponseForAdminDto[] {

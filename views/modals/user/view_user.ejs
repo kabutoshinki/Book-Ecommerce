@@ -1,0 +1,184 @@
+<!-- Modal for viewing user -->
+<div
+  class="modal fade"
+  id="viewUserModal_<%= user.id %>"
+  tabindex="-1"
+  aria-labelledby="viewuserLabel_<%= user.id %>"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="viewuserLabel_<%= user.id %>">
+          <%= user.firstName %> <%= user.lastName %>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- User Image -->
+          <div class="col-md-3">
+            <div class="mb-3">
+              <label for="viewImage_<%= user.id %>" class="form-label"
+                >User Image</label
+              >
+              <div class="mb-3">
+                <img
+                  src="<%= user.avatar %>"
+                  class="rounded mx-auto d-block"
+                  style="max-width: 100%; max-height: 200px; margin-top: 10px"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- User Details -->
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="email_<%= user.firstName %>" class="form-label"
+                >First Name</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="firstName_<%= user.id %>"
+                value="<%= user.email %>"
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label for="email_<%= user.id %>" class="form-label"
+                >Last Name</label
+              >
+              <input
+                type="email"
+                class="form-control"
+                id="lastName_<%= user.id %>"
+                value="<%= user.lastName %>"
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label for="email_<%= user.id %>" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email_<%= user.id %>"
+                value="<%= user.email %>"
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label for="isActive_<%= user.id %>" class="form-label"
+                >Active</label
+              >
+              <input
+                type="text"
+                class="form-control text-white <%= user.isActive ? 'bg-success ' : 'bg-danger ' %>"
+                id="isActive_<%= user.id %>"
+                value="<%= user.isActive ? 'Yes' : 'No' %>"
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label for="created_at_<%= user.id %>" class="form-label"
+                >Created At</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                value="<%= user.created_at %>"
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label for="updated_at_<%= user.id %>" class="form-label"
+                >Updated At</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                value="<%= user.updated_at %>"
+                disabled
+              />
+            </div>
+          </div>
+
+          <!-- User Metadata -->
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <% if (user.address && user.address.length > 0) { %>
+              <div class="overflow-hidden">
+                <div class="overflow-auto" style="max-height: 450px">
+                  <% user.address.forEach((address, index) => { %>
+                  <div class="card mx-auto mb-3" style="width: 18rem">
+                    <div class="card-header border-info">
+                      <%= address.title %>
+                    </div>
+                    <div class="card-body">
+                      <h6 class="card-subtitle mb-2 text-muted">
+                        City: <%= address.city %>
+                      </h6>
+                      <p
+                        class="card-text text-truncate"
+                        title="<%= address.address_line_1 %>"
+                      >
+                        Address 1: <%= address.address_line_1 %>
+                      </p>
+                      <% if (address.address_line_2) { %>
+                      <p class="card-text">
+                        Address 2: <%= address.address_line_2 %>
+                      </p>
+                      <% } %>
+                      <p class="card-text">
+                        Phone: <%= address.phone_number %>
+                      </p>
+                    </div>
+                  </div>
+                  <% }) %>
+                </div>
+              </div>
+              <% } else { %>
+              <div class="mb-3">
+                <h6 class="text-muted">Address not updated</h6>
+              </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  /* Define custom scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar handle */
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar handle on hover */
+  }
+</style>

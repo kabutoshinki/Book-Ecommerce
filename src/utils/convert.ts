@@ -10,7 +10,7 @@ export function formatDate(date: Date): string {
   const formatter = new Intl.DateTimeFormat('en-US', options);
   const [{ value: day }, , { value: month }, , { value: year }] =
     formatter.formatToParts(date);
-  return `${day}-${month}-${year}`;
+  return `${month}-${day}-${year}`;
 }
 
 export function formatDateType(dateString) {

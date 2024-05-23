@@ -6,14 +6,14 @@
     <table class="table table-hover" style="cursor: pointer">
       <thead class="table-info rounded-top">
         <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Name</th>
+          <th scope="col">Order Id</th>
+          <th scope="col">Customer Name</th>
           <th scope="col">Address</th>
+          <th scope="col">Phone</th>
           <th scope="col">Quantity</th>
           <th scope="col">Total</th>
-          <th scope="col">Status</th>
-          <th scope="col">Created At</th>
-          <th scope="col">Updated At</th>
+          <th scope="col">Payment Status</th>
+          <th scope="col">Order Date</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -38,14 +38,31 @@
               <%= order?.user?.firstName + '' +order?.user?.lastName %>
             </p>
           </td>
-          <td></td>
           <td>
             <p
               class="text-truncate"
               style="max-width: 150px"
-              title="<%= order.items.length %>"
+              title="<%= order?.user?.address %>"
             >
-              <%= order.items.length %>
+              <%= order?.user?.address[0].address_line_1 %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order?.user?.address[0].phone_number %>"
+            >
+              <%= order?.user?.address[0].phone_number %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= order.quantity %>"
+            >
+              <%= order.quantity %>
             </p>
           </td>
           <td>
@@ -54,17 +71,19 @@
               style="max-width: 150px"
               title="<%= order.total %>"
             >
-              <%= order.total %>
+              <%= order.total+' '+'$' %>
             </p>
           </td>
           <td>
-            <p
-              class="text-truncate"
-              style="max-width: 150px"
-              title="<%= order.status %>"
-            >
-              <%= order.status %>
-            </p>
+            <% if (order.status === 'Created') { %>
+            <span class="badge bg-primary">Created</span>
+            <% } else if (order.status === 'Processing') { %>
+            <span class="badge bg-warning text-dark">Processing</span>
+            <% } else if (order.status === 'Succeeded') { %>
+            <span class="badge bg-success">Succeeded</span>
+            <% } else if (order.status === 'Failed') { %>
+            <span class="badge bg-danger">Failed</span>
+            <% } %>
           </td>
           <td>
             <p
@@ -75,36 +94,31 @@
               <%= order.created_at %>
             </p>
           </td>
-          <td>
-            <p
-              class="text-truncate"
-              style="max-width: 150px"
-              title="<%= order.updated_at %>"
-            >
-              <%= order.updated_at %>
-            </p>
-          </td>
 
           <td>
+            <a href="/page/order/<%= order.id %>" class="btn btn-info">
+              <i class="lni lni-eye text-white text-lg"></i>
+            </a>
             <button
               type="button"
-              class="btn btn-primary"
+              class="<%= order.status ==='Failed' ||order.status ==='Succeeded' ? 'btn btn-secondary disabled':'btn btn-success ' %>"
               data-bs-toggle="modal"
-              data-bs-target="#nationUp_<%= order.id %>"
+              data-bs-target="#stateOrderAcceptModal_<%= order.id %>"
             >
-              Update
+              <i class="lni lni-checkmark-circle"></i>
             </button>
             <button
               type="button"
-              class="btn btn-danger"
+              class="<%= order.status ==='Failed' ||order.status ==='Succeeded' ? 'btn btn-secondary disabled':'btn btn-danger ' %>"
               data-bs-toggle="modal"
-              data-bs-target="#nationDel_<%= order.id %>"
+              data-bs-target="#stateOrderRejectModal_<%= order.id %>"
             >
-              Delete
+              <i class="lni lni-cross-circle"></i>
             </button>
           </td>
         </tr>
-        <% }) %>
+        <%- include('../modals/order/accept_state_order.ejs', { order }) %> <%-
+        include('../modals/order/reject_state_order.ejs', { order }) %> <% }) %>
       </tbody>
     </table>
   </div>

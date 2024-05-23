@@ -82,6 +82,14 @@
           <td>
             <button
               type="button"
+              class="btn btn-info"
+              data-bs-toggle="modal"
+              data-bs-target="#viewPublisherModal_<%= publisher.id %>"
+            >
+              <i class="lni lni-eye text-white"></i>
+            </button>
+            <button
+              type="button"
               class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#updatePublisherModal_<%= publisher.id %>"
@@ -98,6 +106,7 @@
             </button>
           </td>
         </tr>
+        <%- include('../modals/publisher/view_publisher.ejs', { publisher})%>
         <%- include('../modals/publisher/update_publisher.ejs', { publisher})%>
         <%- include('../modals/publisher/delete_publisher.ejs', { publisher}) %>
         <% }) %>

@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsOptional,
 } from 'class-validator';
+import { AddressResponseDto } from 'src/addresses/dto/responses/address-response-dto';
 
 export class UserResponseForAdminDto {
   @IsNotEmpty()
@@ -29,6 +30,9 @@ export class UserResponseForAdminDto {
   @IsBoolean()
   @IsNotEmpty()
   isActive: boolean;
+
+  @IsOptional()
+  address: AddressResponseDto[];
 
   @IsDate()
   @IsNotEmpty()

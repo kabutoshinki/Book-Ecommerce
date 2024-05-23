@@ -8,6 +8,11 @@ import { BooksService } from 'src/books/books.service';
 import { UsersService } from 'src/users/users.service';
 import { OrderItem } from 'src/order_item/entities/order_item.entity';
 import { PublicUser } from 'src/types/PublicUser.type';
+import { OrderResponseForAdminDto } from './dto/responses/order-resoponse-for-admin.dto';
+import { OrderMapper } from './order_details.mapper';
+import { OrderDetailResponseDto } from './dto/responses/order-detail-response.dto';
+import { PaymentStatus } from 'src/enums/payment-status.enums';
+import { UpdateOrderStateDto } from './dto/requests/update-state-order.dto';
 
 @Injectable()
 export class OrderDetailsService {
@@ -47,10 +52,12 @@ export class OrderDetailsService {
     return 'Order created';
   }
 
-  async getOrderDetailById(orderDetailId: string): Promise<OrderDetail> {
+  async getOrderDetailById(
+    orderDetailId: string,
+  ): Promise<OrderDetailResponseDto> {
     const orderDetail = await this.orderDetailRepository.findOne({
       where: { id: orderDetailId },
-      relations: ['items', 'user'],
+      relations: ['user', 'user.addresses', 'items.book'],
     });
 
     if (!orderDetail) {
@@ -59,12 +66,14 @@ export class OrderDetailsService {
       );
     }
 
-    return orderDetail;
+    return OrderMapper.toOrderDetailResponseDto(orderDetail);
   }
-  async getAllOrderDetails(): Promise<OrderDetail[]> {
-    return await this.orderDetailRepository.find({
-      relations: ['items', 'user'],
+  async getAllOrderDetails(): Promise<OrderResponseForAdminDto[]> {
+    const orders = await this.orderDetailRepository.find({
+      relations: ['items', 'user', 'user.addresses'],
     });
+
+    return OrderMapper.toOrderResponseForAdminDtoList(orders);
   }
 
   async findOne(id: string) {
@@ -95,8 +104,21 @@ export class OrderDetailsService {
     return await this.orderDetailRepository.save(order);
   }
 
-  async deleteOrderDetail(orderDetailId: string): Promise<void> {
-    const orderDetail = await this.getOrderDetailById(orderDetailId);
-    await this.orderDetailRepository.remove(orderDetail);
+  async changeStateOrderDetail(
+    orderDetailId: string,
+    updateOrderStateDto: UpdateOrderStateDto,
+  ) {
+    const orderDetail = await this.findOne(orderDetailId);
+
+    if (updateOrderStateDto.state) {
+      orderDetail.status = PaymentStatus.Succeeded;
+    } else {
+      orderDetail.status = PaymentStatus.Failed;
+    }
+    await this.orderDetailRepository.save(orderDetail);
+    return {
+      success: true,
+      message: 'Change status order successfully',
+    };
   }
 }

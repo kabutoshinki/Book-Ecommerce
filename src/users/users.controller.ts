@@ -17,6 +17,7 @@ import { Roles } from '../decorators/role.decorator';
 import { Role } from '../enums/role.enum';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UpdateUserStateDto } from './dto/requests/update-state-user.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -54,6 +55,14 @@ export class UsersController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
+  }
+
+  @Patch('change-state/:id')
+  async changeState(
+    @Param('id') id: string,
+    @Body() updateUserStateDto: UpdateUserStateDto,
+  ) {
+    return await this.usersService.changeState(id, updateUserStateDto);
   }
 
   @Delete(':id')

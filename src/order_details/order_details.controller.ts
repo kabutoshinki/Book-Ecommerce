@@ -14,6 +14,7 @@ import { OrderDetailsService } from './order_details.service';
 import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
 import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
+import { UpdateOrderStateDto } from './dto/requests/update-state-order.dto';
 
 @Controller('order-details')
 export class OrderDetailsController {
@@ -51,8 +52,11 @@ export class OrderDetailsController {
     return this.orderDetailsService.updateOrder(id, updateOrderDetailDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.orderDetailsService.deleteOrderDetail(id);
+  @Patch('change-status/:id')
+  change_state(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() state: UpdateOrderStateDto,
+  ) {
+    return this.orderDetailsService.changeStateOrderDetail(id, state);
   }
 }

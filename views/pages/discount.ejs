@@ -92,6 +92,14 @@
           <td>
             <button
               type="button"
+              class="btn btn-info"
+              data-bs-toggle="modal"
+              data-bs-target="#viewDiscountModal_<%= discount.id %>"
+            >
+              <i class="lni lni-eye text-white"></i>
+            </button>
+            <button
+              type="button"
               class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#updateDiscountModal_<%= discount.id %>"
@@ -109,9 +117,10 @@
           </td>
         </tr>
 
-        <%- include('../modals/discount/update_discount.ejs', { discount }) %>
-        <%- include('../modals/discount/delete_discount.ejs', { discount }) %>
-        <% }) %>
+        <%- include('../modals/discount/view_discount.ejs', { discount }) %> <%-
+        include('../modals/discount/update_discount.ejs', { discount }) %> <%-
+        include('../modals/discount/delete_discount.ejs', { discount }) %> <% })
+        %>
       </tbody>
     </table>
   </div>

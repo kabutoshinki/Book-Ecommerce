@@ -82,11 +82,19 @@
           <td>
             <button
               type="button"
+              class="btn btn-info"
+              data-bs-toggle="modal"
+              data-bs-target="#viewCategoryModal_<%= category.id %>"
+            >
+              <i class="lni lni-eye text-white"></i>
+            </button>
+            <button
+              type="button"
               class="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#updateCategoryModal_<%= category.id %>"
             >
-              Update
+              <i class="lni lni-pencil-alt"></i>
             </button>
             <button
               type="button"
@@ -94,13 +102,14 @@
               data-bs-toggle="modal"
               data-bs-target="#deleteCategoryModal_<%= category.id %>"
             >
-              Delete
+              <i class="lni lni-trash-can"></i>
             </button>
           </td>
         </tr>
-        <%- include('../modals/category/update_category.ejs', { category }) %>
-        <%- include('../modals/category/delete_category.ejs', { category }) %>
-        <% }) %>
+        <%- include('../modals/category/view_category.ejs', { category }) %> <%-
+        include('../modals/category/update_category.ejs', { category }) %> <%-
+        include('../modals/category/delete_category.ejs', { category }) %> <% })
+        %>
       </tbody>
     </table>
   </div>

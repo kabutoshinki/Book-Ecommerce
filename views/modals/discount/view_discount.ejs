@@ -1,0 +1,128 @@
+<!-- view discount Modal -->
+<div
+  class="modal fade"
+  id="viewDiscountModal_<%= discount.id %>"
+  tabindex="-1"
+  aria-labelledby="discountviewLabel_<%= discount.id %>"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5
+          class="modal-title fw-bold"
+          id="discountviewLabel_<%= discount.id %>"
+        >
+          <%= discount.name %>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="discountviewForm_<%= discount.id %>">
+          <div class="mb-3">
+            <label for="name_<%= discount.id %>" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name_<%= discount.id %>"
+              value="<%= discount.name %>"
+              name="name"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="description_<%= discount.id %>" class="form-label"
+              >Description</label
+            >
+            <textarea
+              class="form-control"
+              id="description_<%= discount.id %>"
+              name="description"
+              rows="3"
+              disabled
+            >
+<%= discount.description %></textarea
+            >
+          </div>
+          <div class="mb-3">
+            <label for="amount_<%= discount.id %>" class="form-label"
+              >Amount</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="amount_<%= discount.id %>"
+              value="<%= discount.amount %>"
+              name="amount"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="startAt_<%= discount.id %>" class="form-label"
+              >Start Date</label
+            >
+            <input
+              type="date"
+              class="form-control"
+              id="startAt_<%= discount.id %>"
+              name="startAt"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="expiresAt_<%= discount.id %>" class="form-label"
+              >Expires At</label
+            >
+            <input
+              type="date"
+              class="form-control"
+              id="expiresAt_<%= discount.id %>"
+              name="expiresAt"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="name_<%= discount.id %>" class="form-label"
+              >Created At</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="name_<%= discount.id %>"
+              value="<%= discount.created_at %>"
+              name="name"
+              disabled
+            />
+          </div>
+          <div class="mb-3">
+            <label for="name_<%= discount.id %>" class="form-label"
+              >Updated At</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="name_<%= discount.id %>"
+              value="<%= discount.updated_at %>"
+              name="name"
+              disabled
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

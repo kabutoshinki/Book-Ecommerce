@@ -50,13 +50,11 @@
             </p>
           </td>
           <td>
-            <p
-              class="text-truncate"
-              style="max-width: 150px"
-              title="<%= user.status %>"
-            >
-              <%= user.status %>
-            </p>
+            <% if (user.isActive === true) { %>
+            <span class="badge bg-success">Active</span>
+            <% } else { %>
+            <span class="badge bg-secondary">Inactive</span>
+            <% } %>
           </td>
           <td>
             <p
@@ -80,23 +78,32 @@
           <td>
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-info"
               data-bs-toggle="modal"
-              data-bs-target="#nationUp_<%= user.id %>"
+              data-bs-target="#viewUserModal_<%= user.id %>"
             >
-              Update
+              <i class="lni lni-eye text-white"></i>
             </button>
             <button
               type="button"
-              class="btn btn-danger"
+              class="<%= user.isActive!==true? 'btn btn-success ':'btn btn-secondary disabled ' %>"
               data-bs-toggle="modal"
-              data-bs-target="#nationDel_<%= user.id %>"
+              data-bs-target="#stateUserModal_<%= user.id %>"
             >
-              Delete
+              <i class="lni lni-checkmark"></i>
+            </button>
+            <button
+              type="button"
+              class="<%= user.isActive===true? 'btn btn-danger ':'btn btn-secondary disabled ' %>"
+              data-bs-toggle="modal"
+              data-bs-target="#stateUserModal_<%= user.id %>"
+            >
+              <i class="lni lni-close"></i>
             </button>
           </td>
         </tr>
-        <% }) %>
+        <%- include('../modals/user/view_user.ejs', { user }) %> <%-
+        include('../modals/user/update_state_user.ejs', { user }) %> <% }) %>
       </tbody>
     </table>
   </div>

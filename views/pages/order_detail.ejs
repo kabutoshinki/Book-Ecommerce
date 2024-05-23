@@ -1,0 +1,144 @@
+<div class="container mt-5">
+  <h1 class="text-muted mb-4">Order Detail</h1>
+  <button class="btn btn-secondary mb-4" onclick="goBack()">Back</button>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-header">Order Details</div>
+        <div class="card-body">
+          <p class="card-text">
+            <strong>Status:</strong> <% if (order.status === 'Created') { %>
+            <span class="badge bg-primary">Created</span>
+            <% } else if (order.status === 'Processing') { %>
+            <span class="badge bg-warning text-dark">Processing</span>
+            <% } else if (order.status === 'Succeeded') { %>
+            <span class="badge bg-success">Succeeded</span>
+            <% } else if (order.status === 'Failed') { %>
+            <span class="badge bg-danger">Failed</span>
+            <% } %>
+          </p>
+          <p class="card-text"><strong>Total:</strong> $<%= order.total %></p>
+          <p class="card-text">
+            <strong>Quantity:</strong> <%= order.quantity %>
+          </p>
+          <p class="card-text">
+            <strong>Created At:</strong> <%= order.created_at %>
+          </p>
+          <p class="card-text">
+            <strong>Updated At:</strong> <%= order.updated_at %>
+          </p>
+
+          <h5 class="mt-4">Items</h5>
+          <div class="items-container">
+            <% order.item.forEach(item => { %>
+            <div class="card mt-3">
+              <div class="card-header">Item ID: <%= item.id %></div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <img
+                      src="<%= item.book.image %>"
+                      alt="<%= item.book.title %>"
+                      class="img-fluid"
+                    />
+                  </div>
+                  <div class="col-md-8">
+                    <p class="card-text">
+                      <strong>Title:</strong> <%= item.book.title %>
+                    </p>
+                    <p class="card-text">
+                      <strong>Price:</strong> <%= item.book.price +' '+'$' %>
+                    </p>
+                    <p class="card-text">
+                      <strong>Quantity:</strong> <%= item.quantity %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 text-center">
+      <div class="card mb-4">
+        <div class="card-header">Order ID: <%= order.id %></div>
+
+        <div class="card-body">
+          <h5 class="card-title">Customer Information</h5>
+          <p class="card-text">
+            <img
+              src="<%= order.user.avatar %>"
+              alt="Avatar"
+              style="width: 100px; height: 100px"
+            />
+          </p>
+          <p class="card-text">
+            <strong>Name:</strong> <%= order.user.firstName %> <%=
+            order.user.lastName %>
+          </p>
+          <p class="card-text">
+            <strong>Email:</strong> <%= order.user.email %>
+          </p>
+          <p class="card-text">
+            <strong>Address:</strong> <%= order.user.address[0].address_line_1
+            %>, <%= order.user.address[0].city %>
+          </p>
+          <p class="card-text">
+            <strong>Phone:</strong> <%= order.user.address[0].phone_number %>
+          </p>
+          <% if (order.status !== 'Succeeded' && order.status !== 'Failed') { %>
+          <div class="mt-4">
+            <button
+              class="btn btn-success btn-lg me-2"
+              data-bs-toggle="modal"
+              data-bs-target="#stateOrderAcceptModal_<%= order.id %>"
+            >
+              Accept
+            </button>
+            <button
+              class="btn btn-danger btn-lg"
+              data-bs-toggle="modal"
+              data-bs-target="#stateOrderRejectModal_<%= order.id %>"
+            >
+              Reject
+            </button>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../modals/order/accept_state_order.ejs', ) %> <%-
+include('../modals/order/reject_state_order.ejs', ) %>
+<style>
+  .items-container {
+    max-height: 300px; /* Adjust height as needed */
+    overflow-y: auto;
+  }
+  ::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar handle */
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar handle on hover */
+  }
+</style>
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
