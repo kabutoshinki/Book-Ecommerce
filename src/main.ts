@@ -5,11 +5,23 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import * as connectFlash from 'connect-flash';
+import * as cookieParser from 'cookie-parser';
+import * as session from 'express-session';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
+  app.use(cookieParser());
+  app.use(
+    session({
+      secret: configService.get('secret'),
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
+  app.use(connectFlash());
   const config = new DocumentBuilder()
     .setTitle('Ecommerce')
     .setDescription('The Ecommerce Api documentation')

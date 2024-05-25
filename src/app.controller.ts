@@ -6,6 +6,8 @@ import {
   Post,
   Query,
   Render,
+  Req,
+  Request,
   UnauthorizedException,
   UploadedFile,
   UseInterceptors,
@@ -44,37 +46,41 @@ export class AppController {
 
   @Get()
   @Render('pages/dashboard')
-  root() {
+  root(@Request() req) {
     return {
       title: 'Dashboard Page',
       layout: 'layouts/layout',
-      name: 'Guest',
+      user: req.user,
     };
   }
 
   @Get('page/about')
   @Render('pages/about')
-  about() {
-    return { title: 'About Page', name: 'huy' };
+  about(@Request() req) {
+    return { title: 'About Page', user: req.user };
   }
 
   @Get('page/login')
   @Render('pages/login')
-  login() {
-    return { title: 'Login Page', layout: false, name: 'huy' };
+  login(@Request() req) {
+    return {
+      title: 'Login Page',
+      layout: false,
+      errors: req?.session?.flash?.errors,
+    };
   }
 
   @Get('page/user')
   @Render('pages/user')
-  async user() {
+  async user(@Request() req) {
     const users = await this.userService.findAllForAdmin();
 
-    return { title: 'User Page', users: users };
+    return { title: 'User Page', users: users, user: req.user };
   }
 
   @Get('page/book')
   @Render('pages/book')
-  async book(@Query() query: any): Promise<any> {
+  async book(@Query() query: any, @Request() req): Promise<any> {
     const options: IPaginationOptions = {
       page: query.page ? parseInt(query.page, 10) : 1,
       limit: query.limit ? parseInt(query.limit, 10) : 6,
@@ -83,13 +89,11 @@ export class AppController {
 
     let paginatedBooks: Pagination<BookResponseForAdminDto>;
     if (query.q) {
-      // If there's a search query, paginate with search
       paginatedBooks = await this.bookService.paginateBookAdmin(
         options,
         query.q,
       );
     } else {
-      // Otherwise, paginate without search
       paginatedBooks = await this.bookService.paginateBookAdmin(options);
     }
     const discounts = await this.discountService.findAll();
@@ -107,51 +111,51 @@ export class AppController {
       authors: authors,
       publishers: publishers,
       query: query,
+      user: req.user,
     };
   }
 
   @Get('page/author')
   @Render('pages/author')
-  async author() {
+  async author(@Request() req) {
     const authors = await this.authorService.findAllAuthorsByAdmin();
-    return { title: 'Author Page', authors: authors };
+    return { title: 'Author Page', authors: authors, user: req.user };
   }
 
   @Get('page/category')
   @Render('pages/category')
-  async category() {
+  async category(@Request() req) {
     const categories = await this.categoryService.findAllForAdmin();
-    return { title: 'Category Page', categories: categories };
+    return { title: 'Category Page', categories: categories, user: req.user };
   }
 
   @Get('page/order')
   @Render('pages/order')
-  async order() {
+  async order(@Request() req) {
     const orders = await this.orderService.getAllOrderDetails();
-    console.log(orders);
 
-    return { title: 'Order Page', orders: orders };
+    return { title: 'Order Page', orders: orders, user: req.user };
   }
   @Get('page/order/:id')
   @Render('pages/order_detail')
-  async order_detail(@Param('id') id: string) {
+  async order_detail(@Param('id') id: string, @Request() req) {
     const order = await this.orderService.getOrderDetailById(id);
 
-    return { title: 'Order Page', order: order };
+    return { title: 'Order Page', order: order, user: req.user };
   }
 
   @Get('page/discount')
   @Render('pages/discount')
-  async discount() {
+  async discount(@Request() req) {
     const discounts = await this.discountService.findAllForAdmin();
-    return { title: 'Discount Page', discounts: discounts };
+    return { title: 'Discount Page', discounts: discounts, user: req.user };
   }
 
   @Get('page/publisher')
   @Render('pages/publisher')
-  async publisher() {
+  async publisher(@Request() req) {
     const publishers = await this.publisherService.findAllForAdmin();
-    return { title: 'Publisher Page', publishers: publishers };
+    return { title: 'Publisher Page', publishers: publishers, user: req.user };
   }
 
   @Get('test/errors')

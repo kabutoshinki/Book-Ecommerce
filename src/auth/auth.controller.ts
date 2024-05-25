@@ -6,6 +6,8 @@ import {
   HttpStatus,
   Post,
   Request,
+  Res,
+  Response,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -56,6 +58,22 @@ export class AuthController {
     return this.authService.login(authPayload);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Post('server/login')
+  async loginServerSide(
+    @Body() authPayload: AuthPayloadDto,
+    @Request() req,
+    @Response() res,
+  ) {
+    const { token, redirectUrl } = await this.authService.loginServerSide(
+      authPayload,
+    );
+
+    // res.cookie('token', token, { httpOnly: true, secure: true });
+    req.session.token = token;
+    return res.redirect(redirectUrl);
+  }
+
   @Post('signup')
   async register(
     @Body() createUserDto: CreateUserDto,
@@ -83,5 +101,10 @@ export class AuthController {
   @Post('forgot-password')
   async forgotPassword() {
     console.log('forgot-password');
+  }
+  @Get('logout')
+  async logout(@Response() res) {
+    res.clearCookie('token');
+    res.redirect('/page/login');
   }
 }

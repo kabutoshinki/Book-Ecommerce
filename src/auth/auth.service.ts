@@ -50,6 +50,37 @@ export class AuthService {
     }
   }
 
+  async loginServerSide(authPayload: AuthPayloadDto) {
+    try {
+      const user = await this.userService.findOne(authPayload);
+
+      if (!user) {
+        throw new NotFoundException('Email not exist');
+      }
+      if (!user.isActive) {
+        throw new NotAcceptableException('Email cannot login');
+      }
+      const passwordMatched = await bcrypt.compare(
+        authPayload.password,
+        user.password,
+      );
+
+      if (!passwordMatched) {
+        throw new UnauthorizedException('Password does not match');
+      }
+      const token = this.jwtService.sign({
+        userId: user.id,
+        image: user.avatar,
+        role: user.roles,
+        email: user.email,
+      });
+      const redirectUrl = '/';
+      return { token, redirectUrl };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async refresh(refreshTokenDto: RefreshTokenDto) {
     const { refreshToken } = refreshTokenDto;
 

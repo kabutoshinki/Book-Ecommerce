@@ -3,6 +3,7 @@ import {
   Module,
   NestModule,
   Options,
+  RequestMethod,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -27,6 +28,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { CartModule } from './cart/cart.module';
 import { LayoutMiddleware } from './middleware/layout.middleware';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { AuthMiddleware } from './middleware/authenticate.middleware';
 // import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -76,5 +78,24 @@ export class AppModule implements NestModule {
   }
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LayoutMiddleware).forRoutes('*');
+
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('/page/login', {
+        path: 'auth/server/login',
+        method: RequestMethod.POST,
+      })
+      .forRoutes(
+        '/',
+        'page/about',
+        'page/user',
+        'page/book',
+        'page/author',
+        'page/category',
+        'page/order',
+        'page/order/:id',
+        'page/discount',
+        'page/publisher',
+      );
   }
 }

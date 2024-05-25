@@ -20,7 +20,7 @@ import { CartModule } from 'src/cart/cart.module';
       }),
       inject: [ConfigService],
     }),
-    PassportModule,
+    PassportModule.register({ session: true }),
     CartModule,
   ],
   controllers: [AuthController],
