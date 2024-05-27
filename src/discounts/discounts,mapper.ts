@@ -14,8 +14,7 @@ export class DiscountMapper {
     discountResponseDto.name = discount.name;
     discountResponseDto.amount = discount.amount;
     discountResponseDto.description = discount.description;
-    discountResponseDto.startAt = formatDateType(discount.startAt);
-    discountResponseDto.expiresAt = formatDateType(discount.expiresAt);
+
     return discountResponseDto;
   }
 

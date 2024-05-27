@@ -12,12 +12,15 @@ import {
   ValidationPipe,
   UsePipes,
   Put,
+  Query,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/requests/create-book.dto';
 import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { CacheKey } from '@nestjs/cache-manager';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Book } from './entities/book.entity';
+import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
 
 @Controller('books')
 export class BooksController {
@@ -37,6 +40,34 @@ export class BooksController {
   @CacheKey('books')
   findAll() {
     return this.booksService.findAll();
+  }
+
+  @Get('on-sale')
+  async getOnSaleBooks(
+    @Query('limit') limit = 5,
+  ): Promise<BookClientResponseDto[]> {
+    return this.booksService.getOnSaleBooks(limit);
+  }
+
+  @Get('best-sales')
+  async getPopularBooks(
+    @Query('limit') limit = 5,
+  ): Promise<BookClientResponseDto[]> {
+    return this.booksService.getBestSellingBooks(limit);
+  }
+
+  @Get('popular')
+  async getFeaturedBooks(
+    @Query('limit') limit = 5,
+  ): Promise<BookClientResponseDto[]> {
+    return this.booksService.getPopularBooks(limit);
+  }
+
+  @Get('best-books')
+  async getBestBooks(
+    @Query('limit') limit = 3,
+  ): Promise<BookClientResponseDto[]> {
+    return this.booksService.getBestBooks(limit);
   }
 
   @Get(':id')

@@ -37,7 +37,7 @@ export class PublishersService {
     const publishers = await this.publisherRepository.find({
       where: { isActive: true },
     });
-    return PublisherMapper.toUserResponseForAdminDtoList(publishers);
+    return PublisherMapper.toPublisherResponseForAdminDtoList(publishers);
   }
   async findAllForAdmin() {
     return await this.publisherRepository.find();
@@ -58,7 +58,7 @@ export class PublishersService {
       if (!publisher) {
         throw new NotFoundException('Publisher not exist');
       }
-      const updatedPublisher = PublisherMapper.toUpdateUserEntity(
+      const updatedPublisher = PublisherMapper.toUpdatePublisherEntity(
         publisher,
         updatePublisherDto,
       );

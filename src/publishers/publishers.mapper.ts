@@ -7,7 +7,7 @@ import { UpdatePublisherDto } from './dto/requests/update-publisher.dto';
 
 @Injectable()
 export class PublisherMapper {
-  static toUserResponseDto(publisher: Publisher): PublisherResponseDto {
+  static toPublisherResponseDto(publisher: Publisher): PublisherResponseDto {
     const publisherResponseDto = new PublisherResponseDto();
     publisherResponseDto.id = publisher.id;
     publisherResponseDto.name = publisher.name;
@@ -15,7 +15,7 @@ export class PublisherMapper {
     return publisherResponseDto;
   }
 
-  static toUserResponseForAdminDto(
+  static toPublisherResponseForAdminDto(
     publisher: Publisher,
   ): PublisherResponseForAdminDto {
     const publisherResponseDto = new PublisherResponseForAdminDto();
@@ -28,19 +28,19 @@ export class PublisherMapper {
     return publisherResponseDto;
   }
 
-  static toUserResponseForAdminDtoList(
+  static toPublisherResponseForAdminDtoList(
     users: Publisher[],
   ): PublisherResponseForAdminDto[] {
-    return users.map((user) => this.toUserResponseForAdminDto(user));
+    return users.map((user) => this.toPublisherResponseForAdminDto(user));
   }
 
-  static toUserEntity(createPublisherDto: CreatePublisherDto): Publisher {
+  static toPublisherEntity(createPublisherDto: CreatePublisherDto): Publisher {
     const publisher = new Publisher();
     publisher.name = createPublisherDto.name;
     publisher.address = createPublisherDto.address;
     return publisher;
   }
-  static toUpdateUserEntity(
+  static toUpdatePublisherEntity(
     existingPublisher: Publisher,
     updatePublisherDto: UpdatePublisherDto,
   ): Publisher {

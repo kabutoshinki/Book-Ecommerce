@@ -12,12 +12,4 @@ export class DiscountResponseDto {
 
   @IsNotEmpty()
   description: string;
-
-  @IsDate()
-  @IsNotEmpty()
-  startAt: string;
-
-  @IsDate()
-  @IsNotEmpty()
-  expiresAt: string;
 }

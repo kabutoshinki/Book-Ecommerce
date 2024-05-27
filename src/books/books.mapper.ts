@@ -1,3 +1,4 @@
+import { DiscountMapper } from './../discounts/discounts,mapper';
 import { formatDate } from 'src/utils/convert';
 import { Injectable } from '@nestjs/common';
 import { BookResponseDto } from './dto/responses/book-response.dto';
@@ -6,6 +7,10 @@ import { BookResponseForAdminDto } from './dto/responses/book-response-for-admin
 import { CreateBookDto } from './dto/requests/create-book.dto';
 import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { BookOrderResponseDto } from './dto/responses/book-order-response.dto';
+import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
+import { PublisherMapper } from 'src/publishers/publishers.mapper';
+import { CategoryMapper } from 'src/categories/categories.mapper';
+import { AuthorMapper } from 'src/authors/authors.mapper';
 
 @Injectable()
 export class BookMapper {
@@ -21,6 +26,39 @@ export class BookMapper {
     bookResponseDto.categoryIds =
       book.categories?.map((category) => category.id) || [];
     bookResponseDto.authorIds = book.authors?.map((author) => author.id) || [];
+    bookResponseDto.image = book.image;
+    return bookResponseDto;
+  }
+  static toBooksClientResponseDto(book: Book): BookClientResponseDto {
+    const bookResponseDto = new BookClientResponseDto();
+    bookResponseDto.id = book.id;
+    bookResponseDto.title = book.title;
+    bookResponseDto.description = book.description;
+    bookResponseDto.summary = book.summary;
+    bookResponseDto.price = book.price;
+    bookResponseDto.average_rate = book.average_rate;
+    bookResponseDto.sold_quantity = book.sold_quantity;
+    if (book.discount) {
+      bookResponseDto.discount = DiscountMapper.toDiscountResponseDto(
+        book.discount,
+      );
+    }
+    if (book.publisher) {
+      bookResponseDto.publisher = PublisherMapper.toPublisherResponseDto(
+        book.publisher,
+      );
+    }
+    if (book.categories) {
+      bookResponseDto.categories = CategoryMapper.toCategoryResponseDtoList(
+        book.categories,
+      );
+    }
+
+    if (book.authors) {
+      bookResponseDto.authors = AuthorMapper.toAuthorResponseDtoList(
+        book.authors,
+      );
+    }
     bookResponseDto.image = book.image;
     return bookResponseDto;
   }
@@ -52,6 +90,9 @@ export class BookMapper {
   ): BookResponseForAdminDto[] {
     return books.map((book) => this.toBookResponseForAdminDto(book));
   }
+  static toBookClientResponseDtoList(books: Book[]): BookClientResponseDto[] {
+    return books.map((book) => this.toBooksClientResponseDto(book));
+  }
 
   static toBookOrderResponseDto(book: Book): BookOrderResponseDto {
     const bookResponseForAdminDto = new BookOrderResponseDto();
@@ -69,8 +110,6 @@ export class BookMapper {
     book.description = createBookDto.description;
     book.summary = createBookDto.summary;
     book.price = createBookDto.price;
-    // Assigning relationships should be done separately,
-    // possibly within the service that handles entity creation.
     return book;
   }
 

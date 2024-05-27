@@ -8,7 +8,7 @@ import { CreateBookDto } from './dto/requests/create-book.dto';
 import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
-import { In, Repository } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { PublishersService } from 'src/publishers/publishers.service';
 import { AuthorsService } from 'src/authors/authors.service';
 import { DiscountsService } from 'src/discounts/discounts.service';
@@ -21,6 +21,7 @@ import {
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
+import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
 
 @Injectable()
 export class BooksService {
@@ -114,6 +115,52 @@ export class BooksService {
       throw new NotFoundException('Some books not found');
     }
     return books;
+  }
+
+  async getOnSaleBooks(limit = 5): Promise<BookClientResponseDto[]> {
+    const currentDate = new Date();
+
+    const onSaleBook = await this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.discount', 'discount')
+      .leftJoinAndSelect('book.categories', 'categories')
+      .where('discount IS NOT NULL')
+      .andWhere('discount.startAt <= :currentDate', { currentDate })
+      .andWhere('discount.expiresAt >= :currentDate', { currentDate })
+      .orderBy('discount.amount', 'DESC')
+      .take(limit)
+      .getMany();
+    return BookMapper.toBookClientResponseDtoList(onSaleBook);
+  }
+
+  async getBestSellingBooks(limit = 5): Promise<BookClientResponseDto[]> {
+    const popularBooks = await this.bookRepository.find({
+      relations: ['discount', 'authors', 'categories'],
+      order: { sold_quantity: 'DESC' },
+      take: limit,
+    });
+    return BookMapper.toBookClientResponseDtoList(popularBooks);
+  }
+
+  async getPopularBooks(limit = 5): Promise<BookClientResponseDto[]> {
+    const featuredBooks = await this.bookRepository.find({
+      relations: ['publisher', 'discount', 'authors', 'categories'],
+      order: { average_rate: 'DESC' },
+      take: limit,
+    });
+    return BookMapper.toBookClientResponseDtoList(featuredBooks);
+  }
+
+  async getBestBooks(limit = 3): Promise<BookClientResponseDto[]> {
+    const bestBooks = await this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.discount', 'discount')
+      .orderBy('book.sold_quantity', 'DESC')
+      .addOrderBy('book.average_rate', 'DESC')
+      .addOrderBy('discount.amount', 'DESC')
+      .take(limit)
+      .getMany();
+    return BookMapper.toBookClientResponseDtoList(bestBooks);
   }
 
   async update(
