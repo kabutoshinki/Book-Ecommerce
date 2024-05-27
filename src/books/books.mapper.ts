@@ -1,9 +1,11 @@
+import { formatDate } from 'src/utils/convert';
 import { Injectable } from '@nestjs/common';
 import { BookResponseDto } from './dto/responses/book-response.dto';
 import { Book } from './entities/book.entity';
 import { BookResponseForAdminDto } from './dto/responses/book-response-for-admin.dto';
 import { CreateBookDto } from './dto/requests/create-book.dto';
 import { UpdateBookDto } from './dto/requests/update-book.dto';
+import { BookOrderResponseDto } from './dto/responses/book-order-response.dto';
 
 @Injectable()
 export class BookMapper {
@@ -14,7 +16,6 @@ export class BookMapper {
     bookResponseDto.description = book.description;
     bookResponseDto.summary = book.summary;
     bookResponseDto.price = book.price;
-    bookResponseDto.quantity = book.quantity;
     bookResponseDto.discountId = book.discount?.id || null;
     bookResponseDto.publisherId = book.publisher?.id || null;
     bookResponseDto.categoryIds =
@@ -31,7 +32,7 @@ export class BookMapper {
     bookResponseForAdminDto.description = book.description;
     bookResponseForAdminDto.summary = book.summary;
     bookResponseForAdminDto.price = book.price;
-    bookResponseForAdminDto.quantity = book.quantity;
+    bookResponseForAdminDto.sold_quantity = book.sold_quantity;
     bookResponseForAdminDto.discountId = book.discount?.id || null;
     bookResponseForAdminDto.publisherId = book.publisher?.id || null;
     bookResponseForAdminDto.categoryIds =
@@ -40,8 +41,9 @@ export class BookMapper {
       book.authors?.map((author) => author.id) || [];
     bookResponseForAdminDto.image = book.image;
     bookResponseForAdminDto.isActive = book.isActive;
-    bookResponseForAdminDto.created_at = book.created_at;
-    bookResponseForAdminDto.updated_at = book.updated_at;
+    bookResponseForAdminDto.average_rate = book.average_rate;
+    bookResponseForAdminDto.created_at = formatDate(book.created_at);
+    bookResponseForAdminDto.updated_at = formatDate(book.updated_at);
     return bookResponseForAdminDto;
   }
 
@@ -51,13 +53,22 @@ export class BookMapper {
     return books.map((book) => this.toBookResponseForAdminDto(book));
   }
 
+  static toBookOrderResponseDto(book: Book): BookOrderResponseDto {
+    const bookResponseForAdminDto = new BookOrderResponseDto();
+    bookResponseForAdminDto.id = book.id;
+    bookResponseForAdminDto.sold_quantity = book.sold_quantity;
+    return bookResponseForAdminDto;
+  }
+
+  static toBookOrderResponseDtoList(books: Book[]): BookOrderResponseDto[] {
+    return books.map((book) => this.toBookOrderResponseDto(book));
+  }
   static toBookEntity(createBookDto: CreateBookDto): Book {
     const book = new Book();
     book.title = createBookDto.title;
     book.description = createBookDto.description;
     book.summary = createBookDto.summary;
     book.price = createBookDto.price;
-    book.quantity = createBookDto.quantity;
     // Assigning relationships should be done separately,
     // possibly within the service that handles entity creation.
     return book;
@@ -72,9 +83,7 @@ export class BookMapper {
       updateBookDto.description ?? existingBook.description;
     existingBook.summary = updateBookDto.summary ?? existingBook.summary;
     existingBook.price = updateBookDto.price ?? existingBook.price;
-    existingBook.quantity = updateBookDto.quantity ?? existingBook.quantity;
-    // Assigning relationships should be done separately,
-    // possibly within the service that handles entity updates.
+
     return existingBook;
   }
 }

@@ -19,9 +19,6 @@ export class BookResponseDto {
   price: number;
 
   @IsNotEmpty()
-  quantity: number;
-
-  @IsNotEmpty()
   image: string;
 
   @IsOptional()

@@ -14,6 +14,7 @@ export class AddressMapper {
   }
 
   static toAddressResponseDtoList(addresses: Address[]): AddressResponseDto[] {
+    if (!addresses) return [];
     return addresses.map((address) => this.toAddressResponseDto(address));
   }
 }

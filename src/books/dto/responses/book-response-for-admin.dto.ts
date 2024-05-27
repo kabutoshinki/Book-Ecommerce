@@ -27,7 +27,7 @@ export class BookResponseForAdminDto {
   price: number;
 
   @IsNotEmpty()
-  quantity: number;
+  sold_quantity: number;
 
   @IsNotEmpty()
   image: string;
@@ -38,11 +38,11 @@ export class BookResponseForAdminDto {
 
   @IsDate()
   @IsNotEmpty()
-  created_at: Date;
+  created_at: string;
 
   @IsDate()
   @IsNotEmpty()
-  updated_at: Date;
+  updated_at: string;
 
   @IsOptional()
   @IsUUID()
@@ -63,4 +63,9 @@ export class BookResponseForAdminDto {
   @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   authorIds: string[] = [];
+
+  @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
+  @IsNotEmpty()
+  average_rate: number;
 }

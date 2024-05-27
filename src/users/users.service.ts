@@ -68,6 +68,9 @@ export class UsersService {
   }
   async findById(@Param('id') userId: string): Promise<UserResponseDto> {
     const user = await this.usersRepository.findOneBy({ id: userId });
+    console.log('user');
+    console.log(user);
+
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',

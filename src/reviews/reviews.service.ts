@@ -19,12 +19,31 @@ export class ReviewsService {
   async create(createReviewDto: CreateReviewDto) {
     const { userId, bookId } = createReviewDto;
     const book = await this.bookService.findOne(bookId);
-
     const reviewer = await this.userService.findById(userId);
-
     const review = ReviewMapper.toReviewEntity(createReviewDto, book, reviewer);
     await this.reviewRepository.save(review);
+    await this.updateAverageRate(bookId);
     return 'Review created';
+  }
+
+  async updateAverageRate(bookId: string): Promise<void> {
+    const book = await this.bookService.findOne(bookId);
+    const reviews = await this.reviewRepository.find({
+      where: { book: { id: bookId } },
+    });
+
+    // Calculate average rate
+    const totalReviews = reviews.length;
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    const averageRate = totalRating / totalReviews;
+    const roundedAverageRate = parseFloat(averageRate.toFixed(2));
+    // Update average_rate field of the book
+    book.average_rate = averageRate;
+    await this.bookService.update(
+      bookId,
+      { average_rate: roundedAverageRate },
+      undefined,
+    );
   }
 
   async findAll() {

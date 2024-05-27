@@ -31,28 +31,25 @@
                   required />
               </div>
               <div class="mb-3">
+                <label for="updateDescription_<%= book.id %>" class="form-label">Description</label>
+                <textarea class="form-control" id="updateDescription_<%= book.id %>" name="description" rows="3"
+                  required><%= book.description %></textarea>
+              </div>
+              <div class="mb-3">
                 <label for="updateSummary_<%= book.id %>" class="form-label">Summary</label>
                 <textarea class="form-control" id="updateSummary_<%= book.id %>" name="summary" rows="3"
                   required><%= book.summary %></textarea>
               </div>
-              <div class="mb-3">
-                <label for="updatePrice_<%= book.id %>" class="form-label">Price</label>
-                <input type="number" class="form-control" id="updatePrice_<%= book.id %>" name="price"
-                  value="<%= book.price %>" required />
-              </div>
-              <div class="mb-3">
-                <label for="updateQuantity_<%= book.id %>" class="form-label">Quantity</label>
-                <input type="number" class="form-control" id="updateQuantity_<%= book.id %>" name="quantity"
-                  value="<%= book.quantity %>" min="1" max="100" required />
-              </div>
+             
+              
             </div>
 
             <!-- Book Relations -->
             <div class="col-md-4">
               <div class="mb-3">
-                <label for="updateDescription_<%= book.id %>" class="form-label">Description</label>
-                <textarea class="form-control" id="updateDescription_<%= book.id %>" name="description" rows="3"
-                  required><%= book.description %></textarea>
+                <label for="updatePrice_<%= book.id %>" class="form-label">Price</label>
+                <input type="number" class="form-control" id="updatePrice_<%= book.id %>" name="price"
+                  value="<%= book.price %>" required />
               </div>
               <div class="mb-3">
                 <label for="publisherId" class="form-label">Publisher</label>

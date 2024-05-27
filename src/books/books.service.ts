@@ -118,7 +118,7 @@ export class BooksService {
 
   async update(
     id: string,
-    updateBookDto: UpdateBookDto,
+    updateBookDto: Partial<UpdateBookDto>,
     file: Express.Multer.File,
   ) {
     const { discountId, publisherId, categoryIds, authorIds, ...bookData } =
@@ -160,6 +160,7 @@ export class BooksService {
       book.isActive = true;
       Object.assign(book, bookData);
       await this.bookRepository.save(book);
+
       return {
         success: true,
         message: 'Book Updated',

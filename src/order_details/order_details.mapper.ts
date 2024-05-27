@@ -8,6 +8,7 @@ import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
 import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { OrderDetailResponseDto } from './dto/responses/order-detail-response.dto';
 import { OrderItemMapper } from 'src/order_item/order_item.mapper';
+import { OrderDetailGetItemsResponseDto } from './dto/responses/order-detail-get-items-response.dto';
 
 @Injectable()
 export class OrderMapper {
@@ -31,6 +32,17 @@ export class OrderMapper {
     orderResponseDto.item = OrderItemMapper.toOrderResponseDtoList(order.items);
     orderResponseDto.created_at = formatDate(order.created_at);
     orderResponseDto.updated_at = formatDate(order.updated_at);
+    return orderResponseDto;
+  }
+  static toOrderDetailGetItemsResponseDto(
+    order: OrderDetail,
+  ): OrderDetailGetItemsResponseDto {
+    const orderResponseDto = new OrderDetailGetItemsResponseDto();
+    orderResponseDto.id = order.id;
+    orderResponseDto.status = order.status;
+    orderResponseDto.item = OrderItemMapper.toOrderItemBooksResponseDtoList(
+      order.items,
+    );
     return orderResponseDto;
   }
 

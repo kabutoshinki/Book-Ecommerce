@@ -34,8 +34,8 @@ export class Book {
   @Column('decimal')
   price: number;
 
-  @Column('decimal')
-  quantity: number;
+  @Column({ default: 0, type: 'decimal' })
+  sold_quantity: number;
 
   @Column({
     default:
@@ -45,6 +45,9 @@ export class Book {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ type: 'float', default: 0 })
+  average_rate: number;
 
   @ManyToMany((type) => Category)
   @JoinTable()

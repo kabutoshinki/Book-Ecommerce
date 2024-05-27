@@ -29,11 +29,6 @@ export class CreateBookDto {
   @IsNotEmpty()
   price: number;
 
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value, 10))
-  @IsNotEmpty()
-  quantity: number;
-
   @IsOptional()
   @IsString()
   image: string;

@@ -29,7 +29,8 @@
           <th scope="col">Image</th>
           <th scope="col">Title</th>
           <th scope="col">Price</th>
-          <th scope="col">Quantity</th>
+          <th scope="col">Sold</th>
+          <th scope="col">Rate</th>
           <th scope="col">Status</th>
           <th scope="col">Created At</th>
           <th scope="col">Updated At</th>
@@ -68,10 +69,30 @@
             <p
               class="text-truncate"
               style="max-width: 150px"
-              title="<%= book.quantity %>"
+              title="<%= book.sold_quantity %>"
             >
-              <%= book.quantity %>
+              <%= book.sold_quantity %>
             </p>
+          </td>
+          <td>
+            <% const fullStars = Math.floor(book.average_rate); %> <% let
+            remainingStars = 5 - fullStars; %> <% const hasHalfStar =
+            (book.average_rate % 1) >= 0.5; %>
+
+            <!-- Render full stars in yellow -->
+            <% for (let i = 0; i < fullStars; i++) { %>
+            <i class="fas fa-star" style="color: rgb(255, 204, 0)"></i>
+            <% } %>
+
+            <!-- Render half star in yellow if necessary -->
+            <% if (hasHalfStar) { %>
+            <i class="fas fa-star-half-alt" style="color: rgb(255, 204, 0)"></i>
+            <% remainingStars--; %> <% } %>
+
+            <!-- Render remaining stars in black -->
+            <% for (let i = 0; i < remainingStars; i++) { %>
+            <i class="fas fa-star"></i>
+            <% } %>
           </td>
           <td>
             <% if (book.isActive === true) { %>

@@ -79,23 +79,39 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LayoutMiddleware).forRoutes('*');
 
+    // consumer
+    //   .apply(AuthMiddleware)
+    //   .exclude('/page/login', {
+    //     path: 'auth/server/login',
+    //     method: RequestMethod.POST,
+    //   })
+    //   .forRoutes(
+    //     '/',
+    //     'page/about',
+    //     'page/user',
+    //     'page/book',
+    //     'page/author',
+    //     'page/category',
+    //     'page/order',
+    //     'page/order/:id',
+    //     'page/discount',
+    //     'page/publisher',
+    //   );
+
     consumer
       .apply(AuthMiddleware)
-      .exclude('/page/login', {
-        path: 'auth/server/login',
-        method: RequestMethod.POST,
-      })
+      .exclude('/page/login')
       .forRoutes(
-        '/',
-        'page/about',
-        'page/user',
-        'page/book',
-        'page/author',
-        'page/category',
-        'page/order',
-        'page/order/:id',
-        'page/discount',
-        'page/publisher',
+        { path: '/', method: RequestMethod.ALL },
+        { path: 'page/about', method: RequestMethod.ALL },
+        { path: 'page/user', method: RequestMethod.ALL },
+        { path: 'page/book', method: RequestMethod.ALL },
+        { path: 'page/author', method: RequestMethod.ALL },
+        { path: 'page/category', method: RequestMethod.ALL },
+        { path: 'page/order', method: RequestMethod.ALL },
+        { path: 'page/order/:id', method: RequestMethod.ALL },
+        { path: 'page/discount', method: RequestMethod.ALL },
+        { path: 'page/publisher', method: RequestMethod.ALL },
       );
   }
 }

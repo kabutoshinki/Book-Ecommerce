@@ -48,7 +48,7 @@
     const body = JSON.stringify({
       state: Boolean(state == 'true' ? true : false),
     });
-    console.log(body);
+
     fetch(url, {
       method: 'PATCH',
       headers: {

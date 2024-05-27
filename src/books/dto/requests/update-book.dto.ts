@@ -30,14 +30,12 @@ export class UpdateBookDto {
   @IsNotEmpty()
   price: number;
 
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value, 10))
-  @IsNotEmpty()
-  quantity: number;
-
   @IsOptional()
   @IsString()
   image: string;
+
+  @IsOptional()
+  average_rate?: number;
 
   @IsOptional()
   discountId?: string;
