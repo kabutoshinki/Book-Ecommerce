@@ -8,7 +8,16 @@ import { CreateBookDto } from './dto/requests/create-book.dto';
 import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
-import { In, IsNull, Not, Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  In,
+  IsNull,
+  LessThanOrEqual,
+  Like,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 import { PublishersService } from 'src/publishers/publishers.service';
 import { AuthorsService } from 'src/authors/authors.service';
 import { DiscountsService } from 'src/discounts/discounts.service';
@@ -117,6 +126,20 @@ export class BooksService {
     return books;
   }
 
+  async searchBooksByName(
+    limit: number,
+    name: string,
+  ): Promise<BookClientResponseDto[]> {
+    const queryOptions: FindManyOptions<Book> = {
+      relations: ['discount', 'categories'],
+      where: { title: Like(`%${name}%`) },
+      take: limit,
+    };
+
+    const books = await this.bookRepository.find(queryOptions);
+    return BookMapper.toBookClientResponseDtoList(books);
+  }
+
   async getOnSaleBooks(limit = 5): Promise<BookClientResponseDto[]> {
     const currentDate = new Date();
 
@@ -142,12 +165,22 @@ export class BooksService {
     return BookMapper.toBookClientResponseDtoList(popularBooks);
   }
 
-  async getPopularBooks(limit = 5): Promise<BookClientResponseDto[]> {
-    const featuredBooks = await this.bookRepository.find({
+  async getPopularBooks(
+    limit = 5,
+    categoryName?: string,
+  ): Promise<BookClientResponseDto[]> {
+    const currentDate = new Date();
+    const queryOptions: FindManyOptions<Book> = {
       relations: ['publisher', 'discount', 'authors', 'categories'],
       order: { average_rate: 'DESC' },
       take: limit,
-    });
+    };
+
+    if (categoryName && categoryName !== 'all' && categoryName.trim() !== '') {
+      queryOptions.where = { categories: { name: categoryName } };
+    }
+
+    const featuredBooks = await this.bookRepository.find(queryOptions);
     return BookMapper.toBookClientResponseDtoList(featuredBooks);
   }
 

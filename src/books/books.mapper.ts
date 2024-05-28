@@ -30,6 +30,7 @@ export class BookMapper {
     return bookResponseDto;
   }
   static toBooksClientResponseDto(book: Book): BookClientResponseDto {
+    const currentDate = new Date();
     const bookResponseDto = new BookClientResponseDto();
     bookResponseDto.id = book.id;
     bookResponseDto.title = book.title;
@@ -38,7 +39,12 @@ export class BookMapper {
     bookResponseDto.price = book.price;
     bookResponseDto.average_rate = book.average_rate;
     bookResponseDto.sold_quantity = book.sold_quantity;
-    if (book.discount) {
+    if (
+      book.discount &&
+      book.discount.isActive &&
+      new Date(book.discount.startAt) <= currentDate &&
+      new Date(book.discount.expiresAt) >= currentDate
+    ) {
       bookResponseDto.discount = DiscountMapper.toDiscountResponseDto(
         book.discount,
       );

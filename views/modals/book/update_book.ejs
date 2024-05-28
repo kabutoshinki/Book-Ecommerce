@@ -48,7 +48,7 @@
             <div class="col-md-4">
               <div class="mb-3">
                 <label for="updatePrice_<%= book.id %>" class="form-label">Price</label>
-                <input type="number" class="form-control" id="updatePrice_<%= book.id %>" name="price"
+                <input type="number" class="form-control" id="updatePrice_<%= book.id %>" min="1" max="100" name="price"
                   value="<%= book.price %>" required />
               </div>
               <div class="mb-3">

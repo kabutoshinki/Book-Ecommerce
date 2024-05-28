@@ -42,6 +42,13 @@ export class BooksController {
     return this.booksService.findAll();
   }
 
+  @Get('search')
+  async searchBooks(
+    @Query('limit') limit = 10,
+    @Query('name') name,
+  ): Promise<BookClientResponseDto[]> {
+    return this.booksService.searchBooksByName(limit, name);
+  }
   @Get('on-sale')
   async getOnSaleBooks(
     @Query('limit') limit = 5,
@@ -59,8 +66,9 @@ export class BooksController {
   @Get('popular')
   async getFeaturedBooks(
     @Query('limit') limit = 5,
+    @Query('categoryName') categoryName,
   ): Promise<BookClientResponseDto[]> {
-    return this.booksService.getPopularBooks(limit);
+    return this.booksService.getPopularBooks(limit, categoryName);
   }
 
   @Get('best-books')

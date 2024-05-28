@@ -11,6 +11,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { In, Repository } from 'typeorm';
 import { Book } from 'src/books/entities/book.entity';
+import { CategoryMapper } from './categories.mapper';
+import { CategoryResponseDto } from './dto/responses/category-response.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -32,8 +34,11 @@ export class CategoriesService {
     }
   }
 
-  async findAll() {
-    return await this.categoryRepository.find({ where: { isActive: true } });
+  async findAll(): Promise<CategoryResponseDto[]> {
+    const categories = await this.categoryRepository.find({
+      where: { isActive: true },
+    });
+    return CategoryMapper.toCategoryResponseDtoList(categories);
   }
   async findAllForAdmin() {
     return await this.categoryRepository.find();
