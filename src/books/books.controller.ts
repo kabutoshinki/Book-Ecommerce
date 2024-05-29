@@ -21,6 +21,8 @@ import { CacheKey } from '@nestjs/cache-manager';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Book } from './entities/book.entity';
 import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
+import { BooksQueryDto } from './dto/requests/books-query.dto';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('books')
 export class BooksController {
@@ -37,9 +39,11 @@ export class BooksController {
   }
 
   @Get()
-  @CacheKey('books')
-  findAll() {
-    return this.booksService.findAll();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getBooks(
+    @Query() query: BooksQueryDto,
+  ): Promise<Pagination<BookClientResponseDto>> {
+    return this.booksService.getBooks(query);
   }
 
   @Get('search')

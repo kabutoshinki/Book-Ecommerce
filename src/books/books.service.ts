@@ -31,6 +31,7 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
+import { BooksQueryDto } from './dto/requests/books-query.dto';
 
 @Injectable()
 export class BooksService {
@@ -315,6 +316,127 @@ export class BooksService {
       paginatedBooksDto,
       paginationMeta,
       paginationLinks,
+    );
+  }
+
+  async getBooks(
+    query: BooksQueryDto,
+  ): Promise<Pagination<BookClientResponseDto>> {
+    const {
+      search,
+      categories,
+      authors,
+      minPrice,
+      maxPrice,
+      minRate,
+      maxRate,
+      sort,
+      page = 1,
+      limit = 10,
+    } = query;
+
+    const queryBuilder = this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.categories', 'category')
+      .leftJoinAndSelect('book.authors', 'author')
+      .leftJoinAndSelect('book.discount', 'discount');
+
+    queryBuilder.where('book.isActive = true');
+
+    if (search) {
+      queryBuilder.andWhere(
+        '(book.title LIKE :search OR book.description LIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    if (categories && categories.length > 0) {
+      queryBuilder.andWhere(
+        (qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('book.id')
+            .from('book', 'book')
+            .leftJoin('book.categories', 'category')
+            .where('category.id IN (:...categories)')
+            .getQuery();
+
+          return `book.id IN ${subQuery}`;
+        },
+        { categories },
+      );
+    }
+
+    if (authors && authors.length > 0) {
+      queryBuilder.andWhere(
+        (qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('book.id')
+            .from('book', 'book')
+            .leftJoin('book.authors', 'author')
+            .where('author.id IN (:...authors)')
+            .getQuery();
+
+          return `book.id IN ${subQuery}`;
+        },
+        { authors },
+      );
+    }
+
+    if (minPrice !== undefined) {
+      queryBuilder.andWhere('book.price >= :minPrice', { minPrice });
+    }
+
+    if (maxPrice !== undefined) {
+      queryBuilder.andWhere('book.price <= :maxPrice', { maxPrice });
+    }
+
+    if (minRate !== undefined) {
+      queryBuilder.andWhere('book.average_rate >= :minRate', { minRate });
+    }
+
+    if (maxRate !== undefined) {
+      queryBuilder.andWhere('book.average_rate <= :maxRate', { maxRate });
+    }
+
+    switch (sort) {
+      case 'priceLow':
+        queryBuilder.orderBy('book.price', 'ASC');
+        break;
+      case 'priceHigh':
+        queryBuilder.orderBy('book.price', 'DESC');
+        break;
+      case 'popularity':
+        queryBuilder.orderBy('book.average_rate', 'DESC');
+        break;
+      case 'onSale':
+        queryBuilder
+          .orderBy('discount.amount', 'DESC')
+          .addOrderBy('book.price', 'ASC');
+        break;
+      default:
+        queryBuilder.orderBy('book.created_at', 'DESC');
+    }
+
+    const [books, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const paginatedBooksDto = BookMapper.toBookClientResponseDtoList(books);
+
+    const paginationMeta = {
+      totalItems,
+      itemCount: books.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+
+    return new Pagination<BookClientResponseDto>(
+      paginatedBooksDto,
+      paginationMeta,
     );
   }
 }
