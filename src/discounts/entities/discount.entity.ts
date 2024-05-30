@@ -18,7 +18,7 @@ export class Discount {
   @Column({ unique: true })
   name: string;
 
-  @Column('decimal')
+  @Column({ default: 0 })
   amount: number;
 
   @Column({ nullable: true })

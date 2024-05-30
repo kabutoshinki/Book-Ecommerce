@@ -84,7 +84,14 @@ export class BooksController {
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.booksService.findOne(id);
+    return this.booksService.findByBookId(id);
+  }
+  @Get(':id/related')
+  relatedBooks(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('limit') limit = 3,
+  ) {
+    return this.booksService.getRelatedBooks(id, limit);
   }
 
   @Patch(':id')

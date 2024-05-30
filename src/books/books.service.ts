@@ -9,6 +9,7 @@ import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
 import {
+  Brackets,
   FindManyOptions,
   In,
   IsNull,
@@ -127,6 +128,58 @@ export class BooksService {
     return books;
   }
 
+  async findByBookId(id: string): Promise<BookClientResponseDto> {
+    const book = await this.bookRepository.findOne({
+      where: { id, isActive: true },
+      relations: ['discount', 'authors', 'categories', 'publisher'],
+    });
+
+    if (!book) {
+      throw new NotFoundException(`Book with ID ${id} not found`);
+    }
+
+    return BookMapper.toBooksClientResponseDto(book);
+  }
+  async getRelatedBooks(
+    id: string,
+    limit: number,
+  ): Promise<BookClientResponseDto[]> {
+    const book = await this.bookRepository.findOne({
+      where: { id },
+      relations: ['categories', 'authors'],
+    });
+
+    if (!book) {
+      throw new NotFoundException(`Book with ID ${id} not found`);
+    }
+
+    const relatedBooksQuery = this.bookRepository
+      .createQueryBuilder('book')
+      .innerJoinAndSelect('book.categories', 'category')
+      .innerJoinAndSelect('book.authors', 'author')
+      .where('book.id != :id', { id })
+      .andWhere('book.isActive = true');
+
+    const categoryIds = book.categories.map((category) => category.id);
+    const authorIds = book.authors.map((author) => author.id);
+
+    relatedBooksQuery.andWhere(
+      new Brackets((qb) => {
+        qb.where('category.id IN (:...categoryIds)', { categoryIds });
+        if (authorIds.length > 0) {
+          qb.orWhere('author.id IN (:...authorIds)', { authorIds });
+        }
+      }),
+    );
+
+    relatedBooksQuery
+      .orderBy('book.average_rate', 'DESC')
+      .addOrderBy('book.sold_quantity', 'DESC');
+    const relatedBooks = await relatedBooksQuery.take(limit).getMany();
+
+    return BookMapper.toBookClientResponseDtoList(relatedBooks);
+  }
+
   async searchBooksByName(
     limit: number,
     name: string,
@@ -170,7 +223,6 @@ export class BooksService {
     limit = 5,
     categoryName?: string,
   ): Promise<BookClientResponseDto[]> {
-    const currentDate = new Date();
     const queryOptions: FindManyOptions<Book> = {
       relations: ['publisher', 'discount', 'authors', 'categories'],
       order: { average_rate: 'DESC' },

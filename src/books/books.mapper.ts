@@ -36,7 +36,7 @@ export class BookMapper {
     bookResponseDto.title = book.title;
     bookResponseDto.description = book.description;
     bookResponseDto.summary = book.summary;
-    bookResponseDto.price = book.price;
+    bookResponseDto.price = parseInt(book.price.toString());
     bookResponseDto.average_rate = book.average_rate;
     bookResponseDto.sold_quantity = book.sold_quantity;
     if (

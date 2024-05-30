@@ -15,9 +15,11 @@ export class UserMapper {
     userResponseDto.lastName = user.lastName;
     userResponseDto.avatar = user.avatar;
     userResponseDto.email = user.email;
-    userResponseDto.address = AddressMapper.toAddressResponseDtoList(
-      user.addresses,
-    );
+    if (user.addresses) {
+      userResponseDto.address = AddressMapper.toAddressResponseDtoList(
+        user.addresses,
+      );
+    }
     return userResponseDto;
   }
 

@@ -3,10 +3,14 @@ import { AddToCartDto } from './dto/requests/add-to-cart.dto';
 import { UpdateCartDto } from './dto/requests/update-cart.dto';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CartItem } from './interfaces/CartItem';
+import { BooksService } from 'src/books/books.service';
 
 @Injectable()
 export class CartService {
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private bookService: BooksService,
+  ) {}
 
   private getCartKey(userId: string): string {
     return `cart:${userId}`;
@@ -30,9 +34,28 @@ export class CartService {
     await this.cacheManager.set(cartKey, cart);
     return cart;
   }
-  async getCart(userId: string) {
+  // async getCart(userId: string) {
+  //   const cartKey = this.getCartKey(userId);
+  //   return (await this.cacheManager.get(cartKey)) || [];
+  // }
+
+  async getCart(userId: string): Promise<CartItem[]> {
     const cartKey = this.getCartKey(userId);
-    return (await this.cacheManager.get(cartKey)) || [];
+    const cart: CartItem[] = (await this.cacheManager.get(cartKey)) || [];
+
+    // Extract bookIds from cart
+    const bookIds = cart.map((item) => item.bookId);
+
+    // Fetch books based on bookIds
+    const books = await this.bookService.findByIds(bookIds);
+
+    // Combine cart items with book information
+    const cartWithBooks: CartItem[] = cart.map((item) => {
+      const book = books.find((book) => book.id === item.bookId);
+      return { ...item, book };
+    });
+
+    return cartWithBooks;
   }
 
   async clearCart(userId: string) {
@@ -48,7 +71,7 @@ export class CartService {
     userId: string,
     updateCartDto: UpdateCartDto,
   ) {
-    const userCartKey = this.getUserCartKey(userId);
+    const userCartKey = this.getCartKey(userId);
     const userCart =
       ((await this.cacheManager.get(userCartKey)) as CartItem[]) || [];
 
@@ -66,7 +89,7 @@ export class CartService {
     userId: string,
     updateCartDto: UpdateCartDto,
   ) {
-    const userCartKey = this.getUserCartKey(userId);
+    const userCartKey = this.getCartKey(userId);
     const userCart =
       ((await this.cacheManager.get(userCartKey)) as CartItem[]) || [];
 
@@ -83,7 +106,7 @@ export class CartService {
   }
 
   async deleteCartItem(userId: string, bookId: string) {
-    const userCartKey = this.getUserCartKey(userId);
+    const userCartKey = this.getCartKey(userId);
     const userCart =
       ((await this.cacheManager.get(userCartKey)) as CartItem[]) || [];
 

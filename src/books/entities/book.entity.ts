@@ -31,10 +31,10 @@ export class Book {
   @Column()
   summary: string;
 
-  @Column('decimal')
+  @Column({ default: 0, nullable: true })
   price: number;
 
-  @Column({ default: 0, type: 'decimal' })
+  @Column({ default: 0, nullable: true })
   sold_quantity: number;
 
   @Column({

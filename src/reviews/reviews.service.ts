@@ -52,9 +52,12 @@ export class ReviewsService {
 
   async findReviewsByBookId(bookId: string) {
     await this.bookService.findOne(bookId);
-    return await this.reviewRepository.find({
+    const reviews = await this.reviewRepository.find({
       where: { book: { id: bookId } },
+      relations: ['reviewer'],
     });
+
+    return ReviewMapper.toReviewListResponseDtoList(reviews);
   }
 
   async findOne(id: string) {
