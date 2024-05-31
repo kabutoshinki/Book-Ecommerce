@@ -35,10 +35,14 @@ export class AddressesController {
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.addressesService.findOne(id);
   }
+  @Post(':id/:userId/selected')
+  addressSelected(@Body() id: string, userId: string) {
+    return this.addressesService.selectAddress(userId, id);
+  }
 
   @Get('user/:userId')
   findAddressByUserId(@Param('userId', ParseUUIDPipe) userId: string) {
-    return this.addressesService.findOne(userId);
+    return this.addressesService.findAddressByUserId(userId);
   }
 
   @Patch(':id')

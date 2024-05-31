@@ -29,8 +29,12 @@ export class BookMapper {
     bookResponseDto.image = book.image;
     return bookResponseDto;
   }
+
   static toBooksClientResponseDto(book: Book): BookClientResponseDto {
-    const currentDate = new Date();
+    const stripTime = (date: Date): Date =>
+      new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const currentDateOnly = stripTime(new Date());
+
     const bookResponseDto = new BookClientResponseDto();
     bookResponseDto.id = book.id;
     bookResponseDto.title = book.title;
@@ -39,21 +43,30 @@ export class BookMapper {
     bookResponseDto.price = parseInt(book.price.toString());
     bookResponseDto.average_rate = book.average_rate;
     bookResponseDto.sold_quantity = book.sold_quantity;
-    if (
-      book.discount &&
-      book.discount.isActive &&
-      new Date(book.discount.startAt) <= currentDate &&
-      new Date(book.discount.expiresAt) >= currentDate
-    ) {
-      bookResponseDto.discount = DiscountMapper.toDiscountResponseDto(
-        book.discount,
+    bookResponseDto.image = book.image;
+
+    if (book.discount?.isActive) {
+      const discountStartAtOnly = stripTime(new Date(book.discount.startAt));
+      const discountExpiresAtOnly = stripTime(
+        new Date(book.discount.expiresAt),
       );
+
+      if (
+        discountStartAtOnly <= currentDateOnly &&
+        discountExpiresAtOnly >= currentDateOnly
+      ) {
+        bookResponseDto.discount = DiscountMapper.toDiscountResponseDto(
+          book.discount,
+        );
+      }
     }
+
     if (book.publisher) {
       bookResponseDto.publisher = PublisherMapper.toPublisherResponseDto(
         book.publisher,
       );
     }
+
     if (book.categories) {
       bookResponseDto.categories = CategoryMapper.toCategoryResponseDtoList(
         book.categories,
@@ -65,7 +78,7 @@ export class BookMapper {
         book.authors,
       );
     }
-    bookResponseDto.image = book.image;
+
     return bookResponseDto;
   }
 

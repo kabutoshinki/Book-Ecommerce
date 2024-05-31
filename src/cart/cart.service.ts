@@ -38,6 +38,11 @@ export class CartService {
   //   const cartKey = this.getCartKey(userId);
   //   return (await this.cacheManager.get(cartKey)) || [];
   // }
+  async getCartQuantity(userId: string): Promise<number> {
+    const cartKey = this.getCartKey(userId);
+    const cart: CartItem[] = (await this.cacheManager.get(cartKey)) || [];
+    return cart.length;
+  }
 
   async getCart(userId: string): Promise<CartItem[]> {
     const cartKey = this.getCartKey(userId);

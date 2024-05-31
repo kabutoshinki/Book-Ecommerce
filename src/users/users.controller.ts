@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Request,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/requests/create-user.dto';
@@ -18,6 +20,7 @@ import { Role } from '../enums/role.enum';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UpdateUserStateDto } from './dto/requests/update-state-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 @ApiTags('Users')
@@ -35,11 +38,11 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get('profile')
+  @Get('profile/:id')
   @Roles(Role.ADMIN, Role.USER)
   @ApiBearerAuth('JWT-auth')
-  getProfile(@Request() req) {
-    return req.user;
+  getProfile(@Param('id') id: string) {
+    return this.usersService.getProfile(id);
   }
 
   // @Get(':id')
@@ -53,8 +56,13 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  @UseInterceptors(FileInterceptor('file'))
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.usersService.update(id, updateUserDto, file);
   }
 
   @Patch('change-state/:id')

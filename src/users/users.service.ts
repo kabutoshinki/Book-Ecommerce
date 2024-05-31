@@ -20,12 +20,14 @@ import { UserMapper } from './users.mapper';
 import { Role } from 'src/enums/role.enum';
 import { UserResponseForAdminDto } from './dto/response/user-resoponse-for-admin.dto';
 import { UpdateUserStateDto } from './dto/requests/update-state-user.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(userDTO: CreateUserDto): Promise<UserResponseDto> {
@@ -45,6 +47,14 @@ export class UsersService {
     const newUser = await this.usersRepository.save(userDetail);
 
     return UserMapper.toUserResponseDto(newUser);
+  }
+  async getProfile(userId: string): Promise<UserResponseDto> {
+    const userProfile = await this.usersRepository.findOne({
+      relations: ['addresses'],
+      where: { id: userId },
+    });
+
+    return UserMapper.toUserResponseDto(userProfile);
   }
 
   async findAll(): Promise<UserResponseDto[]> {
@@ -68,8 +78,6 @@ export class UsersService {
   }
   async findById(@Param('id') userId: string): Promise<UserResponseDto> {
     const user = await this.usersRepository.findOneBy({ id: userId });
-    console.log('user');
-    console.log(user);
 
     if (!user) {
       throw new NotFoundException({
@@ -97,12 +105,31 @@ export class UsersService {
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
+    file: Express.Multer.File,
   ): Promise<UserResponseDto> {
+    let uploadResult;
     const user = await this.findUserById(id);
-    const updatedUser = UserMapper.toUpdateUserEntity(user, updateUserDto);
+    try {
+      if (file) {
+        uploadResult = await this.cloudinaryService.uploadFile(file, 'users');
+        if (user.avatar.startsWith('https://res.cloudinary.com')) {
+          const urlParts = user.avatar.split('/');
+          const publicIdWithExtension = urlParts[urlParts.length - 1];
+          const publicId = publicIdWithExtension.split('.')[0];
 
-    const savedUser = await this.usersRepository.save(updatedUser);
-    return UserMapper.toUserResponseDto(savedUser);
+          await this.cloudinaryService.deleteFile(`books/${publicId}`);
+        }
+        user.avatar = uploadResult.secure_url;
+      }
+
+      const updatedUser = UserMapper.toUpdateUserEntity(user, updateUserDto);
+      const savedUser = await this.usersRepository.save(updatedUser);
+      return UserMapper.toUserResponseDto(savedUser);
+    } catch (error) {
+      if (uploadResult) {
+        await this.cloudinaryService.deleteFile(uploadResult.public_id);
+      }
+    }
   }
 
   async remove(id: string) {

@@ -66,10 +66,6 @@ export class UserMapper {
   ): User {
     existingUser.firstName = updateUserDto.firstName ?? existingUser.firstName;
     existingUser.lastName = updateUserDto.lastName ?? existingUser.lastName;
-    existingUser.avatar = updateUserDto.avatar
-      ? updateUserDto.avatar
-      : 'https://static-00.iconduck.com/assets.00/avatar-default-icon-2048x2048-h6w375ur.png';
-
     existingUser.password = updateUserDto.password ?? existingUser.password;
     return existingUser;
   }

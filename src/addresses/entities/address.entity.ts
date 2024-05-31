@@ -28,6 +28,9 @@ export class Address {
   @Column()
   phone_number: string;
 
+  @Column({ default: false })
+  selected: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 

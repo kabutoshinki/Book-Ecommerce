@@ -29,6 +29,11 @@ export class CartController {
     return 'Item added to cart';
   }
 
+  @Get(':userId/quantity')
+  async getCartQuantity(@Param('userId') userId: string): Promise<number> {
+    return this.cartService.getCartQuantity(userId);
+  }
+
   @Get(':userId')
   async getCart(@Param('userId') userId: string) {
     return this.cartService.getCart(userId);

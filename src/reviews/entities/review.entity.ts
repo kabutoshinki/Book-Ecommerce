@@ -13,6 +13,9 @@ export class Review {
   @Column('int')
   rating: number;
 
+  @Column({ default: true })
+  isActive: boolean;
+
   @ManyToOne(() => Book, (book) => book.reviews)
   book: Book;
 

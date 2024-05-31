@@ -27,6 +27,15 @@ export class AddressesService {
     return this.addressRepository.find();
   }
 
+  async selectAddress(userId: string, addressId: string) {
+    const addresses = await this.findAddressByUserId(userId);
+    for (const address of addresses) {
+      address.selected = address.id === addressId;
+      await this.addressRepository.save(address);
+    }
+    return 'Address selected';
+  }
+
   async findOne(id: string) {
     const address = await this.addressRepository.findOne({ where: { id } });
     if (!address) {
