@@ -19,11 +19,11 @@ export class DiscountResponseForAdminDto {
 
   @IsDate()
   @IsNotEmpty()
-  startAt: string;
+  startAt: Date;
 
   @IsDate()
   @IsNotEmpty()
-  expiresAt: string;
+  expiresAt: Date;
 
   @IsDate()
   @IsNotEmpty()

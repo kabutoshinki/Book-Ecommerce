@@ -27,8 +27,8 @@ export class DiscountMapper {
     discountResponseDto.amount = discount.amount;
     discountResponseDto.description = discount.description;
     discountResponseDto.isActive = discount.isActive;
-    discountResponseDto.startAt = formatDateType(discount.startAt);
-    discountResponseDto.expiresAt = formatDateType(discount.expiresAt);
+    discountResponseDto.startAt = discount.startAt;
+    discountResponseDto.expiresAt = discount.expiresAt;
     discountResponseDto.created_at = formatDate(discount.created_at);
     discountResponseDto.updated_at = formatDate(discount.updated_at);
     return discountResponseDto;

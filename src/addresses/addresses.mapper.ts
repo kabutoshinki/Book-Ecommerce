@@ -10,6 +10,7 @@ export class AddressMapper {
     addressResponseDto.address_line_2 = address.address_line_2;
     addressResponseDto.city = address.city;
     addressResponseDto.phone_number = address.phone_number;
+    addressResponseDto.isSelected = address.isSelected;
     return addressResponseDto;
   }
 

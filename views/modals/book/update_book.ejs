@@ -52,8 +52,8 @@
                   value="<%= book.price %>" required />
               </div>
               <div class="mb-3">
-                <label for="publisherId" class="form-label">Publisher</label>
-                <select id="publisherId" name="publisherId" data-search="true" data-silent-initial-value-set="true"
+                <label for="update_publisherId" class="form-label">Publisher</label>
+                <select id="update_publisherId" name="publisherId" data-search="true" data-silent-initial-value-set="true"
                   placeholder="Publisher Select" required>
                   <% publishers.forEach((publisher)=> { %>
                     <option value="<%= publisher.id %>" <%=publisher.id===book.publisherId ? 'selected' : '' %>><%=
@@ -63,8 +63,8 @@
                 </select>
               </div>
               <div class="mb-3">
-                <label for="categoryIds" class="form-label">Categories</label>
-                <select multiple id="categoryIds" name="categoryIds" placeholder="Category Select" data-search="true"
+                <label for="update_categoryIds" class="form-label">Categories</label>
+                <select multiple id="update_categoryIds" name="categoryIds" placeholder="Category Select" data-search="true"
                   required>
                   <% categories.forEach((category)=> { %>
                     <option value="<%= category.id %>" <%=book.categoryIds.includes(category.id) ? 'selected' : '' %>>
@@ -74,8 +74,8 @@
                 </select>
               </div>
               <div class="mb-3">
-                <label for="authorIds" class="form-label">Authors</label>
-                <select multiple id="authorIds" name="authorIds" placeholder="Authors Select" data-search="true"
+                <label for="update_authorIds" class="form-label">Authors</label>
+                <select multiple id="update_authorIds" name="authorIds" placeholder="Authors Select" data-search="true"
                   data-silent-initial-value-set="true" required>
                   <% authors.forEach((author)=> { %>
                     <option value="<%= author.id %>" <%=book.authorIds.includes(author.id) ? 'selected' : '' %>><%=
@@ -85,8 +85,8 @@
                 </select>
               </div>
               <div class="mb-3">
-                <label for="discountId" class="form-label">Discount</label>
-                <select id="discountId" name="discountId">
+                <label for="update_discountId" class="form-label">Discount</label>
+                <select id="update_discountId" name="discountId">
                   <% discounts.forEach((discount)=> { %>
                     <option value="<%= discount.id %>" <%=discount.id===book.discountId ? 'selected' : '' %>><%=
                         discount.name %>
@@ -113,10 +113,10 @@
 <!-- Virtual Select Script -->
 <script src="/js/virtual-select.min.js"></script>
 <style>
-  #authorIds,
-  #discountId,
-  #categoryIds,
-  #publisherId {
+  #update_authorIds,
+  #update_publisherId,
+  #update_categoryIds,
+  #update_discountId {
     max-width: 100%;
   }
 
@@ -139,16 +139,16 @@
   document.addEventListener('DOMContentLoaded', function () {
     // Initialize VirtualSelect for each form element
     VirtualSelect.init({
-      ele: '#authorIds',
+      ele: '#update_authorIds',
     });
     VirtualSelect.init({
-      ele: '#categoryIds',
+      ele: '#update_categoryIds',
     });
     VirtualSelect.init({
-      ele: '#publisherId',
+      ele: '#update_publisherId',
     });
     VirtualSelect.init({
-      ele: '#discountId',
+      ele: '#update_discountId',
     });
 
     function turnOffSpinner(updateBookBtn, updateBookBtnText, updateBookBtnSpinner) {
@@ -172,11 +172,11 @@
 
       const formData = new FormData(event.target);
 
-      const authorIds = document.getElementById(`authorIds`).value;
-      const categoryIds = document.getElementById(`categoryIds`).value;
-      const publisherId = document.getElementById(`publisherId`).value;
-      const discountId = document.getElementById(`discountId`).value;
-      console.log(authorIds)
+      const authorIds = document.getElementById(`update_authorIds`).value;
+      const categoryIds = document.getElementById(`update_categoryIds`).value;
+      const publisherId = document.getElementById(`update_publisherId`).value;
+      const discountId = document.getElementById(`update_discountId`).value;
+     
       formData.set('authorIds', (authorIds));
       formData.set('categoryIds', (categoryIds));
       formData.set('publisherId', publisherId);
@@ -189,7 +189,8 @@
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            location.reload(); // Reload the page to see the updated book
+            // location.reload(); // Reload the page to see the updated book
+            turnOffSpinner(updateBookBtn, updateBookBtnText, updateBookBtnSpinner);
           } else {
             alert(data.message);
             turnOffSpinner(updateBookBtn, updateBookBtnText, updateBookBtnSpinner);

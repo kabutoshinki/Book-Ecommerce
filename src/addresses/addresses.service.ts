@@ -29,8 +29,9 @@ export class AddressesService {
 
   async selectAddress(userId: string, addressId: string) {
     const addresses = await this.findAddressByUserId(userId);
+
     for (const address of addresses) {
-      address.selected = address.id === addressId;
+      address.isSelected = address.id === addressId;
       await this.addressRepository.save(address);
     }
     return 'Address selected';

@@ -29,7 +29,7 @@ export class Address {
   phone_number: string;
 
   @Column({ default: false })
-  selected: boolean;
+  isSelected: boolean;
 
   @CreateDateColumn()
   created_at: Date;

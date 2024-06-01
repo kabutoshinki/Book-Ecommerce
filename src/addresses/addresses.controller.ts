@@ -36,7 +36,7 @@ export class AddressesController {
     return this.addressesService.findOne(id);
   }
   @Post(':id/:userId/selected')
-  addressSelected(@Body() id: string, userId: string) {
+  addressSelected(@Param('id') id: string, @Param('userId') userId: string) {
     return this.addressesService.selectAddress(userId, id);
   }
 

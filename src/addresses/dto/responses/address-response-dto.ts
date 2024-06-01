@@ -16,6 +16,9 @@ export class AddressResponseDto {
   @IsNotEmpty()
   city: string;
 
+  @IsNotEmpty()
+  isSelected: boolean;
+
   @IsOptional()
   phone_number: string;
 }

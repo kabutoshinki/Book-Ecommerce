@@ -22,23 +22,27 @@
       <div class="modal-body">
         <form id="discountUpdateForm_<%= discount.id %>">
           <div class="mb-3">
-            <label for="name_<%= discount.id %>" class="form-label">Name</label>
+            <label for="update_name_<%= discount.id %>" class="form-label"
+              >Name</label
+            >
             <input
               type="text"
               class="form-control"
-              id="name_<%= discount.id %>"
+              id="update_name_<%= discount.id %>"
               value="<%= discount.name %>"
               name="name"
               required
             />
           </div>
           <div class="mb-3">
-            <label for="description_<%= discount.id %>" class="form-label"
+            <label
+              for="update_description_<%= discount.id %>"
+              class="form-label"
               >Description</label
             >
             <textarea
               class="form-control"
-              id="description_<%= discount.id %>"
+              id="update_description_<%= discount.id %>"
               name="description"
               rows="3"
               required
@@ -47,43 +51,44 @@
             >
           </div>
           <div class="mb-3">
-            <label for="amount_<%= discount.id %>" class="form-label"
+            <label for="update_amount_<%= discount.id %>" class="form-label"
               >Amount</label
             >
             <input
               type="number"
               class="form-control"
-              id="amount_<%= discount.id %>"
+              id="update_amount_<%= discount.id %>"
               value="<%= discount.amount %>"
               name="amount"
               required
             />
           </div>
           <div class="mb-3">
-            <label for="startAt_<%= discount.id %>" class="form-label"
+            <label for="startDate_<%= discount.id %>" class="form-label"
               >Start Date</label
             >
             <input
               type="date"
               class="form-control"
-              id="startAt_<%= discount.id %>"
-              name="startAt"
+              id="startDate_<%= discount.id %>"
+              value="<%=  (discount.startAt) %>"
+              name="start_date"
               required
             />
           </div>
           <div class="mb-3">
-            <label for="expiresAt_<%= discount.id %>" class="form-label"
-              >Expires At</label
+            <label for="expireDate_<%= discount.id %>" class="form-label"
+              >Expire Date</label
             >
             <input
               type="date"
               class="form-control"
-              id="expiresAt_<%= discount.id %>"
-              name="expiresAt"
+              id="expireDate_<%= discount.id %>"
+              name="expire_date"
+              value="<%=  (discount.expiresAt) %>"
               required
             />
           </div>
-
           <div class="modal-footer">
             <button
               type="button"
@@ -97,9 +102,9 @@
               class="btn btn-warning"
               id="updateDiscountBtn_<%= discount.id %>"
             >
-              <span id="updateDiscountBtnText_<%= discount.id %>"
-                >Update Discount</span
-              >
+              <span id="updateDiscountBtnText_<%= discount.id %>">
+                Update Discount
+              </span>
               <span
                 class="spinner-border spinner-border-sm d-none"
                 id="updateDiscountBtnSpinner_<%= discount.id %>"
@@ -125,21 +130,13 @@
     updateDiscountBtn.disabled = false;
   }
 
+  // Convert "dd-MM-yyyy" to "yyyy-MM-dd"
   function formatDateToISO(dateString) {
     const [day, month, year] = dateString.split('-');
     return `${year}-${month}-${day}`;
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    // Set initial values for date inputs
-    const startAtField = document.getElementById('startAt_<%= discount.id %>');
-    const expiresAtField = document.getElementById(
-      'expiresAt_<%= discount.id %>',
-    );
-
-    startAtField.value = formatDateToISO('<%= discount.startAt %>');
-    expiresAtField.value = formatDateToISO('<%= discount.expiresAt %>');
-
     document
       .getElementById('discountUpdateForm_<%= discount.id %>')
       .addEventListener('submit', function (event) {
@@ -161,23 +158,30 @@
         updateDiscountBtn.disabled = true;
 
         // Get form data
-        const name = document.getElementById('name_<%= discount.id %>').value;
+        const name = document.getElementById(
+          'update_name_<%= discount.id %>',
+        ).value;
         const description = document.getElementById(
-          'description_<%= discount.id %>',
+          'update_description_<%= discount.id %>',
         ).value;
         const amount = document.getElementById(
-          'amount_<%= discount.id %>',
+          'update_amount_<%= discount.id %>',
         ).value;
-        const startAt = document.getElementById(
-          'startAt_<%= discount.id %>',
+        const startDate = document.getElementById(
+          'startDate_<%= discount.id %>',
         ).value;
-        const expiresAt = document.getElementById(
-          'expiresAt_<%= discount.id %>',
+        const expireDate = document.getElementById(
+          'expireDate_<%= discount.id %>',
         ).value;
+        console.log('Name:', name);
+        console.log('Description:', description);
+        console.log('Amount:', amount);
+        console.log('Start Date:', startDate);
+        console.log('Expire Date:', expireDate);
         const currentDate = new Date().toISOString().split('T')[0];
 
         // Validate dates
-        if (new Date(expiresAt) <= new Date(currentDate)) {
+        if (new Date(expireDate) <= new Date(currentDate)) {
           alert('Expire date must be in the future.');
           turnOffSpinner(
             updateDiscountBtn,
@@ -187,7 +191,7 @@
           return;
         }
 
-        if (new Date(startAt) > new Date(expiresAt)) {
+        if (new Date(startDate) > new Date(expireDate)) {
           alert('Start date cannot be after the expire date.');
           turnOffSpinner(
             updateDiscountBtn,
@@ -196,13 +200,14 @@
           );
           return;
         }
+
         // Construct payload
         const payload = {
           name: name,
           description: description,
           amount: parseInt(amount),
-          startAt: startAt,
-          expiresAt: expiresAt,
+          startAt: startDate,
+          expiresAt: expireDate,
         };
 
         fetch('/discounts/<%= discount.id %>', {
