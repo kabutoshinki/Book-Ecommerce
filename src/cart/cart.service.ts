@@ -120,6 +120,14 @@ export class CartService {
     await this.cacheManager.set(userCartKey, updatedCart);
   }
 
+  async deleteItemsFromCart(userId: string, bookIds: string[]) {
+    const cartKey = this.getCartKey(userId);
+    const cart: CartItem[] = (await this.cacheManager.get(cartKey)) || [];
+    const updatedCart = cart.filter((item) => !bookIds.includes(item.bookId));
+
+    await this.cacheManager.set(cartKey, updatedCart);
+  }
+
   async mergeCarts(guestCartKey: string, userCartKey: string): Promise<void> {
     const guestCart: CartItem[] =
       (await this.cacheManager.get(guestCartKey)) || [];

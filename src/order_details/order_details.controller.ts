@@ -21,12 +21,12 @@ export class OrderDetailsController {
   constructor(private readonly orderDetailsService: OrderDetailsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post(':userId')
   createOrder(
-    @Request() req,
+    @Param('userId') userId: string,
     @Body() createOrderDetailDto: CreateOrderDetailDto,
   ) {
-    const userId = req.user.userId;
+    // const userId = req.user.userId;
     return this.orderDetailsService.createOrderDetail(
       userId,
       createOrderDetailDto,
@@ -42,6 +42,16 @@ export class OrderDetailsController {
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.orderDetailsService.getOrderDetailById(id);
+  }
+
+  @Get('/user/:id')
+  findOrdersByUserId(@Param('id', ParseUUIDPipe) id: string) {
+    return this.orderDetailsService.findOrdersByUserId(id);
+  }
+
+  @Get(':id/order_items')
+  findOrderItemsByOrderId(@Param('id', ParseUUIDPipe) id: string) {
+    return this.orderDetailsService.getItemsByOrderId(id);
   }
 
   @Patch(':id')

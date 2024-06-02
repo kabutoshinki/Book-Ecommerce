@@ -11,4 +11,8 @@ export class OrderResponseDto {
   quantity: number;
 
   user: UserResponseDto;
+
+  created_at: string;
+
+  updated_at: string;
 }

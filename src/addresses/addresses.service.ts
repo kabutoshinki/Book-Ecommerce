@@ -48,6 +48,7 @@ export class AddressesService {
     await this.userService.findById(userId);
     return await this.addressRepository.find({
       where: { user: { id: userId } },
+      order: { isSelected: 'DESC' },
     });
   }
 

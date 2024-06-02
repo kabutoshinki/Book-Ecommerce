@@ -14,6 +14,9 @@ import { PaymentStatus } from 'src/enums/payment-status.enums';
 import { UpdateOrderStateDto } from './dto/requests/update-state-order.dto';
 import { OrderItemBooksResponseDto } from 'src/order_item/dto/responses/order-items-books-response';
 import { OrderDetailGetItemsResponseDto } from './dto/responses/order-detail-get-items-response.dto';
+import { CartService } from 'src/cart/cart.service';
+import { OrderResponseDto } from './dto/responses/order-response.dto';
+import { OrderGetItemsResponseDto } from './dto/responses/order-get-items-response.dto';
 
 @Injectable()
 export class OrderDetailsService {
@@ -24,6 +27,7 @@ export class OrderDetailsService {
     private readonly orderItemRepository: Repository<OrderItem>,
     private readonly bookService: BooksService,
     private readonly userService: UsersService,
+    private readonly cartService: CartService,
   ) {}
 
   async createOrderDetail(
@@ -31,6 +35,7 @@ export class OrderDetailsService {
     createOrderDetailDto: CreateOrderDetailDto,
   ) {
     const user = await this.userService.findUserById(userId);
+
     const bookIds = await createOrderDetailDto.orderItems.map(
       (item) => item.bookId,
     );
@@ -48,8 +53,8 @@ export class OrderDetailsService {
       orderItem.quantity = item.quantity;
       return orderItem;
     });
-
     await this.orderItemRepository.save(orderItems);
+    await this.cartService.clearCart(userId);
     return 'Order created';
   }
 
@@ -70,7 +75,7 @@ export class OrderDetailsService {
     return OrderMapper.toOrderDetailResponseDto(orderDetail);
   }
 
-  async getOrderDetailGetItemsById(
+  async getOrderItemsBookByOrderId(
     orderDetailId: string,
   ): Promise<OrderDetailGetItemsResponseDto> {
     const orderDetail = await this.orderDetailRepository.findOne({
@@ -86,17 +91,48 @@ export class OrderDetailsService {
 
     return OrderMapper.toOrderDetailGetItemsResponseDto(orderDetail);
   }
+  async getItemsByOrderId(
+    orderDetailId: string,
+  ): Promise<OrderGetItemsResponseDto> {
+    const orderDetail = await this.orderDetailRepository.findOne({
+      where: { id: orderDetailId },
+      relations: ['items.book'],
+    });
+
+    if (!orderDetail) {
+      throw new NotFoundException(
+        `OrderDetail with id ${orderDetailId} not found`,
+      );
+    }
+
+    return OrderMapper.toOrderIdGetItemsResponseDto(orderDetail);
+  }
 
   async getAllOrderDetails(): Promise<OrderResponseForAdminDto[]> {
-    const orders = await this.orderDetailRepository.find({
-      relations: ['items', 'user', 'user.addresses'],
-    });
+    const orders = await this.orderDetailRepository
+      .createQueryBuilder('orderDetail')
+      .leftJoinAndSelect('orderDetail.user', 'user')
+      .leftJoinAndSelect('orderDetail.items', 'items')
+      .leftJoinAndSelect('user.addresses', 'address')
+      .orderBy('address.isSelected', 'DESC')
+      .getMany();
 
     return OrderMapper.toOrderResponseForAdminDtoList(orders);
   }
-
   async findOne(id: string) {
     return await this.orderDetailRepository.findOneByOrFail({ id });
+  }
+
+  async findOrdersByUserId(userId: string): Promise<OrderResponseDto[]> {
+    const orders = await this.orderDetailRepository
+      .createQueryBuilder('orderDetail')
+      .leftJoinAndSelect('orderDetail.user', 'user')
+      .leftJoinAndSelect('orderDetail.items', 'items')
+      .where('orderDetail.user.id = :userId', { userId })
+      .orderBy('orderDetail.created_at', 'DESC')
+      .getMany();
+
+    return OrderMapper.toOrderResponseDtoList(orders);
   }
 
   async updateOrder(
@@ -127,7 +163,7 @@ export class OrderDetailsService {
     orderDetailId: string,
     updateOrderStateDto: UpdateOrderStateDto,
   ) {
-    const orderDetail = await this.getOrderDetailGetItemsById(orderDetailId);
+    const orderDetail = await this.getOrderItemsBookByOrderId(orderDetailId);
 
     if (updateOrderStateDto.state) {
       orderDetail.status = PaymentStatus.Succeeded;

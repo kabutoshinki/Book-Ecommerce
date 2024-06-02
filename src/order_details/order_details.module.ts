@@ -6,12 +6,14 @@ import { OrderDetail } from './entities/order_detail.entity';
 import { BooksModule } from 'src/books/books.module';
 import { UsersModule } from 'src/users/users.module';
 import { OrderItem } from 'src/order_item/entities/order_item.entity';
+import { CartModule } from 'src/cart/cart.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([OrderDetail, OrderItem]),
     UsersModule,
     BooksModule,
+    CartModule,
   ],
   controllers: [OrderDetailsController],
   providers: [OrderDetailsService],

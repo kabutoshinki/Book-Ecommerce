@@ -9,6 +9,7 @@ import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { OrderDetailResponseDto } from './dto/responses/order-detail-response.dto';
 import { OrderItemMapper } from 'src/order_item/order_item.mapper';
 import { OrderDetailGetItemsResponseDto } from './dto/responses/order-detail-get-items-response.dto';
+import { OrderGetItemsResponseDto } from './dto/responses/order-get-items-response.dto';
 
 @Injectable()
 export class OrderMapper {
@@ -19,6 +20,8 @@ export class OrderMapper {
     orderResponseDto.quantity = order.items.length;
     orderResponseDto.user = UserMapper.toUserResponseDto(order.user);
     orderResponseDto.status = order.status;
+    orderResponseDto.created_at = formatDate(order.created_at);
+    orderResponseDto.updated_at = formatDate(order.created_at);
     return orderResponseDto;
   }
 
@@ -34,6 +37,7 @@ export class OrderMapper {
     orderResponseDto.updated_at = formatDate(order.updated_at);
     return orderResponseDto;
   }
+
   static toOrderDetailGetItemsResponseDto(
     order: OrderDetail,
   ): OrderDetailGetItemsResponseDto {
@@ -43,6 +47,15 @@ export class OrderMapper {
     orderResponseDto.item = OrderItemMapper.toOrderItemBooksResponseDtoList(
       order.items,
     );
+    return orderResponseDto;
+  }
+  static toOrderIdGetItemsResponseDto(
+    order: OrderDetail,
+  ): OrderGetItemsResponseDto {
+    const orderResponseDto = new OrderGetItemsResponseDto();
+    orderResponseDto.id = order.id;
+    orderResponseDto.status = order.status;
+    orderResponseDto.item = OrderItemMapper.toOrderResponseDtoList(order.items);
     return orderResponseDto;
   }
 
@@ -63,6 +76,13 @@ export class OrderMapper {
   static toOrderResponseDtoList(orders: OrderDetail[]): OrderResponseDto[] {
     return orders.map((order) => this.toOrderResponseDto(order));
   }
+
+  static toOrderDetailResponseDtoList(
+    orders: OrderDetail[],
+  ): OrderDetailResponseDto[] {
+    return orders.map((order) => this.toOrderDetailResponseDto(order));
+  }
+
   static toOrderResponseForAdminDtoList(
     orders: OrderDetail[],
   ): OrderResponseForAdminDto[] {

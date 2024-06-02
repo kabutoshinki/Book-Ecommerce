@@ -133,7 +133,9 @@ export class AppController {
   @Render('pages/order')
   async order(@Request() req) {
     const orders = await this.orderService.getAllOrderDetails();
-
+    console.log('====================================');
+    console.log(orders);
+    console.log('====================================');
     return { title: 'Order Page', orders: orders, user: req.user };
   }
   @Get('page/order/:id')
