@@ -1,1 +1,105 @@
-<h2>Dashboard Page</h2>
+<div class="container mx-auto py-12 px-4">
+  <h1 class="text-4xl font-bold text-center mb-8">Dashboard</h1>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-xl font-bold mb-4">Total Users</h3>
+      <p class="text-3xl"><%= users %></p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-xl font-bold mb-4">Total Books</h3>
+      <p class="text-3xl"><%= books %></p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-xl font-bold mb-4">Total Reviews</h3>
+      <p class="text-3xl"><%= reviews %></p>
+    </div>
+  </div>
+  <div class="grid lg:grid-cols-2 gap-8 mt-10">
+    <!-- Revenue Chart Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-xl font-bold mb-4">Revenue Distribution</h3>
+      <canvas class="w-16 h-16" id="revenueChart"></canvas>
+    </div>
+
+    <!-- Book Ratings Section -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-xl font-bold mb-4">Book Ratings</h3>
+      <ul>
+        <!-- Iterate over each book -->
+        <% booksRate.forEach(book => { %>
+        <li class="flex items-center space-x-4 shadow-md rounded-md p-4 mb-4">
+          <!-- Book Cover Image -->
+          <img
+            src="<%= book.image %>"
+            alt="<%= book.title %> Cover"
+            class="w-16 h-16 rounded-md"
+          />
+          <div>
+            <!-- Book Title -->
+            <p class="font-semibold"><%= book.title %></p>
+            <!-- Average Rate -->
+            <p>Average Rate: <%= book.average_rate %></p>
+            <!-- Sold Quantity -->
+            <p>Sold Quantity: <%= book.sold_quantity %></p>
+          </div>
+        </li>
+        <% }); %>
+      </ul>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Parse revenue data from the server-side
+  const revenueData = <%- JSON.stringify(revenue) %>;
+
+  // Extract labels and calculate total revenue and status data
+  const labels = Object.keys(revenueData);
+  const totalRevenue = labels.reduce((acc, date) => acc + revenueData[date]['Total'], 0);
+  const statusData = {
+    Created: labels.reduce((acc, date) => acc + revenueData[date]['Created'], 0),
+    Processing: labels.reduce((acc, date) => acc + revenueData[date]['Processing'], 0),
+    Succeeded: labels.reduce((acc, date) => acc + revenueData[date]['Succeeded'], 0),
+    Failed: labels.reduce((acc, date) => acc + revenueData[date]['Failed'], 0),
+  };
+
+  // Get the chart canvas element
+  const ctxRevenue = document.getElementById('revenueChart');
+
+  // Ensure the canvas element exists before attempting to render the chart
+  if (ctxRevenue) {
+
+    new Chart(ctxRevenue, {
+      type: 'pie',
+      data: {
+        labels: ['Processing', 'Succeeded', 'Failed'],
+        datasets: [{
+          data: [statusData.Processing, statusData.Succeeded, statusData.Failed],
+          backgroundColor: [
+            'rgba(255, 159, 64, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+          ],
+          borderWidth: 1,
+        }],
+      },
+      options: {
+        responsive: true,
+
+        plugins: {
+          legend: {
+            position: 'right',
+          },
+          title: {
+            display: true,
+            text: 'Revenue Distribution by Order Status',
+          },
+        },
+
+      },
+    });
+  }
+</script>

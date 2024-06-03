@@ -57,6 +57,12 @@ export class UsersService {
     return UserMapper.toUserResponseDto(userProfile);
   }
 
+  async getTotalActiveUser(): Promise<number> {
+    return await this.usersRepository.count({
+      where: { isActive: true, roles: Role.USER },
+    });
+  }
+
   async findAll(): Promise<UserResponseDto[]> {
     const users = await this.usersRepository.find({
       where: { roles: Role.USER },

@@ -100,6 +100,10 @@ export class BooksService {
     }
   }
 
+  async getTotalActiveBooks(): Promise<number> {
+    return await this.bookRepository.count({ where: { isActive: true } });
+  }
+
   async findAll() {
     return await this.bookRepository.find({
       relations: ['publisher', 'discount', 'authors', 'categories'],
@@ -491,5 +495,12 @@ export class BooksService {
       paginatedBooksDto,
       paginationMeta,
     );
+  }
+
+  async getBooksReviews() {
+    const books = await this.bookRepository.find({
+      relations: ['reviews', 'reviews.reviewer'],
+    });
+    return BookMapper.toBooksReviewResponseDtoList(books);
   }
 }

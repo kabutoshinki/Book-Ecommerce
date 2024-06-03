@@ -39,6 +39,11 @@ export class OrderDetailsController {
     return this.orderDetailsService.getAllOrderDetails();
   }
 
+  @Get('order_revenue')
+  findOrderRevenue() {
+    return this.orderDetailsService.getRevenueByDay();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.orderDetailsService.getOrderDetailById(id);

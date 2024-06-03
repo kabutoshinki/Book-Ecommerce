@@ -28,6 +28,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BookResponseForAdminDto } from './books/dto/responses/book-response-for-admin.dto';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { ReviewsService } from './reviews/reviews.service';
 
 @Controller()
 @ApiTags('Default')
@@ -41,15 +42,26 @@ export class AppController {
     private readonly discountService: DiscountsService,
     private readonly authorService: AuthorsService,
     private readonly publisherService: PublishersService,
+    private readonly reviewService: ReviewsService,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   @Get()
   @Render('pages/dashboard')
-  root(@Request() req) {
+  async root(@Request() req) {
+    const reviews = await this.reviewService.getTotalActiveReviews();
+    const users = await this.userService.getTotalActiveUser();
+    const books = await this.bookService.getTotalActiveBooks();
+    const booksRate = await this.bookService.getPopularBooks(5);
+    const revenue = await this.orderService.getRevenueByDay();
     return {
       title: 'Dashboard Page',
       layout: 'layouts/layout',
+      reviews: reviews,
+      users: users,
+      books: books,
+      booksRate: booksRate,
+      revenue: revenue,
       user: req.user,
     };
   }
@@ -58,6 +70,12 @@ export class AppController {
   @Render('pages/about')
   about(@Request() req) {
     return { title: 'About Page', user: req.user };
+  }
+
+  @Get('public/page/about')
+  @Render('pages/about')
+  publicAbout() {
+    return { title: 'About Page', layout: false };
   }
 
   @Get('page/login')
@@ -121,6 +139,13 @@ export class AppController {
     const authors = await this.authorService.findAllAuthorsByAdmin();
     return { title: 'Author Page', authors: authors, user: req.user };
   }
+  @Get('page/review')
+  @Render('pages/review')
+  async review(@Request() req) {
+    console.log(req.user);
+    const booksReviews = await this.bookService.getBooksReviews();
+    return { title: 'Review Page', books: booksReviews, user: req.user };
+  }
 
   @Get('page/category')
   @Render('pages/category')
@@ -133,9 +158,7 @@ export class AppController {
   @Render('pages/order')
   async order(@Request() req) {
     const orders = await this.orderService.getAllOrderDetails();
-    console.log('====================================');
-    console.log(orders);
-    console.log('====================================');
+
     return { title: 'Order Page', orders: orders, user: req.user };
   }
   @Get('page/order/:id')

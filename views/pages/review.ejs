@@ -1,0 +1,122 @@
+<div>
+  <div class="d-flex justify-content-between align-content-center mt-3">
+    <h1 class="text-muted">List of Books Review</h1>
+  </div>
+  <div class="container">
+    <div class="float-end mb-3">
+      <!-- <form class="d-flex" action="/page/book" method="GET">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            name="q"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form> -->
+    </div>
+    <table class="table table-hover" style="cursor: pointer">
+      <thead class="table-info">
+        <tr>
+          <th scope="col">Image</th>
+          <th scope="col">Title</th>
+          <th scope="col">Price</th>
+          <th scope="col">Sold</th>
+          <th scope="col">Rate</th>
+          <th scope="col">Reviews</th>
+          <th scope="col">Status</th>
+
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% books.forEach(book => { %>
+        <tr>
+          <td>
+            <img
+              src="<%= book.image%>"
+              class="rounded"
+              style="width: 70px; height: 70px"
+            />
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= book.title %>"
+            >
+              <%= book.title %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= book.price %>"
+            >
+              <%= book.price %>
+            </p>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= book.sold_quantity %>"
+            >
+              <%= book.sold_quantity %>
+            </p>
+          </td>
+          <td>
+            <% const fullStars = Math.floor(book.average_rate); %> <% let
+            remainingStars = 5 - fullStars; %> <% const hasHalfStar =
+            (book.average_rate % 1) >= 0.5; %>
+
+            <!-- Render full stars in yellow -->
+            <% for (let i = 0; i < fullStars; i++) { %>
+            <i class="fas fa-star" style="color: rgb(255, 204, 0)"></i>
+            <% } %>
+
+            <!-- Render half star in yellow if necessary -->
+            <% if (hasHalfStar) { %>
+            <i class="fas fa-star-half-alt" style="color: rgb(255, 204, 0)"></i>
+            <% remainingStars--; %> <% } %>
+
+            <!-- Render remaining stars in black -->
+            <% for (let i = 0; i < remainingStars; i++) { %>
+            <i class="fas fa-star"></i>
+            <% } %>
+          </td>
+          <td>
+            <p
+              class="text-truncate"
+              style="max-width: 150px"
+              title="<%= book.review_quantity %>"
+            >
+              <%= book.review_quantity %>
+            </p>
+          </td>
+          <td>
+            <% if (book.isActive === true) { %>
+            <span class="badge bg-success">Active</span>
+            <% } else { %>
+            <span class="badge bg-secondary">Inactive</span>
+            <% } %>
+          </td>
+
+          <td>
+            <button
+              type="button"
+              class="btn btn-info"
+              data-bs-toggle="modal"
+              data-bs-target="#viewBookModal_<%= book.id %>"
+            >
+              <i class="lni lni-eye text-white"></i>
+            </button>
+          </td>
+        </tr>
+        <%- include('../modals/review/view_book_reviews.ejs', { book }) %> <% })
+        %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -38,6 +38,11 @@ export class BooksController {
     return this.booksService.create(createBookDto, file);
   }
 
+  @Get('reviews')
+  async booksReviews() {
+    return await this.booksService.getBooksReviews();
+  }
+
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async getBooks(

@@ -46,6 +46,10 @@ export class ReviewsService {
     );
   }
 
+  async getTotalActiveReviews(): Promise<number> {
+    return await this.reviewRepository.count({ where: { isActive: true } });
+  }
+
   async findAll() {
     return await this.reviewRepository.find();
   }

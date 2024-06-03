@@ -17,7 +17,7 @@ import { OrderDetailGetItemsResponseDto } from './dto/responses/order-detail-get
 import { CartService } from 'src/cart/cart.service';
 import { OrderResponseDto } from './dto/responses/order-response.dto';
 import { OrderGetItemsResponseDto } from './dto/responses/order-get-items-response.dto';
-
+import { subDays } from 'date-fns';
 @Injectable()
 export class OrderDetailsService {
   constructor(
@@ -202,5 +202,41 @@ export class OrderDetailsService {
         this.bookService.update(book.id, book, undefined),
       ),
     );
+  }
+
+  async getRevenueByDay(): Promise<any> {
+    const endDate = new Date();
+    const startDate = subDays(endDate, 6); // Get the date 7 days ago
+
+    const orders = await this.orderDetailRepository
+      .createQueryBuilder('orderDetail')
+      .select('DATE(orderDetail.created_at)', 'date')
+      .addSelect('orderDetail.status', 'status')
+      .addSelect('SUM(orderDetail.total)', 'total')
+      .where('orderDetail.created_at BETWEEN :startDate AND :endDate', {
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0],
+      })
+      .groupBy('DATE(orderDetail.created_at)')
+      .addGroupBy('orderDetail.status')
+      .orderBy('DATE(orderDetail.created_at)')
+      .addOrderBy('orderDetail.status')
+      .getRawMany();
+
+    // Organize data by date and status
+    const revenueData = {};
+    orders.forEach((order) => {
+      if (!revenueData[order.date]) {
+        revenueData[order.date] = {
+          [PaymentStatus.Created]: 0,
+          [PaymentStatus.Processing]: 0,
+          [PaymentStatus.Succeeded]: 0,
+          [PaymentStatus.Failed]: 0,
+        };
+      }
+      revenueData[order.date][order.status] = parseFloat(order.total);
+    });
+
+    return revenueData;
   }
 }

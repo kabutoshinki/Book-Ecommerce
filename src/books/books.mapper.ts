@@ -11,6 +11,8 @@ import { BookClientResponseDto } from './dto/responses/book-client-response.dto'
 import { PublisherMapper } from 'src/publishers/publishers.mapper';
 import { CategoryMapper } from 'src/categories/categories.mapper';
 import { AuthorMapper } from 'src/authors/authors.mapper';
+import { BookReviewResponseDto } from './dto/responses/books-reviews-response.dto';
+import { ReviewMapper } from 'src/reviews/reviews.mapper';
 
 @Injectable()
 export class BookMapper {
@@ -113,6 +115,25 @@ export class BookMapper {
     return books.map((book) => this.toBooksClientResponseDto(book));
   }
 
+  static toBooksReviewResponseDto(book: Book): BookReviewResponseDto {
+    const bookResponseForAdminDto = new BookReviewResponseDto();
+    bookResponseForAdminDto.id = book.id;
+    bookResponseForAdminDto.image = book.image;
+    bookResponseForAdminDto.title = book.title;
+    bookResponseForAdminDto.description = book.description;
+    bookResponseForAdminDto.price = book.price;
+    bookResponseForAdminDto.isActive = book.isActive;
+    bookResponseForAdminDto.sold_quantity = book.sold_quantity;
+    bookResponseForAdminDto.review_quantity = book.reviews.length || 0;
+    bookResponseForAdminDto.average_rate = book.average_rate;
+    bookResponseForAdminDto.reviews = ReviewMapper.toReviewListResponseDtoList(
+      book.reviews,
+    );
+    return bookResponseForAdminDto;
+  }
+  static toBooksReviewResponseDtoList(books: Book[]): BookReviewResponseDto[] {
+    return books.map((book) => this.toBooksReviewResponseDto(book));
+  }
   static toBookOrderResponseDto(book: Book): BookOrderResponseDto {
     const bookResponseForAdminDto = new BookOrderResponseDto();
     bookResponseForAdminDto.id = book.id;

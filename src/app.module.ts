@@ -112,6 +112,7 @@ export class AppModule implements NestModule {
         { path: 'page/order/:id', method: RequestMethod.ALL },
         { path: 'page/discount', method: RequestMethod.ALL },
         { path: 'page/publisher', method: RequestMethod.ALL },
+        { path: 'page/review', method: RequestMethod.ALL },
       );
   }
 }

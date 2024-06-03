@@ -1,0 +1,161 @@
+<div
+  class="modal fade"
+  id="viewBookModal_<%= book.id %>"
+  tabindex="-1"
+  aria-labelledby="viewBookLabel_<%= book.id %>"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="viewBookLabel_<%= book.id %>">
+          <%= book.title %>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="viewBookForm_<%= book.id %>" enctype="multipart/form-data">
+          <div class="row">
+            <!-- Book Image -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="viewImage_<%= book.id %>" class="form-label"
+                  >Book Image</label
+                >
+                <div class="mb-3">
+                  <img
+                    src="<%= book.image %>"
+                    class="rounded mx-auto d-block"
+                    style="max-width: 100%; max-height: 200px; margin-top: 10px"
+                  />
+                </div>
+              </div>
+              <div class="">
+                <% const fullStars = Math.floor(book.average_rate); %> <% let
+                remainingStars = 5 - fullStars; %> <% const hasHalfStar =
+                (book.average_rate % 1) >= 0.5; %>
+
+                <!-- Render full stars in yellow -->
+                <% for (let i = 0; i < fullStars; i++) { %>
+                <i class="fas fa-star" style="color: rgb(255, 204, 0)"></i>
+                <% } %>
+
+                <!-- Render half star in yellow if necessary -->
+                <% if (hasHalfStar) { %>
+                <i
+                  class="fas fa-star-half-alt"
+                  style="color: rgb(255, 204, 0)"
+                ></i>
+                <% remainingStars--; %> <% } %>
+
+                <!-- Render remaining stars in black -->
+                <% for (let i = 0; i < remainingStars; i++) { %>
+                <i class="fas fa-star"></i>
+                <% } %>
+              </div>
+              <div class="mb-3">
+                <label for="title_<%= book.id %>" class="form-label"
+                  >Title</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title_<%= book.id %>"
+                  value="<%= book.title %>"
+                  disabled
+                />
+              </div>
+              <div class="mb-3">
+                <label for="viewPrice_<%= book.id %>" class="form-label"
+                  >Price</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="viewPrice_<%= book.id %>"
+                  value="<%= book.price %>"
+                  disabled
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="viewQuantity_<%= book.id %>" class="form-label"
+                  >Sold Quantity</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="viewQuantity_<%= book.id %>"
+                  value="<%= book.sold_quantity%>"
+                  min="1"
+                  max="100"
+                  disabled
+                />
+              </div>
+            </div>
+
+            <!-- Book Details -->
+
+            <!-- Book Reviews -->
+            <div class="col-md-8">
+              <div class="mb-3">
+                <h5>Reviews</h5>
+                <div style="max-height: 500px; overflow-y: auto">
+                  <ul class="list-group">
+                    <% book.reviews.forEach(review => { %>
+                    <li class="list-group-item">
+                      <p>
+                        <strong>Rating:</strong> <% const fullStars =
+                        Math.floor(book.average_rate); %> <% let remainingStars
+                        = 5 - fullStars; %> <% const hasHalfStar =
+                        (book.average_rate % 1) >= 0.5; %>
+
+                        <!-- Render full stars in yellow -->
+                        <% for (let i = 0; i < fullStars; i++) { %>
+                        <i
+                          class="fas fa-star"
+                          style="color: rgb(255, 204, 0)"
+                        ></i>
+                        <% } %>
+
+                        <!-- Render half star in yellow if necessary -->
+                        <% if (hasHalfStar) { %>
+                        <i
+                          class="fas fa-star-half-alt"
+                          style="color: rgb(255, 204, 0)"
+                        ></i>
+                        <% remainingStars--; %> <% } %>
+
+                        <!-- Render remaining stars in black -->
+                        <% for (let i = 0; i < remainingStars; i++) { %>
+                        <i class="fas fa-star"></i>
+                        <% } %>
+                      </p>
+                      <p><strong>Content:</strong> <%= review.content %></p>
+                      <p>
+                        <strong>User:</strong> <%= review.user.firstName %> <%=
+                        review.user.lastName %>
+                      </p>
+                      <!-- Add action button here if needed -->
+                    </li>
+                    <% }); %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
