@@ -52,8 +52,25 @@ export class AppController {
     const reviews = await this.reviewService.getTotalActiveReviews();
     const users = await this.userService.getTotalActiveUser();
     const books = await this.bookService.getTotalActiveBooks();
-    const booksRate = await this.bookService.getPopularBooks(5);
+    const booksRate = await this.bookService.getPopularBooks(10);
     const revenue = await this.orderService.getRevenueByDay();
+    const revenueValues = Object.values(revenue).map(
+      (status: {
+        Processing?: number;
+        Succeeded?: number;
+        Created?: number;
+      }) => {
+        // Use optional chaining to access the properties safely
+        return (
+          (status.Processing ?? 0) +
+          (status.Succeeded ?? 0) +
+          (status.Created ?? 0)
+        );
+      },
+    );
+
+    const totalRevenue = revenueValues.reduce((acc, value) => acc + value, 0);
+
     return {
       title: 'Dashboard Page',
       layout: 'layouts/layout',
@@ -62,6 +79,7 @@ export class AppController {
       books: books,
       booksRate: booksRate,
       revenue: revenue,
+      totalRevenue: totalRevenue,
       user: req.user,
     };
   }
@@ -81,10 +99,12 @@ export class AppController {
   @Get('page/login')
   @Render('pages/login')
   login(@Request() req) {
+    const errorMessage = req?.query?.errorMessage || '';
     return {
       title: 'Login Page',
       layout: false,
       errors: req?.session?.flash?.errors,
+      errorMessage: errorMessage,
     };
   }
 

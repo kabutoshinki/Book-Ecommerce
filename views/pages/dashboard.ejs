@@ -1,36 +1,52 @@
 <div class="container mx-auto py-12 px-4">
-  <h1 class="text-4xl font-bold text-center mb-8">Dashboard</h1>
+  <h1 class="text-4xl font-bold text-center mb-4">Dashboard</h1>
 
-  <div class="grid lg:grid-cols-3 gap-8">
-    <div class="bg-white p-6 rounded-lg shadow-md">
+  <div class="grid lg:grid-cols-4 gap-8">
+    <div
+      class="bg-white p-2 rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
+    >
       <h3 class="text-xl font-bold mb-4">Total Users</h3>
       <p class="text-3xl"><%= users %></p>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div
+      class="bg-white p-2 rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
+    >
       <h3 class="text-xl font-bold mb-4">Total Books</h3>
       <p class="text-3xl"><%= books %></p>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div
+      class="bg-white p-2 rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
+    >
       <h3 class="text-xl font-bold mb-4">Total Reviews</h3>
       <p class="text-3xl"><%= reviews %></p>
     </div>
+    <div
+      class="bg-white p-2 rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
+    >
+      <h3 class="text-xl font-bold mb-4">Revenue</h3>
+      <p class="text-3xl">$ <%= totalRevenue %></p>
+    </div>
   </div>
-  <div class="grid lg:grid-cols-2 gap-8 mt-10">
+  <div class="grid lg:grid-cols-2 gap-8 mt-3">
     <!-- Revenue Chart Section -->
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div
+      class="bg-white p-4 rounded-lg shadow-md h-96 hover:scale-105 transition-transform duration-300"
+    >
       <h3 class="text-xl font-bold mb-4">Revenue Distribution</h3>
       <canvas class="w-16 h-16" id="revenueChart"></canvas>
     </div>
 
     <!-- Book Ratings Section -->
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div class="bg-white p-4 rounded-lg shadow-md overflow-y-auto h-96">
       <h3 class="text-xl font-bold mb-4">Book Ratings</h3>
       <ul>
         <!-- Iterate over each book -->
         <% booksRate.forEach(book => { %>
-        <li class="flex items-center space-x-4 shadow-md rounded-md p-4 mb-4">
+        <li
+          class="flex items-center space-x-4 shadow-md rounded-md p-2 mb-4 hover:scale-105 transition-transform duration-300"
+        >
           <!-- Book Cover Image -->
           <img
             src="<%= book.image %>"
@@ -41,7 +57,29 @@
             <!-- Book Title -->
             <p class="font-semibold"><%= book.title %></p>
             <!-- Average Rate -->
-            <p>Average Rate: <%= book.average_rate %></p>
+            <p>
+              Average Rate: <% const fullStars = Math.floor(book.average_rate);
+              %> <% let remainingStars = 5 - fullStars; %> <% const hasHalfStar
+              = (book.average_rate % 1) >= 0.5; %>
+
+              <!-- Render full stars in yellow -->
+              <% for (let i = 0; i < fullStars; i++) { %>
+              <i class="fas fa-star" style="color: rgb(255, 204, 0)"></i>
+              <% } %>
+
+              <!-- Render half star in yellow if necessary -->
+              <% if (hasHalfStar) { %>
+              <i
+                class="fas fa-star-half-alt"
+                style="color: rgb(255, 204, 0)"
+              ></i>
+              <% remainingStars--; %> <% } %>
+
+              <!-- Render remaining stars in black -->
+              <% for (let i = 0; i < remainingStars; i++) { %>
+              <i class="fas fa-star"></i>
+              <% } %>
+            </p>
             <!-- Sold Quantity -->
             <p>Sold Quantity: <%= book.sold_quantity %></p>
           </div>
@@ -58,7 +96,6 @@
 
   // Extract labels and calculate total revenue and status data
   const labels = Object.keys(revenueData);
-  const totalRevenue = labels.reduce((acc, date) => acc + revenueData[date]['Total'], 0);
   const statusData = {
     Created: labels.reduce((acc, date) => acc + revenueData[date]['Created'], 0),
     Processing: labels.reduce((acc, date) => acc + revenueData[date]['Processing'], 0),

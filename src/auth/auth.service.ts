@@ -78,6 +78,10 @@ export class AuthService {
       return { token, redirectUrl };
     } catch (error) {
       console.log(error);
+      return {
+        redirectUrl:
+          '/page/login?errorMessage=Login failed. Please check your credentials.',
+      };
     }
   }
 
