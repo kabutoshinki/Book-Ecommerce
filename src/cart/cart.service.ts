@@ -4,6 +4,7 @@ import { UpdateCartDto } from './dto/requests/update-cart.dto';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CartItem } from './interfaces/CartItem';
 import { BooksService } from 'src/books/books.service';
+import { CartMapper } from './cart.mapper';
 
 @Injectable()
 export class CartService {
@@ -55,12 +56,12 @@ export class CartService {
     const books = await this.bookService.findByIds(bookIds);
 
     // Combine cart items with book information
-    const cartWithBooks: CartItem[] = cart.map((item) => {
+    const cartWithBooks = cart.map((item) => {
       const book = books.find((book) => book.id === item.bookId);
       return { ...item, book };
     });
 
-    return cartWithBooks;
+    return CartMapper.toCartResponseDtoList(cartWithBooks);
   }
 
   async clearCart(userId: string) {
@@ -124,7 +125,8 @@ export class CartService {
     const cartKey = this.getCartKey(userId);
     const cart: CartItem[] = (await this.cacheManager.get(cartKey)) || [];
     const updatedCart = cart.filter((item) => !bookIds.includes(item.bookId));
-
+    console.log(updatedCart);
+    console.log(cartKey);
     await this.cacheManager.set(cartKey, updatedCart);
   }
 

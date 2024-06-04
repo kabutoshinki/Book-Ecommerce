@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class AuthPayloadDto {
   @IsNotEmpty({ message: 'email is required' })
@@ -16,4 +16,7 @@ export class AuthPayloadDto {
     example: '123456',
   })
   password: string;
+
+  @IsOptional()
+  guest_cart?: string;
 }

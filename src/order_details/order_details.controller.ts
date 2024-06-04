@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { OrderDetailsService } from './order_details.service';
 import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
@@ -25,11 +26,13 @@ export class OrderDetailsController {
   createOrder(
     @Param('userId') userId: string,
     @Body() createOrderDetailDto: CreateOrderDetailDto,
+    @Query('checkout') checkOut: string,
   ) {
     // const userId = req.user.userId;
     return this.orderDetailsService.createOrderDetail(
       userId,
       createOrderDetailDto,
+      checkOut,
     );
     // return this.orderDetailsService.create(createOrderDetailDto);
   }

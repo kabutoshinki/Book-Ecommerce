@@ -125,7 +125,10 @@ export class BooksService {
   }
 
   async findByIds(ids: string[]) {
-    const books = await this.bookRepository.findBy({ id: In(ids) });
+    const books = await this.bookRepository.find({
+      where: { id: In(ids) },
+      relations: ['discount'],
+    });
     if (books.length !== ids.length) {
       throw new NotFoundException('Some books not found');
     }

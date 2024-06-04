@@ -40,8 +40,9 @@ export class AuthService {
       if (!passwordMatched) {
         throw new UnauthorizedException('Password does not match');
       }
-      const guestCartKey = `cart:guest`;
-      const userCartKey = `cart:${user.id}`;
+      const guestCartKey = `cart:${authPayload?.guest_cart}`;
+      const userCartKey = `cart:user-${user.id}`;
+
       await this.cartService.mergeCarts(guestCartKey, userCartKey);
 
       return this.generateLoginResponse(user);

@@ -33,6 +33,7 @@ export class OrderDetailsService {
   async createOrderDetail(
     userId: string,
     createOrderDetailDto: CreateOrderDetailDto,
+    checkOut: string,
   ) {
     const user = await this.userService.findUserById(userId);
 
@@ -54,7 +55,9 @@ export class OrderDetailsService {
       return orderItem;
     });
     await this.orderItemRepository.save(orderItems);
-    await this.cartService.clearCart(userId);
+    if (!(checkOut === 'buynow')) {
+      await this.cartService.deleteItemsFromCart(`user-${userId}`, bookIds);
+    }
     return 'Order created';
   }
 

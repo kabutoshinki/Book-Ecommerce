@@ -55,17 +55,8 @@ export class AppController {
     const booksRate = await this.bookService.getPopularBooks(10);
     const revenue = await this.orderService.getRevenueByDay();
     const revenueValues = Object.values(revenue).map(
-      (status: {
-        Processing?: number;
-        Succeeded?: number;
-        Created?: number;
-      }) => {
-        // Use optional chaining to access the properties safely
-        return (
-          (status.Processing ?? 0) +
-          (status.Succeeded ?? 0) +
-          (status.Created ?? 0)
-        );
+      (status: { Succeeded?: number }) => {
+        return status.Succeeded ?? 0;
       },
     );
 

@@ -29,23 +29,23 @@
       <p class="text-3xl">$ <%= totalRevenue %></p>
     </div>
   </div>
-  <div class="grid lg:grid-cols-2 gap-8 mt-3">
+  <div class="grid lg:grid-cols-2 gap-8 mt-10">
     <!-- Revenue Chart Section -->
     <div
-      class="bg-white p-4 rounded-lg shadow-md h-96 hover:scale-105 transition-transform duration-300"
+      class="bg-white p-4 rounded-lg shadow-md h-[500px] hover:scale-105 transition-transform duration-300"
     >
       <h3 class="text-xl font-bold mb-4">Revenue Distribution</h3>
       <canvas class="w-16 h-16" id="revenueChart"></canvas>
     </div>
 
     <!-- Book Ratings Section -->
-    <div class="bg-white p-4 rounded-lg shadow-md overflow-y-auto h-96">
-      <h3 class="text-xl font-bold mb-4">Book Ratings</h3>
+    <div class="bg-white p-4 rounded-lg shadow-md overflow-y-auto h-[500px]">
+      <h3 class="text-xl font-bold my-4">Book Ratings</h3>
       <ul>
         <!-- Iterate over each book -->
         <% booksRate.forEach(book => { %>
         <li
-          class="flex items-center space-x-4 shadow-md rounded-md p-2 mb-4 hover:scale-105 transition-transform duration-300"
+          class="flex items-center space-x-4 shadow-md rounded-md p-2 mb-5 hover:scale-105 transition-transform duration-300"
         >
           <!-- Book Cover Image -->
           <img
