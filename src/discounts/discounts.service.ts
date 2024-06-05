@@ -11,6 +11,8 @@ import { In, Repository } from 'typeorm';
 import { Book } from '../books/entities/book.entity';
 import { validateDiscountDates } from '../utils/validate';
 import { DiscountMapper } from './discounts,mapper';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { DiscountResponseForAdminDto } from './dto/responses/discount-resoponse-for-admin.dto';
 
 @Injectable()
 export class DiscountsService {
@@ -56,13 +58,37 @@ export class DiscountsService {
   async findAll() {
     const discounts = await this.discountRepository.find({
       where: { isActive: true },
+      order: { created_at: 'DESC' },
     });
     return DiscountMapper.toDiscountResponseDtoList(discounts);
   }
-  async findAllForAdmin() {
-    const discounts = await this.discountRepository.find();
 
-    return DiscountMapper.toDiscountResponseForAdminDtoList(discounts);
+  async findAllForAdmin(
+    options: IPaginationOptions,
+  ): Promise<Pagination<DiscountResponseForAdminDto>> {
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 5;
+    const queryBuilder = this.discountRepository
+      .createQueryBuilder('discount')
+      .orderBy('discount.created_at', 'DESC');
+    const [discounts, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+    const paginatedPublishers =
+      DiscountMapper.toDiscountResponseForAdminDtoList(discounts);
+    const paginationMeta = {
+      totalItems,
+      itemCount: discounts.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+
+    return new Pagination<DiscountResponseForAdminDto>(
+      paginatedPublishers,
+      paginationMeta,
+    );
   }
 
   async findOne(id: string) {

@@ -34,10 +34,13 @@ export class OrderDetailsController {
     // return this.orderDetailsService.create(createOrderDetailDto);
   }
 
-  @Get()
-  findAll() {
-    return this.orderDetailsService.getAllOrderDetails();
-  }
+  // @Get()
+  // async findAll(
+  //   @Query('page') page: number = 1,
+  //   @Query('limit') limit: number = 5,
+  // ) {
+  //   return this.orderDetailsService.paginateOrderAdmin(page, limit);
+  // }
 
   @Get('order_revenue')
   findOrderRevenue() {

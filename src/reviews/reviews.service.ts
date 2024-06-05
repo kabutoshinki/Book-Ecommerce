@@ -36,7 +36,7 @@ export class ReviewsService {
     const totalReviews = reviews.length;
     const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
     const averageRate = totalRating / totalReviews;
-    const roundedAverageRate = parseFloat(averageRate.toFixed(2));
+    const roundedAverageRate = parseFloat(averageRate?.toFixed(2));
     // Update average_rate field of the book
     book.average_rate = averageRate;
     await this.bookService.update(

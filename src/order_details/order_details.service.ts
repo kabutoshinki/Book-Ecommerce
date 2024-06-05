@@ -18,6 +18,7 @@ import { CartService } from '../cart/cart.service';
 import { OrderResponseDto } from './dto/responses/order-response.dto';
 import { OrderGetItemsResponseDto } from './dto/responses/order-get-items-response.dto';
 import { subDays } from 'date-fns';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 @Injectable()
 export class OrderDetailsService {
   constructor(
@@ -110,16 +111,42 @@ export class OrderDetailsService {
     return OrderMapper.toOrderIdGetItemsResponseDto(orderDetail);
   }
 
-  async getAllOrderDetails(): Promise<OrderResponseForAdminDto[]> {
-    const orders = await this.orderDetailRepository
+  async paginateOrderAdmin(
+    options: IPaginationOptions,
+  ): Promise<Pagination<OrderResponseForAdminDto>> {
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 5;
+
+    const queryBuilder = this.orderDetailRepository
       .createQueryBuilder('orderDetail')
       .leftJoinAndSelect('orderDetail.user', 'user')
       .leftJoinAndSelect('orderDetail.items', 'items')
       .leftJoinAndSelect('user.addresses', 'address')
-      .orderBy('address.isSelected', 'DESC')
-      .getMany();
+      .orderBy({
+        'address.isSelected': 'DESC',
+        'orderDetail.created_at': 'DESC',
+      });
 
-    return OrderMapper.toOrderResponseForAdminDtoList(orders);
+    const [orders, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const paginatedOrdersDto =
+      OrderMapper.toOrderResponseForAdminDtoList(orders);
+
+    const paginationMeta = {
+      totalItems: totalItems,
+      itemCount: orders.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+
+    return new Pagination<OrderResponseForAdminDto>(
+      paginatedOrdersDto,
+      paginationMeta,
+    );
   }
   async findOne(id: string) {
     return await this.orderDetailRepository.findOneByOrFail({ id });

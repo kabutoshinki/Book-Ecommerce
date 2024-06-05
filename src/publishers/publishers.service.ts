@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { Book } from '../books/entities/book.entity';
 import { PublisherMapper } from './publishers.mapper';
 import { PublisherResponseForAdminDto } from './dto/responses/publisher-resoponse-for-admin.dto';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class PublishersService {
@@ -39,8 +40,32 @@ export class PublishersService {
     });
     return PublisherMapper.toPublisherResponseForAdminDtoList(publishers);
   }
-  async findAllForAdmin() {
-    return await this.publisherRepository.find();
+  async findAllForAdmin(
+    options: IPaginationOptions,
+  ): Promise<Pagination<PublisherResponseForAdminDto>> {
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 5;
+    const queryBuilder = this.publisherRepository
+      .createQueryBuilder('publisher')
+      .orderBy('publisher.created_at', 'DESC');
+    const [publishers, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+    const paginatedPublishers =
+      PublisherMapper.toPublisherResponseForAdminDtoList(publishers);
+    const paginationMeta = {
+      totalItems,
+      itemCount: publishers.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+
+    return new Pagination<PublisherResponseForAdminDto>(
+      paginatedPublishers,
+      paginationMeta,
+    );
   }
 
   async findOne(id: string) {

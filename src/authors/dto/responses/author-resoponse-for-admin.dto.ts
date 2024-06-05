@@ -25,9 +25,9 @@ export class AuthorResponseForAdminDto {
 
   @IsDate()
   @IsNotEmpty()
-  created_at: Date;
+  created_at: string;
 
   @IsDate()
   @IsNotEmpty()
-  updated_at: Date;
+  updated_at: string;
 }

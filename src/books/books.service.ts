@@ -8,17 +8,7 @@ import { CreateBookDto } from './dto/requests/create-book.dto';
 import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
-import {
-  Brackets,
-  FindManyOptions,
-  In,
-  IsNull,
-  LessThanOrEqual,
-  Like,
-  MoreThanOrEqual,
-  Not,
-  Repository,
-} from 'typeorm';
+import { Brackets, FindManyOptions, In, Like, Repository } from 'typeorm';
 import { PublishersService } from '../publishers/publishers.service';
 import { AuthorsService } from '../authors/authors.service';
 import { DiscountsService } from '../discounts/discounts.service';
@@ -26,13 +16,10 @@ import { CategoriesService } from '../categories/categories.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { BookResponseForAdminDto } from './dto/responses/book-response-for-admin.dto';
 import { BookMapper } from './books.mapper';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
 import { BooksQueryDto } from './dto/requests/books-query.dto';
+import { BookReviewResponseDto } from './dto/responses/books-reviews-response.dto';
 
 @Injectable()
 export class BooksService {
@@ -361,21 +348,10 @@ export class BooksService {
       totalPages: Math.ceil(totalItems / limit),
       currentPage: page,
     };
-    const paginationLinks = {
-      first: `${options.route}?page=1&limit=${limit}`,
-      previous:
-        page > 1 ? `${options.route}?page=${page - 1}&limit=${limit}` : '',
-      next:
-        page < paginationMeta.totalPages
-          ? `${options.route}?page=${page + 1}&limit=${limit}`
-          : '',
-      last: `${options.route}?page=${paginationMeta.totalPages}&limit=${limit}`,
-    };
 
     return new Pagination<BookResponseForAdminDto>(
       paginatedBooksDto,
       paginationMeta,
-      paginationLinks,
     );
   }
 
@@ -500,10 +476,36 @@ export class BooksService {
     );
   }
 
-  async getBooksReviews() {
-    const books = await this.bookRepository.find({
-      relations: ['reviews', 'reviews.reviewer'],
-    });
-    return BookMapper.toBooksReviewResponseDtoList(books);
+  async getBooksReviews(
+    options: IPaginationOptions,
+  ): Promise<Pagination<BookReviewResponseDto>> {
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 5;
+
+    const queryBuilder = this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.reviews', 'review')
+      .leftJoinAndSelect('review.reviewer', 'reviewer')
+      .orderBy('book.created_at', 'DESC'); // You can order by any column you want
+
+    const [books, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const paginatedBooksDto = BookMapper.toBooksReviewResponseDtoList(books);
+
+    const paginationMeta = {
+      totalItems,
+      itemCount: books.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+
+    return new Pagination<BookReviewResponseDto>(
+      paginatedBooksDto,
+      paginationMeta,
+    );
   }
 }

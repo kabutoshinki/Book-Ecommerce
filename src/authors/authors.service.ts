@@ -12,6 +12,7 @@ import { Book } from '../books/entities/book.entity';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { AuthorMapper } from './authors.mapper';
 import { AuthorResponseDto } from './dto/responses/author-response.dto';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class AuthorsService {
@@ -59,9 +60,33 @@ export class AuthorsService {
     return AuthorMapper.toAuthorResponseDtoList(authors);
   }
 
-  async findAllAuthorsByAdmin(): Promise<AuthorResponseDto[]> {
-    const authors = await this.authorRepository.find();
-    return AuthorMapper.toAuthorResponseForAdminDtoList(authors);
+  async paginateAuthorAdmin(
+    options: IPaginationOptions,
+  ): Promise<Pagination<AuthorResponseDto>> {
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 5;
+
+    const queryBuilder = this.authorRepository
+      .createQueryBuilder('author')
+      .orderBy('author.created_at', 'DESC');
+
+    const [authors, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const paginatedAuthors =
+      AuthorMapper.toAuthorResponseForAdminDtoList(authors);
+
+    const paginationMeta = {
+      totalItems: totalItems,
+      itemCount: authors.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+
+    return new Pagination<AuthorResponseDto>(paginatedAuthors, paginationMeta);
   }
 
   async findOne(id: string) {

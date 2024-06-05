@@ -102,7 +102,8 @@ export class AuthController {
     console.log('forgot-password');
   }
   @Get('logout')
-  async logout(@Response() res) {
+  async logout(@Response() res, @Request() req) {
+    req.session.destroy();
     res.clearCookie('token');
     res.redirect('/page/login');
   }

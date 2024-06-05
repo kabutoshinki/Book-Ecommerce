@@ -21,6 +21,7 @@ import { Role } from '../enums/role.enum';
 import { UserResponseForAdminDto } from './dto/response/user-resoponse-for-admin.dto';
 import { UpdateUserStateDto } from './dto/requests/update-state-user.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class UsersService {
@@ -70,13 +71,37 @@ export class UsersService {
     });
     return UserMapper.toUserResponseDtoList(users);
   }
-  async findAllForAdmin(): Promise<UserResponseForAdminDto[]> {
-    const users = await this.usersRepository.find({
-      where: { roles: Role.USER },
-      relations: ['addresses'],
-    });
+  async findAllForAdmin(
+    options: IPaginationOptions,
+  ): Promise<Pagination<UserResponseForAdminDto>> {
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 5;
 
-    return UserMapper.toUserResponseForAdminDtoList(users);
+    const queryBuilder = this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.addresses', 'address')
+      .where('user.roles = :role', { role: Role.USER })
+      .orderBy('user.created_at', 'DESC');
+
+    const [users, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const paginatedUsersDto = UserMapper.toUserResponseForAdminDtoList(users);
+
+    const paginationMeta = {
+      totalItems,
+      itemCount: users.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+
+    return new Pagination<UserResponseForAdminDto>(
+      paginatedUsersDto,
+      paginationMeta,
+    );
   }
 
   async findOne(data: Partial<User>): Promise<User> {

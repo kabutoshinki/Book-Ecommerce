@@ -44,16 +44,16 @@
               style="max-width: 150px"
               title="<%= order?.user?.address %>"
             >
-              <%= order?.user?.address[0].address_line_1 %>
+              <%= order?.user?.address[0]?.address_line_1 %>
             </p>
           </td>
           <td>
             <p
               class="text-truncate"
               style="max-width: 150px"
-              title="<%= order?.user?.address[0].phone_number %>"
+              title="<%= order?.user?.address[0]?.phone_number %>"
             >
-              <%= order?.user?.address[0].phone_number %>
+              <%= order?.user?.address[0]?.phone_number %>
             </p>
           </td>
           <td>
@@ -121,5 +121,6 @@
         include('../modals/order/reject_state_order.ejs', { order }) %> <% }) %>
       </tbody>
     </table>
+    <%-include('../partials/pagination.ejs')%>
   </div>
 </div>

@@ -13,6 +13,7 @@ import { In, Repository } from 'typeorm';
 import { Book } from '../books/entities/book.entity';
 import { CategoryMapper } from './categories.mapper';
 import { CategoryResponseDto } from './dto/responses/category-response.dto';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CategoriesService {
@@ -40,8 +41,31 @@ export class CategoriesService {
     });
     return CategoryMapper.toCategoryResponseDtoList(categories);
   }
-  async findAllForAdmin() {
-    return await this.categoryRepository.find();
+
+  async findAllForAdmin(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Category>> {
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 5;
+
+    const queryBuilder = this.categoryRepository
+      .createQueryBuilder('category')
+      .orderBy('category.created_at', 'ASC'); // You can order by any column you want
+
+    const [categories, totalItems] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const paginationMeta = {
+      totalItems,
+      itemCount: categories.length,
+      itemsPerPage: limit,
+      totalPages: Math.ceil(totalItems / limit),
+      currentPage: page,
+    };
+
+    return new Pagination<Category>(categories, paginationMeta);
   }
 
   async findByIds(ids: string[]): Promise<Category[]> {

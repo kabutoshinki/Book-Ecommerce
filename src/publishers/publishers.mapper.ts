@@ -4,7 +4,7 @@ import { Publisher } from './entities/publisher.entity';
 import { PublisherResponseForAdminDto } from './dto/responses/publisher-resoponse-for-admin.dto';
 import { CreatePublisherDto } from './dto/requests/create-publisher.dto';
 import { UpdatePublisherDto } from './dto/requests/update-publisher.dto';
-
+import { formatDate } from '../utils/convert';
 @Injectable()
 export class PublisherMapper {
   static toPublisherResponseDto(publisher: Publisher): PublisherResponseDto {
@@ -23,8 +23,8 @@ export class PublisherMapper {
     publisherResponseDto.name = publisher.name;
     publisherResponseDto.address = publisher.address;
     publisherResponseDto.isActive = publisher.isActive;
-    publisherResponseDto.created_at = publisher.created_at;
-    publisherResponseDto.updated_at = publisher.updated_at;
+    publisherResponseDto.created_at = formatDate(publisher.created_at);
+    publisherResponseDto.updated_at = formatDate(publisher.updated_at);
     return publisherResponseDto;
   }
 

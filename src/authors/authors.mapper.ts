@@ -4,6 +4,7 @@ import { Author } from './entities/author.entity';
 import { AuthorResponseForAdminDto } from './dto/responses/author-resoponse-for-admin.dto';
 import { CreateAuthorDto } from './dto/requests/create-author.dto';
 import { UpdateAuthorDto } from './dto/requests/update-author.dto';
+import { formatDate } from '../utils/convert';
 
 @Injectable()
 export class AuthorMapper {
@@ -25,8 +26,8 @@ export class AuthorMapper {
     authorResponseDto.image = author.image;
     authorResponseDto.description = author.description;
     authorResponseDto.isActive = author.isActive;
-    authorResponseDto.created_at = author.created_at;
-    authorResponseDto.updated_at = author.updated_at;
+    authorResponseDto.created_at = formatDate(author.created_at);
+    authorResponseDto.updated_at = formatDate(author.updated_at);
     return authorResponseDto;
   }
   // for admin

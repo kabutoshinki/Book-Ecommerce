@@ -112,6 +112,51 @@
         <% }) %>
       </tbody>
     </table>
+    <ul class="pagination justify-content-center">
+      <% if (meta.totalPages > 1) { %>
+      <li class="page-item <%= meta.currentPage === 1 ? 'disabled' : '' %>">
+        <a class="page-link" href="?page=1&limit=<%= meta.itemsPerPage %>"
+          >First</a
+        >
+      </li>
+      <li class="page-item <%= meta.currentPage === 1 ? 'disabled' : '' %>">
+        <a
+          class="page-link"
+          href="?page=<%= meta.currentPage - 1 %>&limit=<%= meta.itemsPerPage %>"
+          >Previous</a
+        >
+      </li>
+
+      <% for (let a = 1; a <= meta.totalPages; a++) { %>
+      <li class="page-item <%= a === meta.currentPage ? 'active' : '' %>">
+        <a
+          class="page-link"
+          href="?page=<%= a %>&limit=<%= meta.itemsPerPage %>"
+          ><%= a %></a
+        >
+      </li>
+      <% } %>
+
+      <li
+        class="page-item <%= meta.currentPage === meta.totalPages ? 'disabled' : '' %>"
+      >
+        <a
+          class="page-link"
+          href="?page=<%= meta.currentPage + 1 %>&limit=<%= meta.itemsPerPage %>"
+          >Next</a
+        >
+      </li>
+      <li
+        class="page-item <%= meta.currentPage === meta.totalPages ? 'disabled' : '' %>"
+      >
+        <a
+          class="page-link"
+          href="?page=<%= meta.totalPages %>&limit=<%= meta.itemsPerPage %>"
+          >Last</a
+        >
+      </li>
+      <% } %>
+    </ul>
   </div>
 </div>
 <%- include('../modals/publisher/create_publisher.ejs') %>

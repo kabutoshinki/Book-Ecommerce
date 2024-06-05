@@ -22,7 +22,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Book } from './entities/book.entity';
 import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
 import { BooksQueryDto } from './dto/requests/books-query.dto';
-import { Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('books')
 export class BooksController {
@@ -39,8 +39,12 @@ export class BooksController {
   }
 
   @Get('reviews')
-  async booksReviews() {
-    return await this.booksService.getBooksReviews();
+  async booksReviews(@Query() query) {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+    };
+    return await this.booksService.getBooksReviews(options);
   }
 
   @Get()

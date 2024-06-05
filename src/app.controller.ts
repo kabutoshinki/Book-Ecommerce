@@ -61,7 +61,7 @@ export class AppController {
     );
 
     const totalRevenue = revenueValues.reduce((acc, value) => acc + value, 0);
-
+    console.log(totalRevenue);
     return {
       title: 'Dashboard Page',
       layout: 'layouts/layout',
@@ -101,10 +101,19 @@ export class AppController {
 
   @Get('page/user')
   @Render('pages/user')
-  async user(@Request() req) {
-    const users = await this.userService.findAllForAdmin();
+  async user(@Query() query, @Request() req) {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+    };
+    const users = await this.userService.findAllForAdmin(options);
 
-    return { title: 'User Page', users: users, user: req.user };
+    return {
+      title: 'User Page',
+      users: users.items,
+      meta: users.meta,
+      user: req.user,
+    };
   }
 
   @Get('page/book')
@@ -146,30 +155,66 @@ export class AppController {
 
   @Get('page/author')
   @Render('pages/author')
-  async author(@Request() req) {
-    const authors = await this.authorService.findAllAuthorsByAdmin();
-    return { title: 'Author Page', authors: authors, user: req.user };
+  async author(@Query() query: any, @Request() req) {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+    };
+    const authors = await this.authorService.paginateAuthorAdmin(options);
+    return {
+      title: 'Author Page',
+      authors: authors.items,
+      meta: authors.meta,
+      user: req.user,
+    };
   }
   @Get('page/review')
   @Render('pages/review')
-  async review(@Request() req) {
-    const booksReviews = await this.bookService.getBooksReviews();
-    return { title: 'Review Page', books: booksReviews, user: req.user };
+  async review(@Query() query: any, @Request() req) {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+    };
+    const booksReviews = await this.bookService.getBooksReviews(options);
+    return {
+      title: 'Review Page',
+      books: booksReviews.items,
+      meta: booksReviews.meta,
+      user: req.user,
+    };
   }
 
   @Get('page/category')
   @Render('pages/category')
-  async category(@Request() req) {
-    const categories = await this.categoryService.findAllForAdmin();
-    return { title: 'Category Page', categories: categories, user: req.user };
+  async category(@Query() query: any, @Request() req) {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+    };
+    const categories = await this.categoryService.findAllForAdmin(options);
+    return {
+      title: 'Category Page',
+      categories: categories.items,
+      meta: categories.meta,
+      user: req.user,
+    };
   }
 
   @Get('page/order')
   @Render('pages/order')
-  async order(@Request() req) {
-    const orders = await this.orderService.getAllOrderDetails();
+  async order(@Query() query: any, @Request() req) {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+    };
+    const orders = await this.orderService.paginateOrderAdmin(options);
 
-    return { title: 'Order Page', orders: orders, user: req.user };
+    return {
+      title: 'Order Page',
+      orders: orders.items,
+      meta: orders.meta,
+      user: req.user,
+    };
   }
   @Get('page/order/:id')
   @Render('pages/order_detail')
@@ -181,16 +226,35 @@ export class AppController {
 
   @Get('page/discount')
   @Render('pages/discount')
-  async discount(@Request() req) {
-    const discounts = await this.discountService.findAllForAdmin();
-    return { title: 'Discount Page', discounts: discounts, user: req.user };
+  async discount(@Query() query: any, @Request() req) {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+    };
+    const discounts = await this.discountService.findAllForAdmin(options);
+    return {
+      title: 'Discount Page',
+      discounts: discounts.items,
+      meta: discounts.meta,
+      user: req.user,
+    };
   }
 
   @Get('page/publisher')
   @Render('pages/publisher')
-  async publisher(@Request() req) {
-    const publishers = await this.publisherService.findAllForAdmin();
-    return { title: 'Publisher Page', publishers: publishers, user: req.user };
+  async publisher(@Query() query: any, @Request() req) {
+    const options: IPaginationOptions = {
+      page: query.page ? parseInt(query.page, 10) : 1,
+      limit: query.limit ? parseInt(query.limit, 10) : 6,
+    };
+    const publishers = await this.publisherService.findAllForAdmin(options);
+
+    return {
+      title: 'Publisher Page',
+      publishers: publishers.items,
+      meta: publishers.meta,
+      user: req.user,
+    };
   }
 
   @Get('test/errors')
