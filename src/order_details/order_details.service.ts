@@ -252,18 +252,15 @@ export class OrderDetailsService {
       .addOrderBy('orderDetail.status')
       .getRawMany();
 
-    // Organize data by date and status
-    const revenueData = {};
+    // Organize data by status
+    const revenueData = {
+      [PaymentStatus.Processing]: 0,
+      [PaymentStatus.Succeeded]: 0,
+      [PaymentStatus.Failed]: 0,
+    };
+
     orders.forEach((order) => {
-      if (!revenueData[order.date]) {
-        revenueData[order.date] = {
-          [PaymentStatus.Created]: 0,
-          [PaymentStatus.Processing]: 0,
-          [PaymentStatus.Succeeded]: 0,
-          [PaymentStatus.Failed]: 0,
-        };
-      }
-      revenueData[order.date][order.status] = parseFloat(order.total);
+      revenueData[order.status] += parseFloat(order.total);
     });
 
     return revenueData;

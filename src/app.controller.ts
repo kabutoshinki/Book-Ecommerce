@@ -29,6 +29,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { BookResponseForAdminDto } from './books/dto/responses/book-response-for-admin.dto';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { ReviewsService } from './reviews/reviews.service';
+import { PaymentStatus } from './enums/payment-status.enums';
 
 @Controller()
 @ApiTags('Default')
@@ -54,14 +55,9 @@ export class AppController {
     const books = await this.bookService.getTotalActiveBooks();
     const booksRate = await this.bookService.getPopularBooks(10);
     const revenue = await this.orderService.getRevenueByDay();
-    const revenueValues = Object.values(revenue).map(
-      (status: { Succeeded?: number }) => {
-        return status.Succeeded ?? 0;
-      },
-    );
 
-    const totalRevenue = revenueValues.reduce((acc, value) => acc + value, 0);
-    console.log(totalRevenue);
+    const totalRevenue = revenue[PaymentStatus.Succeeded] ?? 0;
+
     return {
       title: 'Dashboard Page',
       layout: 'layouts/layout',

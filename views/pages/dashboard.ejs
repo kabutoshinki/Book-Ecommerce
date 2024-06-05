@@ -94,13 +94,11 @@
   // Parse revenue data from the server-side
   const revenueData = <%- JSON.stringify(revenue) %>;
 
-  // Extract labels and calculate total revenue and status data
-  const labels = Object.keys(revenueData);
+  // Calculate total revenue for each status
   const statusData = {
-    Created: labels.reduce((acc, date) => acc + revenueData[date]['Created'], 0),
-    Processing: labels.reduce((acc, date) => acc + revenueData[date]['Processing'], 0),
-    Succeeded: labels.reduce((acc, date) => acc + revenueData[date]['Succeeded'], 0),
-    Failed: labels.reduce((acc, date) => acc + revenueData[date]['Failed'], 0),
+    Processing: revenueData['Processing'] || 0,
+    Succeeded: revenueData['Succeeded'] || 0,
+    Failed: revenueData['Failed'] || 0,
   };
 
   // Get the chart canvas element
@@ -108,7 +106,6 @@
 
   // Ensure the canvas element exists before attempting to render the chart
   if (ctxRevenue) {
-
     new Chart(ctxRevenue, {
       type: 'pie',
       data: {
@@ -125,7 +122,6 @@
       },
       options: {
         responsive: true,
-
         plugins: {
           legend: {
             position: 'right',
@@ -135,7 +131,6 @@
             text: 'Revenue Distribution by Order Status',
           },
         },
-
       },
     });
   }
