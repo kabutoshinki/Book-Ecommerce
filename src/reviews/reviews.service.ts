@@ -4,8 +4,8 @@ import { UpdateReviewDto } from './dto/requests/update-review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from './entities/review.entity';
 import { Repository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
-import { BooksService } from 'src/books/books.service';
+import { UsersService } from '../users/users.service';
+import { BooksService } from '../books/books.service';
 import { ReviewMapper } from './reviews.mapper';
 
 @Injectable()

@@ -8,8 +8,8 @@ import { UpdateDiscountDto } from './dto/requests/update-discount.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Discount } from './entities/discount.entity';
 import { In, Repository } from 'typeorm';
-import { Book } from 'src/books/entities/book.entity';
-import { validateDiscountDates } from 'src/utils/validate';
+import { Book } from '../books/entities/book.entity';
+import { validateDiscountDates } from '../utils/validate';
 import { DiscountMapper } from './discounts,mapper';
 
 @Injectable()

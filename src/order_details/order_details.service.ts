@@ -4,17 +4,17 @@ import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderDetail } from './entities/order_detail.entity';
 import { Repository } from 'typeorm';
-import { BooksService } from 'src/books/books.service';
-import { UsersService } from 'src/users/users.service';
-import { OrderItem } from 'src/order_item/entities/order_item.entity';
+import { BooksService } from '../books/books.service';
+import { UsersService } from '../users/users.service';
+import { OrderItem } from '../order_item/entities/order_item.entity';
 import { OrderResponseForAdminDto } from './dto/responses/order-resoponse-for-admin.dto';
 import { OrderMapper } from './order_details.mapper';
 import { OrderDetailResponseDto } from './dto/responses/order-detail-response.dto';
-import { PaymentStatus } from 'src/enums/payment-status.enums';
+import { PaymentStatus } from '../enums/payment-status.enums';
 import { UpdateOrderStateDto } from './dto/requests/update-state-order.dto';
-import { OrderItemBooksResponseDto } from 'src/order_item/dto/responses/order-items-books-response';
+import { OrderItemBooksResponseDto } from '../order_item/dto/responses/order-items-books-response';
 import { OrderDetailGetItemsResponseDto } from './dto/responses/order-detail-get-items-response.dto';
-import { CartService } from 'src/cart/cart.service';
+import { CartService } from '../cart/cart.service';
 import { OrderResponseDto } from './dto/responses/order-response.dto';
 import { OrderGetItemsResponseDto } from './dto/responses/order-get-items-response.dto';
 import { subDays } from 'date-fns';
@@ -33,7 +33,6 @@ export class OrderDetailsService {
   async createOrderDetail(
     userId: string,
     createOrderDetailDto: CreateOrderDetailDto,
-    checkOut: string,
   ) {
     const user = await this.userService.findUserById(userId);
 
@@ -55,7 +54,7 @@ export class OrderDetailsService {
       return orderItem;
     });
     await this.orderItemRepository.save(orderItems);
-    if (!(checkOut === 'buynow')) {
+    if (!(createOrderDetailDto.checkout_method === 'buynow')) {
       await this.cartService.deleteItemsFromCart(`user-${userId}`, bookIds);
     }
     return 'Order created';

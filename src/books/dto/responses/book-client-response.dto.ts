@@ -1,6 +1,3 @@
-import { IsArray, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
-import { IsUuidArray } from 'src/decorators/arrayUuid-validator';
-import { Transform } from 'class-transformer';
 import { DiscountResponseDto } from 'src/discounts/dto/responses/discount-response.dto';
 import { PublisherResponseDto } from 'src/publishers/dto/responses/publisher-response.dto';
 import { AuthorResponseDto } from 'src/authors/dto/responses/author-response.dto';

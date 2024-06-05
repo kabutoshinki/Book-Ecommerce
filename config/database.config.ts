@@ -1,15 +1,15 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Address } from 'src/addresses/entities/address.entity';
-import { Author } from 'src/authors/entities/author.entity';
-import { Book } from 'src/books/entities/book.entity';
-import { Category } from 'src/categories/entities/category.entity';
-import { Discount } from 'src/discounts/entities/discount.entity';
-import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
-import { OrderItem } from 'src/order_item/entities/order_item.entity';
-import { Publisher } from 'src/publishers/entities/publisher.entity';
+import { Address } from '../src/addresses/entities/address.entity';
+import { Author } from '../src/authors/entities/author.entity';
+import { Book } from '../src/books/entities/book.entity';
+import { Category } from '../src/categories/entities/category.entity';
+import { Discount } from '../src/discounts/entities/discount.entity';
+import { OrderDetail } from '../src/order_details/entities/order_detail.entity';
+import { OrderItem } from '../src/order_item/entities/order_item.entity';
+import { Publisher } from '../src/publishers/entities/publisher.entity';
 import { Review } from 'src/reviews/entities/review.entity';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../src/users/entities/user.entity';
 
 export const getTypeOrmConfig = async (
   configService: ConfigService,

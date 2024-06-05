@@ -1,9 +1,9 @@
-import { Author } from 'src/authors/entities/author.entity';
-import { Category } from 'src/categories/entities/category.entity';
-import { Discount } from 'src/discounts/entities/discount.entity';
-import { OrderItem } from 'src/order_item/entities/order_item.entity';
-import { Publisher } from 'src/publishers/entities/publisher.entity';
-import { Review } from 'src/reviews/entities/review.entity';
+import { Author } from '../../authors/entities/author.entity';
+import { Category } from '../../categories/entities/category.entity';
+import { Discount } from '../../discounts/entities/discount.entity';
+import { OrderItem } from '../../order_item/entities/order_item.entity';
+import { Publisher } from '../../publishers/entities/publisher.entity';
+import { Review } from '../../reviews/entities/review.entity';
 
 import {
   Entity,

@@ -4,7 +4,7 @@ import { DiscountResponseDto } from './dto/responses/discount-response.dto';
 import { DiscountResponseForAdminDto } from './dto/responses/discount-resoponse-for-admin.dto';
 import { CreateDiscountDto } from './dto/requests/create-discount.dto';
 import { UpdateDiscountDto } from './dto/requests/update-discount.dto';
-import { formatDate, formatDateType } from 'src/utils/convert';
+import { formatDate, formatDateType } from '../utils/convert';
 
 @Injectable()
 export class DiscountMapper {

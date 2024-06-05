@@ -45,7 +45,7 @@ describe('UsersController', () => {
   });
 
   it('should return one user equal with id', () => {
-    const userId = 1;
+    const userId = '307951ed-d362-4d87-9b5f-fedc631381c9';
     const expectedUser = {
       id: userId,
       firstName: 'John',

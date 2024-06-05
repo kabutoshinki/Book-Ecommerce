@@ -153,7 +153,6 @@ export class AppController {
   @Get('page/review')
   @Render('pages/review')
   async review(@Request() req) {
-    console.log(req.user);
     const booksReviews = await this.bookService.getBooksReviews();
     return { title: 'Review Page', books: booksReviews, user: req.user };
   }

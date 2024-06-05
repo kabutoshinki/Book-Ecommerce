@@ -1,4 +1,4 @@
-import { Address } from 'src/addresses/entities/address.entity';
+import { Address } from '../../addresses/entities/address.entity';
 import { Role } from '../../enums/role.enum';
 import {
   Column,
@@ -9,8 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
-import { Review } from 'src/reviews/entities/review.entity';
+import { OrderDetail } from '../../order_details/entities/order_detail.entity';
+import { Review } from '../../reviews/entities/review.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity()

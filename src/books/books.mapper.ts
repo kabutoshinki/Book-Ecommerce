@@ -1,5 +1,5 @@
 import { DiscountMapper } from './../discounts/discounts,mapper';
-import { formatDate } from 'src/utils/convert';
+import { formatDate } from '../utils/convert';
 import { Injectable } from '@nestjs/common';
 import { BookResponseDto } from './dto/responses/book-response.dto';
 import { Book } from './entities/book.entity';
@@ -8,11 +8,11 @@ import { CreateBookDto } from './dto/requests/create-book.dto';
 import { UpdateBookDto } from './dto/requests/update-book.dto';
 import { BookOrderResponseDto } from './dto/responses/book-order-response.dto';
 import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
-import { PublisherMapper } from 'src/publishers/publishers.mapper';
-import { CategoryMapper } from 'src/categories/categories.mapper';
-import { AuthorMapper } from 'src/authors/authors.mapper';
+import { PublisherMapper } from '../publishers/publishers.mapper';
+import { CategoryMapper } from '../categories/categories.mapper';
+import { AuthorMapper } from '../authors/authors.mapper';
 import { BookReviewResponseDto } from './dto/responses/books-reviews-response.dto';
-import { ReviewMapper } from 'src/reviews/reviews.mapper';
+import { ReviewMapper } from '../reviews/reviews.mapper';
 
 @Injectable()
 export class BookMapper {

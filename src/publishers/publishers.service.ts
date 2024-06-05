@@ -8,7 +8,7 @@ import { UpdatePublisherDto } from './dto/requests/update-publisher.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Publisher } from './entities/publisher.entity';
 import { Repository } from 'typeorm';
-import { Book } from 'src/books/entities/book.entity';
+import { Book } from '../books/entities/book.entity';
 import { PublisherMapper } from './publishers.mapper';
 import { PublisherResponseForAdminDto } from './dto/responses/publisher-resoponse-for-admin.dto';
 

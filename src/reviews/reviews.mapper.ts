@@ -1,10 +1,10 @@
-import { Book } from 'src/books/entities/book.entity';
+import { Book } from '../books/entities/book.entity';
 import { CreateReviewDto } from './dto/requests/create-review.dto';
 import { UpdateReviewDto } from './dto/requests/update-review.dto';
 import { ReviewResponseDto } from './dto/responses/review-response.dto';
 import { Review } from './entities/review.entity';
-import { User } from 'src/users/entities/user.entity';
-import { UserMapper } from 'src/users/users.mapper';
+import { User } from '../users/entities/user.entity';
+import { UserMapper } from '../users/users.mapper';
 import { ReviewListResponseDto } from './dto/responses/get-list-review-response.dto';
 
 export class ReviewMapper {

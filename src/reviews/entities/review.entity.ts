@@ -1,5 +1,5 @@
-import { Book } from 'src/books/entities/book.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Book } from '../../books/entities/book.entity';
+import { User } from '../../users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity()

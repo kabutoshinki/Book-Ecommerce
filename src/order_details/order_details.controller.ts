@@ -14,7 +14,7 @@ import {
 import { OrderDetailsService } from './order_details.service';
 import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
 import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
-import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { UpdateOrderStateDto } from './dto/requests/update-state-order.dto';
 
 @Controller('order-details')
@@ -26,13 +26,10 @@ export class OrderDetailsController {
   createOrder(
     @Param('userId') userId: string,
     @Body() createOrderDetailDto: CreateOrderDetailDto,
-    @Query('checkout') checkOut: string,
   ) {
-    // const userId = req.user.userId;
     return this.orderDetailsService.createOrderDetail(
       userId,
       createOrderDetailDto,
-      checkOut,
     );
     // return this.orderDetailsService.create(createOrderDetailDto);
   }

@@ -8,8 +8,8 @@ import { UpdateAuthorDto } from './dto/requests/update-author.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Author } from './entities/author.entity';
 import { In, Repository } from 'typeorm';
-import { Book } from 'src/books/entities/book.entity';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { Book } from '../books/entities/book.entity';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { AuthorMapper } from './authors.mapper';
 import { AuthorResponseDto } from './dto/responses/author-response.dto';
 

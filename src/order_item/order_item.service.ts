@@ -4,8 +4,8 @@ import { UpdateOrderItemDto } from './dto/update-order_item.dto';
 import { OrderItem } from './entities/order_item.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BooksService } from 'src/books/books.service';
-import { OrderDetailsService } from 'src/order_details/order_details.service';
+import { BooksService } from '../books/books.service';
+import { OrderDetailsService } from '../order_details/order_details.service';
 
 @Injectable()
 export class OrderItemService {

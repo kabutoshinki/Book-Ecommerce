@@ -3,7 +3,7 @@ import { AddToCartDto } from './dto/requests/add-to-cart.dto';
 import { UpdateCartDto } from './dto/requests/update-cart.dto';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CartItem } from './interfaces/CartItem';
-import { BooksService } from 'src/books/books.service';
+import { BooksService } from '../books/books.service';
 import { CartMapper } from './cart.mapper';
 
 @Injectable()
@@ -49,7 +49,6 @@ export class CartService {
     const cartKey = this.getCartKey(userId);
     const cart: CartItem[] = (await this.cacheManager.get(cartKey)) || [];
 
-    // Extract bookIds from cart
     const bookIds = cart.map((item) => item.bookId);
 
     // Fetch books based on bookIds
@@ -125,8 +124,6 @@ export class CartService {
     const cartKey = this.getCartKey(userId);
     const cart: CartItem[] = (await this.cacheManager.get(cartKey)) || [];
     const updatedCart = cart.filter((item) => !bookIds.includes(item.bookId));
-    console.log(updatedCart);
-    console.log(cartKey);
     await this.cacheManager.set(cartKey, updatedCart);
   }
 

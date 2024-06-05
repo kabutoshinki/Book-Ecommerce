@@ -17,10 +17,10 @@ import { User } from './entities/user.entity';
 import { error } from 'console';
 import { UserResponseDto } from './dto/response/user-response.dto';
 import { UserMapper } from './users.mapper';
-import { Role } from 'src/enums/role.enum';
+import { Role } from '../enums/role.enum';
 import { UserResponseForAdminDto } from './dto/response/user-resoponse-for-admin.dto';
 import { UpdateUserStateDto } from './dto/requests/update-state-user.dto';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class UsersService {

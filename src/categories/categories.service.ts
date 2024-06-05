@@ -10,7 +10,7 @@ import { UpdateCategoryDto } from './dto/requests/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { In, Repository } from 'typeorm';
-import { Book } from 'src/books/entities/book.entity';
+import { Book } from '../books/entities/book.entity';
 import { CategoryMapper } from './categories.mapper';
 import { CategoryResponseDto } from './dto/responses/category-response.dto';
 

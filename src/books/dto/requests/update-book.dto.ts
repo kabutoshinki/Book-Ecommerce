@@ -11,7 +11,6 @@ import {
   isUUID,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { IsUuidArray } from 'src/decorators/arrayUuid-validator';
 export class UpdateBookDto {
   @IsNotEmpty()
   @IsString()
@@ -43,13 +42,11 @@ export class UpdateBookDto {
   @IsOptional()
   publisherId?: string;
 
-  @IsUuidArray()
   @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   @IsOptional()
   @IsArray()
   categoryIds: string[] = [];
 
-  @IsUuidArray()
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))

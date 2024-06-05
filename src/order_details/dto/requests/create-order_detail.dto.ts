@@ -1,6 +1,6 @@
-import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CreateOrderItemDto } from 'src/order_item/dto/create-order_item.dto';
+import { CreateOrderItemDto } from '../../../order_item/dto/create-order_item.dto';
 
 export class CreateOrderDetailDto {
   @IsNumber()
@@ -10,4 +10,7 @@ export class CreateOrderDetailDto {
   @IsArray()
   @Type(() => CreateOrderItemDto)
   orderItems: CreateOrderItemDto[];
+
+  @IsOptional()
+  checkout_method?: string;
 }

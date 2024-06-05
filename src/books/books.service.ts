@@ -19,11 +19,11 @@ import {
   Not,
   Repository,
 } from 'typeorm';
-import { PublishersService } from 'src/publishers/publishers.service';
-import { AuthorsService } from 'src/authors/authors.service';
-import { DiscountsService } from 'src/discounts/discounts.service';
-import { CategoriesService } from 'src/categories/categories.service';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { PublishersService } from '../publishers/publishers.service';
+import { AuthorsService } from '../authors/authors.service';
+import { DiscountsService } from '../discounts/discounts.service';
+import { CategoriesService } from '../categories/categories.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { BookResponseForAdminDto } from './dto/responses/book-response-for-admin.dto';
 import { BookMapper } from './books.mapper';
 import {

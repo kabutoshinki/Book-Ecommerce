@@ -1,5 +1,5 @@
 import { IsArray, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
-import { IsUuidArray } from 'src/decorators/arrayUuid-validator';
+
 import { Transform } from 'class-transformer';
 
 export class BookResponseDto {
@@ -29,7 +29,6 @@ export class BookResponseDto {
   @IsUUID()
   publisherId?: string;
 
-  @IsUuidArray()
   @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   @IsOptional()
   @IsArray()

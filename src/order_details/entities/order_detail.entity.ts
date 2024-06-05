@@ -1,6 +1,6 @@
-import { PaymentStatus } from 'src/enums/payment-status.enums';
-import { OrderItem } from 'src/order_item/entities/order_item.entity';
-import { User } from 'src/users/entities/user.entity';
+import { PaymentStatus } from '../../enums/payment-status.enums';
+import { OrderItem } from '../../order_item/entities/order_item.entity';
+import { User } from '../../users/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

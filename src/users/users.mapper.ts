@@ -4,7 +4,7 @@ import { User } from './entities/user.entity';
 import { UserResponseDto } from './dto/response/user-response.dto';
 import { CreateUserDto } from './dto/requests/create-user.dto';
 import { UserResponseForAdminDto } from './dto/response/user-resoponse-for-admin.dto';
-import { AddressMapper } from 'src/addresses/addresses.mapper';
+import { AddressMapper } from '../addresses/addresses.mapper';
 
 @Injectable()
 export class UserMapper {

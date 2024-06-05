@@ -1,6 +1,6 @@
 import { OrderItem } from 'src/order_item/entities/order_item.entity';
 import { OrderItemResponseDto } from './dto/responses/order-items-response.dto';
-import { BookMapper } from 'src/books/books.mapper';
+import { BookMapper } from '../books/books.mapper';
 import { OrderItemBooksResponseDto } from './dto/responses/order-items-books-response';
 
 export class OrderItemMapper {

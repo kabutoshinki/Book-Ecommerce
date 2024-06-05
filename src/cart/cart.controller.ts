@@ -15,7 +15,7 @@ import { CartService } from './cart.service';
 import { AddToCartDto } from './dto/requests/add-to-cart.dto';
 import { UpdateCartDto } from './dto/requests/update-cart.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 
 @Controller('cart')
 @ApiTags('Cart')

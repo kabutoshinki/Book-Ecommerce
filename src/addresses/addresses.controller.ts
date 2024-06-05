@@ -13,7 +13,7 @@ import { AddressesService } from './addresses.service';
 import { CreateAddressDto } from './dto/requests/create-address.dto';
 import { UpdateAddressDto } from './dto/requests/update-address.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('addresses')

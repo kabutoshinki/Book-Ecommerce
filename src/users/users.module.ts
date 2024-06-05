@@ -1,4 +1,4 @@
-import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
+import { OrderDetail } from '../order_details/entities/order_detail.entity';
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';

@@ -9,7 +9,6 @@ import {
   IsNumber,
   isUUID,
 } from 'class-validator';
-import { IsUuidArray } from 'src/decorators/arrayUuid-validator';
 
 export class CreateBookDto {
   @IsNotEmpty()
@@ -39,7 +38,7 @@ export class CreateBookDto {
   @IsOptional()
   publisherId?: string;
 
-  @IsUuidArray()
+  @IsArray()
   @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   @IsOptional()
   @IsArray()

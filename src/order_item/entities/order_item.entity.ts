@@ -1,5 +1,5 @@
-import { Book } from 'src/books/entities/book.entity';
-import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
+import { Book } from '../../books/entities/book.entity';
+import { OrderDetail } from '../../order_details/entities/order_detail.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

@@ -189,7 +189,7 @@
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            // location.reload(); // Reload the page to see the updated book
+            location.reload(); // Reload the page to see the updated book
             turnOffSpinner(updateBookBtn, updateBookBtnText, updateBookBtnSpinner);
           } else {
             alert(data.message);

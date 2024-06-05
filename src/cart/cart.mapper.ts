@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { formatDate, formatDateType } from 'src/utils/convert';
 import { CartResponseDto } from './dto/responses/CartResponseDto';
-import { CartItem } from 'src/cart_item/entities/cart_item.entity';
-import { BookMapper } from 'src/books/books.mapper';
+import { BookMapper } from '../books/books.mapper';
 import { CartResponse } from './interfaces/CartResponse';
 
 @Injectable()
