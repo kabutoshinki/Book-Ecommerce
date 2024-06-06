@@ -270,4 +270,14 @@ export class AppController {
       console.log(error);
     }
   }
+
+  @Get('content')
+  getContent(): string {
+    return this.appService.readFile();
+  }
+
+  @Post('content')
+  saveContent(@Body('content') content: string): void {
+    this.appService.writeFile(content);
+  }
 }

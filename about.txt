@@ -1,0 +1,15 @@
+<h1 style="text-align: center;"><strong class="ql-size-huge">About Us</strong></h1>
+<h2 class="ql-align-right">Welcome to BookWorm</h2>
+<p>At BookWorm, our mission is to make great design accessible and delightful for everyone. We believe in creating a space where book lovers can explore and enjoy their passion for reading.</p>
+<p style="text-align: left;"><br><iframe class="ql-video" style="width: 420px; height: 210px; display: table; margin-left: auto; margin-right: auto;" src="https://www.youtube.com/embed/SKVcQnyEIT8?showinfo=0" width="420" height="210" frameborder="0" allowfullscreen="allowfullscreen"></iframe>&nbsp;</p>
+<p style="text-align: left;">We believe in the transformative power of literature. We understand the magic that happens when you immerse yourself in a good book, where words become portals to new worlds and characters become lifelong companions.</p>
+<p style="text-align: left;">&nbsp;</p>
+<p style="text-align: left;">Our mission is simple: to inspire a love for reading in everyone, young and old alike. Whether you're a seasoned bookworm or just beginning your literary journey, we're here to guide you through the vast universe of literature.</p>
+<p>&nbsp;</p>
+<p>With an extensive collection of books spanning genres from fantasy to romance, mystery to science fiction, there's something for every reader at Bookworm. Our curated selection ensures that you'll always find your next favorite read.</p>
+<p>&nbsp;</p>
+<p>But Bookworm is more than just a bookstore. It's a community where book lovers gather to share their passion for literature, exchange recommendations, and connect with fellow bibliophiles. From book clubs to author signings, we host events that celebrate the written word and foster a sense of belonging among bookworms everywhere.</p>
+<p>&nbsp;</p>
+<p>So come on in, grab a cup of tea, and lose yourself in the pages of a book. Join us on this journey of discovery and exploration, where every story is an adventure waiting to be told.</p>
+<p>&nbsp;</p>
+<p>Welcome to Bookworm&mdash;where reading is not just a hobby, but a way of life.</p>

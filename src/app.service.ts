@@ -1,16 +1,33 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-
+import * as fs from 'fs';
+import * as path from 'path';
 @Injectable()
 export class AppService {
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  private readonly filePath = path.join(__dirname, '../../about.txt');
 
-  async setCacheKey(key: string, value: string): Promise<void> {
-    await this.cacheManager.set(key, value);
+  constructor() {
+    // Create the file if it doesn't exist
+    if (!fs.existsSync(this.filePath)) {
+      fs.writeFileSync(this.filePath, '', 'utf8');
+    }
   }
 
-  async getCacheKey(key: string): Promise<string> {
-    return await this.cacheManager.get(key);
+  readFile(): string {
+    try {
+      return fs.readFileSync(this.filePath, 'utf8');
+    } catch (error) {
+      console.error('Error reading file:', error);
+      return '';
+    }
+  }
+
+  writeFile(content: string): void {
+    try {
+      fs.writeFileSync(this.filePath, content, 'utf8');
+    } catch (error) {
+      console.error('Error writing file:', error);
+    }
   }
 }
