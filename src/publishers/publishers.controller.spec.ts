@@ -1,17 +1,16 @@
-// publishers.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { PublishersController } from './publishers.controller';
 import { PublishersService } from './publishers.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Publisher } from './entities/publisher.entity';
-import { Book } from '../books/entities/book.entity'; // Import the Book entity
+import { Book } from '../books/entities/book.entity';
 
 describe('PublishersController', () => {
   let controller: PublishersController;
   let service: PublishersService;
   let publisherRepository: Repository<Publisher>;
-  let bookRepository: Repository<Book>; // Define the bookRepository variable
+  let bookRepository: Repository<Book>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,11 +18,11 @@ describe('PublishersController', () => {
       providers: [
         PublishersService,
         {
-          provide: getRepositoryToken(Publisher), // Provide the PublisherRepository token
+          provide: getRepositoryToken(Publisher),
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Book), // Provide the BookRepository token
+          provide: getRepositoryToken(Book),
           useClass: Repository,
         },
       ],
@@ -33,13 +32,39 @@ describe('PublishersController', () => {
     service = module.get<PublishersService>(PublishersService);
     publisherRepository = module.get<Repository<Publisher>>(
       getRepositoryToken(Publisher),
-    ); // Get the repository instance
-    bookRepository = module.get<Repository<Book>>(getRepositoryToken(Book)); // Get the repository instance
+    );
+    bookRepository = module.get<Repository<Book>>(getRepositoryToken(Book));
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  // Add other tests as needed
+  describe('findAll', () => {
+    it('should return all publishers', async () => {
+      const publishers = [
+        {
+          id: '1',
+          name: 'Publisher 1',
+          address: 'abc',
+          isActive: true,
+          created_at: '7-6-2024',
+          updated_at: '7-6-2024',
+        },
+        {
+          id: '2',
+          name: 'Publisher 2',
+          address: 'abc',
+          isActive: true,
+          created_at: '7-6-2024',
+          updated_at: '7-6-2024',
+        },
+      ]; // Mock publishers
+      jest.spyOn(service, 'findAll').mockResolvedValue(publishers);
+
+      const result = await controller.findAll();
+
+      expect(result).toEqual(publishers);
+    });
+  });
 });
