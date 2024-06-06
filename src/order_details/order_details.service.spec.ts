@@ -7,10 +7,11 @@ import { UsersService } from '../users/users.service';
 import { CartService } from '../cart/cart.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
 
 describe('OrderDetailsService', () => {
   let service: OrderDetailsService;
-
+  let orderDetailRepository: Repository<OrderDetail>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -45,9 +46,24 @@ describe('OrderDetailsService', () => {
     }).compile();
 
     service = module.get<OrderDetailsService>(OrderDetailsService);
+    orderDetailRepository = module.get<Repository<OrderDetail>>(
+      getRepositoryToken(OrderDetail),
+    );
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('getOrderItemsBookByOrderId', () => {
+    it('should throw NotFoundException when order detail not found', async () => {
+      const orderDetailId = '1';
+
+      jest.spyOn(orderDetailRepository, 'findOne').mockResolvedValue(undefined);
+
+      await expect(
+        service.getOrderItemsBookByOrderId(orderDetailId),
+      ).rejects.toThrow(NotFoundException);
+    });
   });
 });
