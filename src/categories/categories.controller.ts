@@ -1,3 +1,4 @@
+import { IsAdminGuard } from './../guard/is-admin.guard';
 import {
   Controller,
   Get,
@@ -7,6 +8,7 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/requests/create-category.dto';
@@ -18,6 +20,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @UseGuards(IsAdminGuard)
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
@@ -33,6 +36,7 @@ export class CategoriesController {
     return this.categoriesService.findOne(id);
   }
 
+  @UseGuards(IsAdminGuard)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -41,6 +45,7 @@ export class CategoriesController {
     return this.categoriesService.update(id, updateCategoryDto);
   }
 
+  @UseGuards(IsAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(id);

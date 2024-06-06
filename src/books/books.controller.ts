@@ -1,3 +1,4 @@
+import { IsAdminGuard } from '../guard/is-admin.guard';
 import { IGetBooksOptions } from './../interfaces/BookPaginationOptions.interface';
 import {
   Controller,
@@ -13,6 +14,7 @@ import {
   ValidationPipe,
   UsePipes,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/requests/create-book.dto';
@@ -27,6 +29,7 @@ import { GetBooksOptionsDto } from './dto/requests/book-options.dto';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
+  @UseGuards(IsAdminGuard)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -97,6 +100,7 @@ export class BooksController {
     return this.booksService.getRelatedBooks(id, limit);
   }
 
+  @UseGuards(IsAdminGuard)
   @Patch(':id')
   @UsePipes(new ValidationPipe({ transform: true }))
   @UseInterceptors(FileInterceptor('file'))
@@ -108,6 +112,7 @@ export class BooksController {
     return this.booksService.update(id, updateBookDto, file);
   }
 
+  @UseGuards(IsAdminGuard)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.booksService.remove(id);

@@ -1,3 +1,4 @@
+import { IsAdminGuard } from './../guard/is-admin.guard';
 import {
   Controller,
   Get,
@@ -7,6 +8,7 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { DiscountsService } from './discounts.service';
 import { CreateDiscountDto } from './dto/requests/create-discount.dto';
@@ -16,6 +18,7 @@ import { UpdateDiscountDto } from './dto/requests/update-discount.dto';
 export class DiscountsController {
   constructor(private readonly discountsService: DiscountsService) {}
 
+  @UseGuards(IsAdminGuard)
   @Post()
   create(@Body() createDiscountDto: CreateDiscountDto) {
     return this.discountsService.create(createDiscountDto);
@@ -31,6 +34,7 @@ export class DiscountsController {
     return this.discountsService.findOne(id);
   }
 
+  @UseGuards(IsAdminGuard)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -39,6 +43,7 @@ export class DiscountsController {
     return this.discountsService.update(id, updateDiscountDto);
   }
 
+  @UseGuards(IsAdminGuard)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.discountsService.remove(id);

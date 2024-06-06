@@ -1,3 +1,4 @@
+import { IsAdminGuard } from './../guard/is-admin.guard';
 import {
   Controller,
   Get,
@@ -27,11 +28,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -55,6 +58,7 @@ export class UsersController {
     return this.usersService.findById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   update(
@@ -65,6 +69,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto, file);
   }
 
+  @UseGuards(IsAdminGuard)
   @Patch('change-state/:id')
   async changeState(
     @Param('id') id: string,
@@ -72,7 +77,7 @@ export class UsersController {
   ) {
     return await this.usersService.changeState(id, updateUserStateDto);
   }
-
+  @UseGuards(IsAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);

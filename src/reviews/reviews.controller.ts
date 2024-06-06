@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from './../guard/jwt-auth.guard';
 import {
   Controller,
   Get,
@@ -7,6 +8,7 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/requests/create-review.dto';
@@ -16,6 +18,7 @@ import { UpdateReviewDto } from './dto/requests/update-review.dto';
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createReviewDto: CreateReviewDto) {
     return this.reviewsService.create(createReviewDto);
