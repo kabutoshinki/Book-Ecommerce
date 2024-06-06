@@ -69,14 +69,14 @@ export class AuthService {
       if (!passwordMatched) {
         throw new UnauthorizedException('Password does not match');
       }
-      const token = this.jwtService.sign({
+      const userInfo = {
         userId: user.id,
         image: user.avatar,
         role: user.roles,
         email: user.email,
-      });
+      };
       const redirectUrl = '/';
-      return { token, redirectUrl };
+      return { userInfo, redirectUrl };
     } catch (error) {
       console.log(error);
       return {

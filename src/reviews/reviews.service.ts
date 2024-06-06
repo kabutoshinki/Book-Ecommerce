@@ -57,7 +57,8 @@ export class ReviewsService {
   async findReviewsByBookId(bookId: string) {
     await this.bookService.findOne(bookId);
     const reviews = await this.reviewRepository.find({
-      where: { book: { id: bookId } },
+      where: { book: { id: bookId }, isActive: true },
+      order: { created_at: 'DESC' },
       relations: ['reviewer'],
     });
 

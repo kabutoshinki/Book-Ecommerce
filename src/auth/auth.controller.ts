@@ -64,12 +64,10 @@ export class AuthController {
     @Request() req,
     @Response() res,
   ) {
-    const { token, redirectUrl } = await this.authService.loginServerSide(
+    const { userInfo, redirectUrl } = await this.authService.loginServerSide(
       authPayload,
     );
-
-    // res.cookie('token', token, { httpOnly: true, secure: true });
-    req.session.token = token;
+    req.session.user = userInfo;
     return res.redirect(redirectUrl);
   }
 

@@ -12,18 +12,15 @@ import {
   UploadedFile,
   ValidationPipe,
   UsePipes,
-  Put,
   Query,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/requests/create-book.dto';
 import { UpdateBookDto } from './dto/requests/update-book.dto';
-import { CacheKey } from '@nestjs/cache-manager';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Book } from './entities/book.entity';
 import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
 import { BooksQueryDto } from './dto/requests/books-query.dto';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { GetBooksOptionsDto } from './dto/requests/book-options.dto';
 
 @Controller('books')
