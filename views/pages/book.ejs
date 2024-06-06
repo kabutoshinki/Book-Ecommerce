@@ -151,7 +151,7 @@
         <%-include('../modals/book/delete_book.ejs', { book }) %> <% }) %>
       </tbody>
     </table>
-    <ul class="pagination float-end">
+    <ul class="pagination justify-content-center">
       <% if (meta.totalPages > 1) { %>
       <li class="page-item <%= meta.currentPage === 1 ? 'disabled' : '' %>">
         <a

@@ -30,6 +30,8 @@ import { BookResponseForAdminDto } from './books/dto/responses/book-response-for
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { ReviewsService } from './reviews/reviews.service';
 import { PaymentStatus } from './enums/payment-status.enums';
+import { BookListType, SortCriteria } from './enums/book.enum';
+import { IGetBooksOptions } from './interfaces/BookPaginationOptions.interface';
 
 @Controller()
 @ApiTags('Default')
@@ -53,7 +55,11 @@ export class AppController {
     const reviews = await this.reviewService.getTotalActiveReviews();
     const users = await this.userService.getTotalActiveUser();
     const books = await this.bookService.getTotalActiveBooks();
-    const booksRate = await this.bookService.getPopularBooks(10);
+    const booksRate = await this.bookService.getBooksOptions({
+      type: BookListType.POPULAR,
+      limit: 10,
+      sortBy: [SortCriteria.AVERAGE_RATE],
+    });
     const revenue = await this.orderService.getRevenueByDay();
 
     const totalRevenue = revenue[PaymentStatus.Succeeded] ?? 0;
@@ -66,7 +72,7 @@ export class AppController {
       books: books,
       booksRate: booksRate,
       revenue: revenue,
-      totalRevenue: totalRevenue,
+      totalRevenue: totalRevenue?.toFixed(2),
       user: req.user,
     };
   }
@@ -115,21 +121,15 @@ export class AppController {
   @Get('page/book')
   @Render('pages/book')
   async book(@Query() query: any, @Request() req): Promise<any> {
-    const options: IPaginationOptions = {
+    const options: IGetBooksOptions = {
       page: query.page ? parseInt(query.page, 10) : 1,
       limit: query.limit ? parseInt(query.limit, 10) : 6,
-      route: '/books/page/book',
+      search: query.q,
+      isActive: undefined,
     };
 
-    let paginatedBooks: Pagination<BookResponseForAdminDto>;
-    if (query.q) {
-      paginatedBooks = await this.bookService.paginateBookAdmin(
-        options,
-        query.q,
-      );
-    } else {
-      paginatedBooks = await this.bookService.paginateBookAdmin(options);
-    }
+    const paginatedBooks = await this.bookService.paginateBooks(options);
+
     const discounts = await this.discountService.findAll();
     const categories = await this.categoryService.findAll();
     const authors = await this.authorService.findAll();
@@ -167,11 +167,12 @@ export class AppController {
   @Get('page/review')
   @Render('pages/review')
   async review(@Query() query: any, @Request() req) {
-    const options: IPaginationOptions = {
+    const options: IGetBooksOptions = {
       page: query.page ? parseInt(query.page, 10) : 1,
       limit: query.limit ? parseInt(query.limit, 10) : 6,
+      includeReviews: true,
     };
-    const booksReviews = await this.bookService.getBooksReviews(options);
+    const booksReviews = await this.bookService.paginateBooks(options);
     return {
       title: 'Review Page',
       books: booksReviews.items,

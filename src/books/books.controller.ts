@@ -1,3 +1,4 @@
+import { IGetBooksOptions } from './../interfaces/BookPaginationOptions.interface';
 import {
   Controller,
   Get,
@@ -23,6 +24,7 @@ import { Book } from './entities/book.entity';
 import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
 import { BooksQueryDto } from './dto/requests/books-query.dto';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { GetBooksOptionsDto } from './dto/requests/book-options.dto';
 
 @Controller('books')
 export class BooksController {
@@ -40,11 +42,12 @@ export class BooksController {
 
   @Get('reviews')
   async booksReviews(@Query() query) {
-    const options: IPaginationOptions = {
+    const options: IGetBooksOptions = {
       page: query.page ? parseInt(query.page, 10) : 1,
       limit: query.limit ? parseInt(query.limit, 10) : 6,
+      includeReviews: true,
     };
-    return await this.booksService.getBooksReviews(options);
+    return await this.booksService.paginateBooks(options);
   }
 
   @Get()
@@ -52,7 +55,21 @@ export class BooksController {
   async getBooks(
     @Query() query: BooksQueryDto,
   ): Promise<Pagination<BookClientResponseDto>> {
-    return this.booksService.getBooks(query);
+    const options = {
+      page: query.page || 1,
+      limit: query.limit || 10,
+      sort: query.sort,
+      search: query.search,
+      isActive: true,
+      categories: query.categories || [],
+      authors: query.authors || [],
+      minPrice: query.minPrice,
+      maxPrice: query.maxPrice,
+      minRate: query.minRate,
+      maxRate: query.maxRate,
+    };
+
+    return this.booksService.paginateBooks(options);
   }
 
   @Get('search')
@@ -62,33 +79,13 @@ export class BooksController {
   ): Promise<BookClientResponseDto[]> {
     return this.booksService.searchBooksByName(limit, name);
   }
-  @Get('on-sale')
-  async getOnSaleBooks(
-    @Query('limit') limit = 5,
-  ): Promise<BookClientResponseDto[]> {
-    return this.booksService.getOnSaleBooks(limit);
-  }
 
-  @Get('best-sales')
-  async getPopularBooks(
-    @Query('limit') limit = 5,
+  @Get('options')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getBooksOptions(
+    @Query() query: GetBooksOptionsDto,
   ): Promise<BookClientResponseDto[]> {
-    return this.booksService.getBestSellingBooks(limit);
-  }
-
-  @Get('popular')
-  async getFeaturedBooks(
-    @Query('limit') limit = 5,
-    @Query('categoryName') categoryName,
-  ): Promise<BookClientResponseDto[]> {
-    return this.booksService.getPopularBooks(limit, categoryName);
-  }
-
-  @Get('best-books')
-  async getBestBooks(
-    @Query('limit') limit = 3,
-  ): Promise<BookClientResponseDto[]> {
-    return this.booksService.getBestBooks(limit);
+    return this.booksService.getBooksOptions(query);
   }
 
   @Get(':id')

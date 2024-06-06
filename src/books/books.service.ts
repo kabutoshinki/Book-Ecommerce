@@ -1,3 +1,5 @@
+import { IGetBooksOptions } from './../interfaces/BookPaginationOptions.interface';
+import { BookListType } from './../enums/book.enum';
 import {
   BadRequestException,
   Injectable,
@@ -20,6 +22,7 @@ import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { BookClientResponseDto } from './dto/responses/book-client-response.dto';
 import { BooksQueryDto } from './dto/requests/books-query.dto';
 import { BookReviewResponseDto } from './dto/responses/books-reviews-response.dto';
+import { GetBooksOptions } from 'src/interfaces/GetBooksOptions.interface';
 
 @Injectable()
 export class BooksService {
@@ -96,12 +99,6 @@ export class BooksService {
       relations: ['publisher', 'discount', 'authors', 'categories'],
     });
   }
-  async findAllForAdmin(): Promise<BookResponseForAdminDto[]> {
-    const books = await this.bookRepository.find({
-      relations: ['publisher', 'discount', 'authors', 'categories'],
-    });
-    return BookMapper.toBookResponseForAdminDtoList(books);
-  }
 
   async findOne(id: string) {
     const book = await this.bookRepository.findOneBy({ id: id });
@@ -109,6 +106,70 @@ export class BooksService {
       throw new NotFoundException('Book not exist');
     }
     return book;
+  }
+
+  async getBooksOptions(
+    options: GetBooksOptions,
+  ): Promise<BookClientResponseDto[]> {
+    const { type, limit = 5, categoryName, sortBy } = options;
+    const currentDate = new Date();
+    const queryBuilder = this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.discount', 'discount')
+      .leftJoinAndSelect('book.authors', 'authors')
+      .leftJoinAndSelect('book.categories', 'categories')
+      .leftJoinAndSelect('book.publisher', 'publisher');
+    if (type === BookListType.ON_SALE) {
+      queryBuilder
+        .where('discount IS NOT NULL')
+        .andWhere('discount.startAt <= :currentDate', { currentDate })
+        .andWhere('discount.expiresAt >= :currentDate', { currentDate });
+    }
+    if (
+      type === BookListType.POPULAR &&
+      categoryName &&
+      categoryName.trim() !== '' &&
+      categoryName !== 'all'
+    ) {
+      queryBuilder.andWhere('categories.name = :categoryName', {
+        categoryName,
+      });
+    }
+
+    if (sortBy && sortBy.length > 0) {
+      sortBy.forEach((criteria, index) => {
+        if (index === 0) {
+          queryBuilder.orderBy(criteria, 'DESC');
+        } else {
+          queryBuilder.addOrderBy(criteria, 'DESC');
+        }
+      });
+    } else {
+      switch (type) {
+        case BookListType.ON_SALE:
+          queryBuilder.orderBy('discount.amount', 'DESC');
+          break;
+        case BookListType.BEST_SELLING:
+          queryBuilder.orderBy('book.sold_quantity', 'DESC');
+          break;
+        case BookListType.POPULAR:
+          queryBuilder.orderBy('book.average_rate', 'DESC');
+          break;
+        case BookListType.BEST:
+          queryBuilder
+            .orderBy('book.sold_quantity', 'DESC')
+            .addOrderBy('book.average_rate', 'DESC')
+            .addOrderBy('discount.amount', 'DESC');
+          break;
+        default:
+          throw new Error('Invalid book list type');
+      }
+    }
+
+    queryBuilder.take(limit);
+
+    const books = await queryBuilder.getMany();
+    return BookMapper.toBookClientResponseDtoList(books);
   }
 
   async findByIds(ids: string[]) {
@@ -188,61 +249,6 @@ export class BooksService {
     return BookMapper.toBookClientResponseDtoList(books);
   }
 
-  async getOnSaleBooks(limit = 5): Promise<BookClientResponseDto[]> {
-    const currentDate = new Date();
-
-    const onSaleBook = await this.bookRepository
-      .createQueryBuilder('book')
-      .leftJoinAndSelect('book.discount', 'discount')
-      .leftJoinAndSelect('book.categories', 'categories')
-      .where('discount IS NOT NULL')
-      .andWhere('discount.startAt <= :currentDate', { currentDate })
-      .andWhere('discount.expiresAt >= :currentDate', { currentDate })
-      .orderBy('discount.amount', 'DESC')
-      .take(limit)
-      .getMany();
-    return BookMapper.toBookClientResponseDtoList(onSaleBook);
-  }
-
-  async getBestSellingBooks(limit = 5): Promise<BookClientResponseDto[]> {
-    const popularBooks = await this.bookRepository.find({
-      relations: ['discount', 'authors', 'categories'],
-      order: { sold_quantity: 'DESC' },
-      take: limit,
-    });
-    return BookMapper.toBookClientResponseDtoList(popularBooks);
-  }
-
-  async getPopularBooks(
-    limit = 5,
-    categoryName?: string,
-  ): Promise<BookClientResponseDto[]> {
-    const queryOptions: FindManyOptions<Book> = {
-      relations: ['publisher', 'discount', 'authors', 'categories'],
-      order: { average_rate: 'DESC' },
-      take: limit,
-    };
-
-    if (categoryName && categoryName !== 'all' && categoryName.trim() !== '') {
-      queryOptions.where = { categories: { name: categoryName } };
-    }
-
-    const featuredBooks = await this.bookRepository.find(queryOptions);
-    return BookMapper.toBookClientResponseDtoList(featuredBooks);
-  }
-
-  async getBestBooks(limit = 3): Promise<BookClientResponseDto[]> {
-    const bestBooks = await this.bookRepository
-      .createQueryBuilder('book')
-      .leftJoinAndSelect('book.discount', 'discount')
-      .orderBy('book.sold_quantity', 'DESC')
-      .addOrderBy('book.average_rate', 'DESC')
-      .addOrderBy('discount.amount', 'DESC')
-      .take(limit)
-      .getMany();
-    return BookMapper.toBookClientResponseDtoList(bestBooks);
-  }
-
   async update(
     id: string,
     updateBookDto: Partial<UpdateBookDto>,
@@ -309,84 +315,43 @@ export class BooksService {
     return 'Book deleted';
   }
 
-  async paginateBookAdmin(
-    options: IPaginationOptions,
-    searchQuery?: string,
-  ): Promise<Pagination<BookResponseForAdminDto>> {
+  async paginateBooks(
+    options: IGetBooksOptions,
+  ): Promise<
+    Pagination<
+      BookClientResponseDto | BookResponseForAdminDto | BookReviewResponseDto
+    >
+  > {
     const page = Number(options.page) || 1;
-    const limit = Number(options.limit) || 6;
+    const limit = Number(options.limit) || 10;
 
     let queryBuilder = this.bookRepository
       .createQueryBuilder('book')
       .leftJoinAndSelect('book.publisher', 'publisher')
       .leftJoinAndSelect('book.discount', 'discount')
       .leftJoinAndSelect('book.authors', 'authors')
-      .leftJoinAndSelect('book.categories', 'categories')
-      .orderBy('book.created_at', 'DESC');
+      .leftJoinAndSelect('book.categories', 'categories');
 
-    if (searchQuery) {
+    if (options.includeReviews) {
       queryBuilder = queryBuilder
-        .where('book.title LIKE :searchQuery', {
-          searchQuery: `%${searchQuery}%`,
-        })
-        .orWhere('book.description LIKE :searchQuery', {
-          searchQuery: `%${searchQuery}%`,
-        });
+        .leftJoinAndSelect('book.reviews', 'review')
+        .leftJoinAndSelect('review.reviewer', 'reviewer');
     }
 
-    const [books, totalItems] = await queryBuilder
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
+    if (options.isActive !== undefined) {
+      queryBuilder.where('book.isActive = :isActive', {
+        isActive: options.isActive,
+      });
+    }
 
-    const paginatedBooksDto = BookMapper.toBookResponseForAdminDtoList(books);
-
-    const paginationMeta = {
-      totalItems: totalItems,
-      itemCount: books.length,
-      itemsPerPage: limit,
-      totalPages: Math.ceil(totalItems / limit),
-      currentPage: page,
-    };
-
-    return new Pagination<BookResponseForAdminDto>(
-      paginatedBooksDto,
-      paginationMeta,
-    );
-  }
-
-  async getBooks(
-    query: BooksQueryDto,
-  ): Promise<Pagination<BookClientResponseDto>> {
-    const {
-      search,
-      categories,
-      authors,
-      minPrice,
-      maxPrice,
-      minRate,
-      maxRate,
-      sort,
-      page = 1,
-      limit = 10,
-    } = query;
-
-    const queryBuilder = this.bookRepository
-      .createQueryBuilder('book')
-      .leftJoinAndSelect('book.categories', 'category')
-      .leftJoinAndSelect('book.authors', 'author')
-      .leftJoinAndSelect('book.discount', 'discount');
-
-    queryBuilder.where('book.isActive = true');
-
-    if (search) {
+    if (options.search) {
       queryBuilder.andWhere(
         '(book.title LIKE :search OR book.description LIKE :search)',
-        { search: `%${search}%` },
+        { search: `%${options.search}%` },
       );
     }
 
-    if (categories && categories.length > 0) {
+    if (options.categories && options.categories.length > 0) {
       queryBuilder.andWhere(
         (qb) => {
           const subQuery = qb
@@ -399,11 +364,11 @@ export class BooksService {
 
           return `book.id IN ${subQuery}`;
         },
-        { categories },
+        { categories: options.categories },
       );
     }
 
-    if (authors && authors.length > 0) {
+    if (options.authors && options.authors.length > 0) {
       queryBuilder.andWhere(
         (qb) => {
           const subQuery = qb
@@ -416,27 +381,35 @@ export class BooksService {
 
           return `book.id IN ${subQuery}`;
         },
-        { authors },
+        { authors: options.authors },
       );
     }
 
-    if (minPrice !== undefined) {
-      queryBuilder.andWhere('book.price >= :minPrice', { minPrice });
+    if (options.minPrice !== undefined) {
+      queryBuilder.andWhere('book.price >= :minPrice', {
+        minPrice: options.minPrice,
+      });
     }
 
-    if (maxPrice !== undefined) {
-      queryBuilder.andWhere('book.price <= :maxPrice', { maxPrice });
+    if (options.maxPrice !== undefined) {
+      queryBuilder.andWhere('book.price <= :maxPrice', {
+        maxPrice: options.maxPrice,
+      });
     }
 
-    if (minRate !== undefined) {
-      queryBuilder.andWhere('book.average_rate >= :minRate', { minRate });
+    if (options.minRate !== undefined) {
+      queryBuilder.andWhere('book.average_rate >= :minRate', {
+        minRate: options.minRate,
+      });
     }
 
-    if (maxRate !== undefined) {
-      queryBuilder.andWhere('book.average_rate <= :maxRate', { maxRate });
+    if (options.maxRate !== undefined) {
+      queryBuilder.andWhere('book.average_rate <= :maxRate', {
+        maxRate: options.maxRate,
+      });
     }
 
-    switch (sort) {
+    switch (options.sort) {
       case 'priceLow':
         queryBuilder.orderBy('book.price', 'ASC');
         break;
@@ -460,7 +433,15 @@ export class BooksService {
       .take(limit)
       .getManyAndCount();
 
-    const paginatedBooksDto = BookMapper.toBookClientResponseDtoList(books);
+    let paginatedBooksDto;
+    if (options.includeReviews) {
+      paginatedBooksDto = BookMapper.toBooksReviewResponseDtoList(books);
+    } else {
+      paginatedBooksDto =
+        options.isActive !== undefined
+          ? BookMapper.toBookClientResponseDtoList(books)
+          : BookMapper.toBookResponseForAdminDtoList(books);
+    }
 
     const paginationMeta = {
       totalItems,
@@ -470,42 +451,8 @@ export class BooksService {
       currentPage: page,
     };
 
-    return new Pagination<BookClientResponseDto>(
-      paginatedBooksDto,
-      paginationMeta,
-    );
-  }
-
-  async getBooksReviews(
-    options: IPaginationOptions,
-  ): Promise<Pagination<BookReviewResponseDto>> {
-    const page = Number(options.page) || 1;
-    const limit = Number(options.limit) || 5;
-
-    const queryBuilder = this.bookRepository
-      .createQueryBuilder('book')
-      .leftJoinAndSelect('book.reviews', 'review')
-      .leftJoinAndSelect('review.reviewer', 'reviewer')
-      .orderBy('book.created_at', 'DESC'); // You can order by any column you want
-
-    const [books, totalItems] = await queryBuilder
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
-
-    const paginatedBooksDto = BookMapper.toBooksReviewResponseDtoList(books);
-
-    const paginationMeta = {
-      totalItems,
-      itemCount: books.length,
-      itemsPerPage: limit,
-      totalPages: Math.ceil(totalItems / limit),
-      currentPage: page,
-    };
-
-    return new Pagination<BookReviewResponseDto>(
-      paginatedBooksDto,
-      paginationMeta,
-    );
+    return new Pagination<
+      BookClientResponseDto | BookResponseForAdminDto | BookReviewResponseDto
+    >(paginatedBooksDto, paginationMeta);
   }
 }
