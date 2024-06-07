@@ -1,3 +1,4 @@
+import { IsAdminGuard } from './../guard/is-admin.guard';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -42,7 +43,13 @@ describe('UsersController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [UsersService],
+      providers: [
+        UsersService,
+        {
+          provide: IsAdminGuard,
+          useValue: {}, // Mock implementation of IsAdminGuard if needed
+        },
+      ],
     })
       .overrideProvider(UsersService)
       .useValue(mockUsersService)

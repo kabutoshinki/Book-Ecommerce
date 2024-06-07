@@ -267,7 +267,7 @@ export class AppController {
       throw new Error('error');
     } catch (error) {
       await this.cloudinaryService.deleteFile(image.public_id);
-      console.log(error);
+     
     }
   }
 

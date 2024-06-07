@@ -4,7 +4,6 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { Session } from 'express-session';
 
@@ -14,8 +13,6 @@ interface CustomRequest extends Request {
 
 @Injectable()
 export class IsAdminGuard implements CanActivate {
-  constructor(private configService: ConfigService) {}
-
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<CustomRequest>();
     const user = req.session.user;

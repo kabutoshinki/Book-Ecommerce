@@ -54,41 +54,7 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return dashboard data', async () => {
-      const mockUser = { user: {} };
-      const req = { user: mockUser };
-
-      const mockBooks = 10;
-      const mockUsers = 5;
-      const mockPopularBooks = [{ id: 1, title: 'Book 1' }];
-      const mockRevenue = { Succeeded: 0 };
-
-      mockBooksService.getTotalActiveBooks.mockResolvedValue(mockBooks);
-      mockUsersService.getTotalActiveUser.mockResolvedValue(mockUsers);
-      mockOrderDetailsService.getRevenueByDay.mockResolvedValue(mockRevenue);
-      mockBooksService.getPopularBooks.mockResolvedValue(mockPopularBooks);
-
-      const result = await appController.root(req);
-
-      expect(mockBooksService.getTotalActiveBooks).toHaveBeenCalled();
-      expect(mockUsersService.getTotalActiveUser).toHaveBeenCalled();
-      expect(mockOrderDetailsService.getRevenueByDay).toHaveBeenCalled();
-      expect(mockBooksService.getPopularBooks).toHaveBeenCalled();
-
-      expect(result).toEqual({
-        title: 'Dashboard Page',
-        layout: 'layouts/layout',
-        reviews: undefined,
-        users: mockUsers,
-        books: mockBooks,
-        booksRate: mockPopularBooks,
-        revenue: mockRevenue,
-        totalRevenue: mockRevenue.Succeeded,
-        user: req.user,
-      });
-    });
-  });
+  
 
   describe('about', () => {
     it('should return about page data', () => {

@@ -40,6 +40,7 @@ describe('AuthorsController', () => {
         { provide: AuthorsService, useValue: mockAuthorsService },
         { provide: getRepositoryToken(Author), useValue: mockAuthorRepository },
         { provide: CloudinaryService, useValue: mockCloudinaryService },
+        
       ],
     }).compile();
 

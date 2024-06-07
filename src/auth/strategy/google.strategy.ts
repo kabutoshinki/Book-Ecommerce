@@ -33,20 +33,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       avatar: profile.photos[0].value,
     });
     return done(null, user);
-    // return {
-    //     console.log(accessToken)
-    //     console.log(refreshToken)
-    //     console.console.log((profile));
-
-    // //   const {name,emails,photos} = profile,
-    // //   const user = {
-    // //     email:emails[0].value,
-    // //     firstName: name.givenName,
-    // //     lastName: name.familyName,
-    // //     picture:photos[0].value,
-    // //     accessToken
-    // //   }
-    // //   done(null,user)
-    // };
+   
   }
 }

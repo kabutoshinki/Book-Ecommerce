@@ -74,7 +74,7 @@ import { AuthMiddleware } from './middleware/authenticate.middleware';
 })
 export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) {
-    console.log('db Name: ', dataSource.driver.database);
+   
   }
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LayoutMiddleware).forRoutes('*');

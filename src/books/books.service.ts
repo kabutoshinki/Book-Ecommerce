@@ -272,7 +272,7 @@ export class BooksService {
         book.image = uploadResult.secure_url;
       }
       if (discountId) {
-        console.log(discountId);
+    
         const discount = await this.discountService.findOne(discountId);
         book.discount = discount;
       }
