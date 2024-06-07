@@ -27,21 +27,21 @@
 
             <!-- Book Details -->
             <div class="col-md-4">
-              <div class="mb-3">
-                <label for="title_<%= book.id %>" class="form-label">Title</label>
-                <input type="text" class="form-control" id="title_<%= book.id %>"   value="<%= book.title %>" disabled />
+              <div class="mb-4">
+                <label for="title_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Title</label>
+                <input type="text" class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4" id="title_<%= book.id %>" value="<%= book.title %>" disabled />
               </div>
-              <div class="mb-3">
-                <label for="viewSummary_<%= book.id %>" class="form-label">Summary</label>
-                <textarea class="form-control" id="viewSummary_<%= book.id %>" rows="3" disabled><%= book.summary %></textarea>
+              <div class="mb-4">
+                <label for="viewSummary_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Summary</label>
+                <textarea class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4" id="viewSummary_<%= book.id %>" rows="3" disabled><%= book.summary %></textarea>
               </div>
-              <div class="mb-3">
-                <label for="viewPrice_<%= book.id %>" class="form-label">Price</label>
-                <input type="number" class="form-control" id="viewPrice_<%= book.id %>"   value="<%= book.price %>" disabled />
+              <div class="mb-4">
+                <label for="viewPrice_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Price</label>
+                <input type="number" class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4" id="viewPrice_<%= book.id %>" value="<%= book.price %>" disabled />
               </div>
-              <div class="mb-3">
-                <label for="viewQuantity_<%= book.id %>" class="form-label">Sold Quantity</label>
-                <input type="number" class="form-control" id="viewQuantity_<%= book.id %>"   value="<%= book.sold_quantity%>" min="1" max="100" disabled />
+              <div class="mb-4">
+                <label for="viewQuantity_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Sold Quantity</label>
+                <input type="number" class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4" id="viewQuantity_<%= book.id %>" value="<%= book.sold_quantity %>" min="1" max="100" disabled />
               </div>
             </div>
 
@@ -51,35 +51,35 @@
                 <label for="viewDescription_<%= book.id %>" class="form-label">Description</label>
                 <textarea class="form-control" id="viewDescription_<%= book.id %>"  rows="3" disabled><%= book.description %></textarea>
               </div>
-              <div class="mb-3">
-                <label for="publisherId" class="form-label">Publisher</label>
-                <select id="publisherId"  data-search="true" data-silent-initial-value-set="true" placeholder="Publisher Select" disabled>
+              <div class="mb-4">
+                <label for="publisherId" class="block text-gray-700 text-sm font-bold mb-2">Publisher</label>
+                <select id="publisherId" class="block w-full border-none rounded-lg py-2 px-2" data-search="true" data-silent-initial-value-set="true" placeholder="Publisher Select" disabled>
                   <% publishers.forEach((publisher) => { %>
-                    <option value="<%= publisher.id %>" <%= publisher.id === book.publisherId ? 'selected' : '' %>><%= publisher.name %></option>
+                  <option value="<%= publisher.id %>" <%= publisher.id === book.publisherId ? 'selected' : '' %>><%= publisher.name %></option>
                   <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="categoryIds" class="form-label">Categories</label>
-                <select multiple id="categoryIds"   placeholder="Category Select" data-search="true" disabled>
+              <div class="mb-4">
+                <label for="categoryIds" class="block text-gray-700 text-sm font-bold mb-2">Categories</label>
+                <select multiple id="categoryIds" class="block w-full border-none rounded-lg py-2" placeholder="Category Select" data-search="true" disabled>
                   <% categories.forEach((category) => { %>
-                    <option value="<%= category.id %>" <%= book.categoryIds.includes(category.id) ? 'selected' : '' %>><%= category.name %></option>
+                  <option value="<%= category.id %>" <%= book.categoryIds.includes(category.id) ? 'selected' : '' %>><%= category.name %></option>
                   <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="authorIds" class="form-label">Authors</label>
-                <select multiple id="authorIds"  placeholder="Authors Select" data-search="true" data-silent-initial-value-set="true" disabled>
+              <div class="mb-4">
+                <label for="authorIds" class="block text-gray-700 text-sm font-bold mb-2">Authors</label>
+                <select multiple id="authorIds" class="block w-full  border-none rounded-lg py-2" placeholder="Authors Select" data-search="true" data-silent-initial-value-set="true" disabled>
                   <% authors.forEach((author) => { %>
-                    <option value="<%= author.id %>" <%= book.authorIds.includes(author.id) ? 'selected' : '' %>><%= author.name %></option>
+                  <option value="<%= author.id %>" <%= book.authorIds.includes(author.id) ? 'selected' : '' %>><%= author.name %></option>
                   <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="discountId" class="form-label">Discount</label>
-                <select id="discountId"  disabled>
+              <div class="mb-4">
+                <label for="discountId" class="block text-gray-700 text-sm font-bold mb-2">Discount</label>
+                <select id="discountId" class="block w-full border-none rounded-lg py-2 px-2" disabled>
                   <% discounts.forEach((discount) => { %>
-                    <option value="<%= discount.id %>" <%= discount.id === book.discountId ? 'selected' : '' %>><%= discount.name %></option>
+                  <option value="<%= discount.id %>" <%= discount.id === book.discountId ? 'selected' : '' %>><%= discount.name %></option>
                   <% }) %>
                 </select>
               </div>

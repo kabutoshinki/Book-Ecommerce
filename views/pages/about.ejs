@@ -1,9 +1,9 @@
-<div id="editor" class="mb-10">
+<textarea id="editor" class="mb-20">
   <!-- This is where the TinyMCE editor will be initialized -->
-</div>
+</textarea>
 <button
   id="save-button"
-  class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+  class="focus:outline-none mt-10 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
 >
   Save
 </button>
@@ -15,11 +15,41 @@
 <script>
   tinymce.init({
     selector: '#editor',
-    plugins:
-      'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker markdown',
+    plugins: [
+      'advlist',
+      'autolink',
+      'link',
+      'image',
+      'lists',
+      'charmap',
+      'preview',
+      'anchor',
+      'pagebreak',
+      'searchreplace',
+      'wordcount',
+      'visualblocks',
+      'visualchars',
+      'code',
+      'fullscreen',
+      'insertdatetime',
+      'media',
+      'table',
+      'emoticons',
+      'help',
+    ],
     toolbar:
-      'undo redo | formatselect | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | link image media | bullist numlist | removeformat',
-    height: 500,
+      'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+      'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+      'forecolor backcolor emoticons | code',
+    menu: {
+      favs: {
+        title: 'My Favorites',
+        items: 'code visualaid | searchreplace | emoticons',
+      },
+    },
+    menubar: 'favs file edit view insert format tools table help',
+    content_css: 'css/content.css',
+    height: 700,
   });
 
   document.getElementById('save-button').addEventListener('click', () => {

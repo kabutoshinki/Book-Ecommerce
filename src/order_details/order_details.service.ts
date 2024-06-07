@@ -123,8 +123,8 @@ export class OrderDetailsService {
       .leftJoinAndSelect('orderDetail.items', 'items')
       .leftJoinAndSelect('user.addresses', 'address')
       .orderBy({
-        'address.isSelected': 'DESC',
         'orderDetail.created_at': 'DESC',
+        'address.isSelected': 'DESC',
       });
 
     const [orders, totalItems] = await queryBuilder

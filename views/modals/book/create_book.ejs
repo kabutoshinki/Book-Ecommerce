@@ -40,30 +40,42 @@
               </div>
             </div>
             <div class="col-md-4">
-              <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
+              <div class="mb-4">
+                <label
+                  for="title"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Title</label
+                >
                 <input
                   type="text"
-                  class="form-control"
+                  class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4"
                   id="title"
                   name="title"
                   required
                 />
               </div>
-              <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
+              <div class="mb-4">
+                <label
+                  for="description"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Description</label
+                >
                 <textarea
-                  class="form-control"
+                  class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4"
                   id="description"
                   name="description"
                   rows="3"
                   required
                 ></textarea>
               </div>
-              <div class="mb-3">
-                <label for="summary" class="form-label">Summary</label>
+              <div class="mb-4">
+                <label
+                  for="summary"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Summary</label
+                >
                 <textarea
-                  class="form-control"
+                  class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4"
                   id="summary"
                   name="summary"
                   rows="3"
@@ -72,11 +84,15 @@
               </div>
             </div>
             <div class="col-md-4">
-              <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
+              <div class="mb-4">
+                <label
+                  for="price"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Price</label
+                >
                 <input
                   type="number"
-                  class="form-control"
+                  class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-4"
                   id="price"
                   name="price"
                   min="1"
@@ -84,11 +100,16 @@
                   required
                 />
               </div>
-              <div class="mb-3">
-                <label for="publisherId" class="form-label">Publisher</label>
+              <div class="mb-4">
+                <label
+                  for="publisherId"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Publisher</label
+                >
                 <select
                   id="publisherId"
                   name="publisherId"
+                  class="block w-full border-none rounded-lg py-2 px-2"
                   data-search="true"
                   data-silent-initial-value-set="false"
                   placeholder="Publisher Select"
@@ -101,12 +122,17 @@
                   <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="categoryIds" class="form-label">Categories</label>
+              <div class="mb-4">
+                <label
+                  for="categoryIds"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Categories</label
+                >
                 <select
                   multiple
                   id="categoryIds"
                   name="categoryIds"
+                  class="block w-full border-none rounded-lg py-2"
                   placeholder="Category Select"
                   data-search="true"
                   required
@@ -118,13 +144,17 @@
                   <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="authorIds" class="form-label">Authors</label>
-
+              <div class="mb-4">
+                <label
+                  for="authorIds"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Authors</label
+                >
                 <select
                   multiple
                   id="authorIds"
                   name="authorIds"
+                  class="block w-full border-none rounded-lg py-2 px-2"
                   placeholder="Authors Select"
                   data-search="true"
                   data-silent-initial-value-set="true"
@@ -137,9 +167,17 @@
                   <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="discountId" class="form-label">Discount</label>
-                <select id="discountId" name="discountId">
+              <div class="mb-4">
+                <label
+                  for="discountId"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Discount</label
+                >
+                <select
+                  id="discountId"
+                  name="discountId"
+                  class="block w-full border-none rounded-lg py-2 px-2"
+                >
                   <% discounts.forEach(discount => { %>
                   <option value="<%= discount.id %>" name="discount">
                     <%= discount.name %>

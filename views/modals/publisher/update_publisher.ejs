@@ -22,25 +22,25 @@
       <div class="modal-body">
         <form id="publisherUpdateForm_<%= publisher.id %>">
           <div class="mb-3">
-            <label for="name_<%= publisher.id %>" class="form-label"
+            <label for="update_name_<%= publisher.id %>" class="form-label"
               >Name</label
             >
             <input
               type="text"
               class="form-control"
-              id="name_<%= publisher.id %>"
+              id="update_name_<%= publisher.id %>"
               value="<%= publisher.name %>"
               name="name"
               required
             />
           </div>
           <div class="mb-3">
-            <label for="description_<%= publisher.id %>" class="form-label"
+            <label for="update_address_<%= publisher.id %>" class="form-label"
               >Address</label
             >
             <textarea
               class="form-control"
-              id="address_<%= publisher.id %>"
+              id="update_address_<%= publisher.id %>"
               name="address"
               rows="3"
               required
@@ -111,9 +111,11 @@
       updatePublisherBtn.disabled = true;
 
       // Get form data
-      const name = document.getElementById('name_<%= publisher.id %>').value;
+      const name = document.getElementById(
+        'update_name_<%= publisher.id %>',
+      ).value;
       const address = document.getElementById(
-        'address_<%= publisher.id %>',
+        'update_address_<%= publisher.id %>',
       ).value;
 
       // Construct payload

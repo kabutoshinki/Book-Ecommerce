@@ -3,7 +3,7 @@
     <h1 class="text-muted">List of Books</h1>
     <button
       type="button"
-      class="btn btn-success"
+      class="btn btn-success mb-2"
       data-bs-toggle="modal"
       data-bs-target="#addBook"
     >
@@ -14,7 +14,7 @@
     <div class="float-end mb-3">
       <form class="d-flex" action="/page/book" method="GET">
         <input
-          class="form-control me-2"
+          class="form-control me-2 bg-gray-100 border border-gray-300 rounded-lg py-2"
           type="search"
           placeholder="Search"
           name="q"
@@ -50,7 +50,7 @@
           <td>
             <p
               class="text-truncate"
-              style="max-width: 150px"
+              style="max-width: 300px"
               title="<%= book.title %>"
             >
               <%= book.title %>

@@ -18,27 +18,23 @@
                   <img id="profileImg_<%= book.id %>" src="<%= book.image %>" class="rounded mx-auto d-block"
                     style="max-width: 100%; max-height: 200px; margin-top: 10px" />
                 </div>
-                <input class="form-control" onchange="previewNewImage(this, '<%= book.id %>')" type="file"
-                  id="formFile_<%= book.id %>" name="file" />
+                <input class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer" type="file" id="formFile_<%= book.id %>" name="file" onchange="previewNewImage(this, '<%= book.id %>')" />
               </div>
             </div>
 
             <!-- Book Details -->
             <div class="col-md-4">
-              <div class="mb-3">
-                <label for="title_<%= book.id %>" class="form-label">Title</label>
-                <input type="text" class="form-control" id="title_<%= book.id %>" name="title" value="<%= book.title %>"
-                  required />
+              <div class="mb-4">
+                <label for="title_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Title</label>
+                <input type="text" class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 " id="title_<%= book.id %>" name="title" value="<%= book.title %>" required />
               </div>
-              <div class="mb-3">
-                <label for="updateDescription_<%= book.id %>" class="form-label">Description</label>
-                <textarea class="form-control" id="updateDescription_<%= book.id %>" name="description" rows="3"
-                  required><%= book.description %></textarea>
+              <div class="mb-4">
+                <label for="updateDescription_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                <textarea class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 " id="updateDescription_<%= book.id %>" name="description" rows="3" required><%= book.description %></textarea>
               </div>
-              <div class="mb-3">
-                <label for="updateSummary_<%= book.id %>" class="form-label">Summary</label>
-                <textarea class="form-control" id="updateSummary_<%= book.id %>" name="summary" rows="3"
-                  required><%= book.summary %></textarea>
+              <div class="mb-4">
+                <label for="updateSummary_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Summary</label>
+                <textarea class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 " id="updateSummary_<%= book.id %>" name="summary" rows="3" required><%= book.summary %></textarea>
               </div>
              
               
@@ -46,52 +42,40 @@
 
             <!-- Book Relations -->
             <div class="col-md-4">
-              <div class="mb-3">
-                <label for="updatePrice_<%= book.id %>" class="form-label">Price</label>
-                <input type="number" class="form-control" id="updatePrice_<%= book.id %>" min="1" max="100" name="price"
-                  value="<%= book.price %>" required />
+              <div class="mb-4">
+                <label for="updatePrice_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Price</label>
+                <input type="number" class="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 " id="updatePrice_<%= book.id %>" min="1" max="10000" name="price" value="<%= book.price %>" required />
               </div>
-              <div class="mb-3">
-                <label for="update_publisherId_<%= book.id %>" class="form-label">Publisher</label>
-                <select id="update_publisherId_<%= book.id %>" name="publisherId" data-search="true" data-silent-initial-value-set="true"
-                  placeholder="Publisher Select" required>
-                  <% publishers.forEach((publisher)=> { %>
-                    <option value="<%= publisher.id %>" <%=publisher.id===book.publisherId ? 'selected' : '' %>><%=
-                        publisher.name %>
-                    </option>
-                    <% }) %>
+              <div class="mb-4">
+                <label for="update_publisherId_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Publisher</label>
+                <select id="update_publisherId_<%= book.id %>" name="publisherId" class="block w-full border-none rounded-lg py-2 px-2" data-search="true" data-silent-initial-value-set="true" placeholder="Publisher Select" required>
+                  <% publishers.forEach((publisher) => { %>
+                  <option value="<%= publisher.id %>" <%= publisher.id === book.publisherId ? 'selected' : '' %>><%= publisher.name %></option>
+                  <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="update_categoryIds_<%= book.id %>" class="form-label">Categories</label>
-                <select multiple id="update_categoryIds_<%= book.id %>" name="categoryIds" placeholder="Category Select" data-search="true"
-                  required>
-                  <% categories.forEach((category)=> { %>
-                    <option value="<%= category.id %>" <%=book.categoryIds.includes(category.id) ? 'selected' : '' %>>
-                      <%= category.name %>
-                    </option>
-                    <% }) %>
+              <div class="mb-4">
+                <label for="update_categoryIds_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Categories</label>
+                <select multiple id="update_categoryIds_<%= book.id %>" name="categoryIds" class="block w-full border-none rounded-lg py-2 " placeholder="Category Select" data-search="true" required>
+                  <% categories.forEach((category) => { %>
+                  <option value="<%= category.id %>" <%= book.categoryIds.includes(category.id) ? 'selected' : '' %>><%= category.name %></option>
+                  <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="update_authorIds_<%= book.id %>" class="form-label">Authors</label>
-                <select multiple id="update_authorIds_<%= book.id %>" name="authorIds" placeholder="Authors Select" data-search="true"
-                  data-silent-initial-value-set="true" required>
-                  <% authors.forEach((author)=> { %>
-                    <option value="<%= author.id %>" <%=book.authorIds.includes(author.id) ? 'selected' : '' %>><%=
-                        author.name %>
-                    </option>
-                    <% }) %>
+              <div class="mb-4">
+                <label for="update_authorIds_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Authors</label>
+                <select multiple id="update_authorIds_<%= book.id %>" name="authorIds" class="block w-full border-none rounded-lg py-2 " placeholder="Authors Select" data-search="true" data-silent-initial-value-set="true" required>
+                  <% authors.forEach((author) => { %>
+                  <option value="<%= author.id %>" <%= book.authorIds.includes(author.id) ? 'selected' : '' %>><%= author.name %></option>
+                  <% }) %>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="update_discountId_<%= book.id %>" class="form-label">Discount</label>
-                <select id="update_discountId_<%= book.id %>" name="discountId">
-                  <% discounts.forEach((discount)=> { %>
-                    <option value="<%= discount.id %>" <%=discount.id===book.discountId ? 'selected' : '' %>><%=
-                        discount.name %>
-                    </option>
-                    <% }) %>
+              <div class="mb-4">
+                <label for="update_discountId_<%= book.id %>" class="block text-gray-700 text-sm font-bold mb-2">Discount</label>
+                <select id="update_discountId_<%= book.id %>" name="discountId" class="block w-full border-none rounded-lg py-2 px-2">
+                  <% discounts.forEach((discount) => { %>
+                  <option value="<%= discount.id %>" <%= discount.id === book.discountId ? 'selected' : '' %>><%= discount.name %></option>
+                  <% }) %>
                 </select>
               </div>
             </div>
