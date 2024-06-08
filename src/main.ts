@@ -1,3 +1,4 @@
+import { initializeFirebase } from './../config/firebase.config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
@@ -14,7 +15,7 @@ import * as csurf from 'csurf';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
-
+  initializeFirebase(configService);
   app.useGlobalPipes(new ValidationPipe());
   app.use(
     helmet({
@@ -58,13 +59,13 @@ async function bootstrap() {
     }),
   );
 
-  app.use((req, res, next) => {
-    const csrfToken = req.csrfToken();
-    res.cookie('XSRF-TOKEN', csrfToken);
-    // console.log('Cookies:', req.cookies);
-    // console.log('CSRF Token:', csrfToken);
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   const csrfToken = req.csrfToken();
+  //   res.cookie('XSRF-TOKEN', csrfToken);
+  //   // console.log('Cookies:', req.cookies);
+  //   // console.log('CSRF Token:', csrfToken);
+  //   next();
+  // });
   const config = new DocumentBuilder()
     .setTitle('Ecommerce')
     .setDescription('The Ecommerce Api documentation')

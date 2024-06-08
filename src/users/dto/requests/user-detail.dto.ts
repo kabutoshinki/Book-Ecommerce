@@ -7,6 +7,9 @@ export class UserDetailDto {
   @IsString()
   lastName: string;
 
+  @IsString()
+  username: string;
+
   @IsNotEmpty()
   @IsEmail()
   email: string;

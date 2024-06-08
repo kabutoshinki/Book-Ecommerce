@@ -13,7 +13,8 @@ import { RefreshTokenDto } from './dto/requests/refresh-token.dto';
 import { UserValidateDto } from './dto/requests/user-validate.dto';
 import { LoginResponseDto } from './dto/responses/login-response.dto';
 import { CartService } from 'src/cart/cart.service';
-
+import * as admin from 'firebase-admin';
+import { GoogleAuthDto } from './dto/requests/google_auth.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -130,5 +131,38 @@ export class AuthService {
     }
 
     return this.generateLoginResponse(user);
+  }
+
+  async googleLogin(googleAuthDto: GoogleAuthDto) {
+    const { token } = googleAuthDto;
+
+    try {
+      // Verify the token using Firebase Admin SDK
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      const { email, picture, name } = decodedToken;
+
+      const user = await this.userService.findOne(decodedToken);
+
+      if (!user) {
+        // Create a new user if they don't exist
+        const new_user = await this.userService.createByEmail({
+          email,
+          avatar: picture,
+          username: name,
+          firstName: name,
+          lastName: name,
+        });
+        return this.generateLoginResponse(new_user);
+      } else {
+        if (!user.isActive) {
+          throw new NotAcceptableException('Email cannot login');
+        }
+      }
+
+      return this.generateLoginResponse(user);
+    } catch (error) {
+      console.error('Error verifying Google token:', error);
+      throw new UnauthorizedException('Invalid Google token');
+    }
   }
 }

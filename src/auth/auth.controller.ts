@@ -28,6 +28,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserResponseDto } from 'src/users/dto/response/user-response.dto';
+import { GoogleAuthDto } from './dto/requests/google_auth.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -78,10 +79,9 @@ export class AuthController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get('google-login')
-  @UseGuards(AuthGuard('google'))
-  async loginGoogle() {
-    console.log('login-google');
+  @Post('google')
+  async googleLogin(@Body() googleAuthDto: GoogleAuthDto) {
+    return this.authService.googleLogin(googleAuthDto);
   }
 
   @Get('google/redirect')
