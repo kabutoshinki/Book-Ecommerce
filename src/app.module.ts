@@ -29,6 +29,7 @@ import { CartModule } from './cart/cart.module';
 import { LayoutMiddleware } from './middleware/layout.middleware';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AuthMiddleware } from './middleware/authenticate.middleware';
+
 // import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -73,30 +74,9 @@ import { AuthMiddleware } from './middleware/authenticate.middleware';
   providers: [AppService],
 })
 export class AppModule implements NestModule {
-  constructor(private dataSource: DataSource) {
-   
-  }
+  constructor(private dataSource: DataSource) {}
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LayoutMiddleware).forRoutes('*');
-
-    // consumer
-    //   .apply(AuthMiddleware)
-    //   .exclude('/page/login', {
-    //     path: 'auth/server/login',
-    //     method: RequestMethod.POST,
-    //   })
-    //   .forRoutes(
-    //     '/',
-    //     'page/about',
-    //     'page/user',
-    //     'page/book',
-    //     'page/author',
-    //     'page/category',
-    //     'page/order',
-    //     'page/order/:id',
-    //     'page/discount',
-    //     'page/publisher',
-    //   );
 
     consumer
       .apply(AuthMiddleware)

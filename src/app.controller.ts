@@ -267,7 +267,6 @@ export class AppController {
       throw new Error('error');
     } catch (error) {
       await this.cloudinaryService.deleteFile(image.public_id);
-     
     }
   }
 
@@ -279,5 +278,12 @@ export class AppController {
   @Post('content')
   saveContent(@Body('content') content: string): void {
     this.appService.writeFile(content);
+  }
+
+  @Get('/token')
+  getCsrfToken(@Req() req): any {
+    return {
+      token: req.csrfToken(),
+    };
   }
 }

@@ -8,11 +8,40 @@ import { join } from 'path';
 import * as connectFlash from 'connect-flash';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
+import helmet from 'helmet';
+import * as csurf from 'csurf';
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
+
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            'https://cdn.jsdelivr.net',
+            'https://cdn.tailwindcss.com',
+          ],
+          imgSrc: [
+            "'self'",
+            'data:',
+            'https://m.media-amazon.com',
+            'https://media0.giphy.com',
+            'https://res.cloudinary.com',
+          ],
+        },
+      },
+    }),
+  );
+  app.enableCors({
+    origin: configService.get('cors_url'),
+    credentials: true,
+  });
   app.use(cookieParser());
   app.use(
     session({
@@ -22,6 +51,20 @@ async function bootstrap() {
     }),
   );
   app.use(connectFlash());
+  app.use(
+    csurf({
+      cookie: true,
+      value: (req) => req.cookies['XSRF-TOKEN'],
+    }),
+  );
+
+  app.use((req, res, next) => {
+    const csrfToken = req.csrfToken();
+    res.cookie('XSRF-TOKEN', csrfToken);
+    // console.log('Cookies:', req.cookies);
+    // console.log('CSRF Token:', csrfToken);
+    next();
+  });
   const config = new DocumentBuilder()
     .setTitle('Ecommerce')
     .setDescription('The Ecommerce Api documentation')
