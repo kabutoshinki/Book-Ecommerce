@@ -11,12 +11,14 @@ import {
   UseGuards,
   Request,
   Query,
+  Res,
 } from '@nestjs/common';
 import { OrderDetailsService } from './order_details.service';
 import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
 import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { UpdateOrderStateDto } from './dto/requests/update-state-order.dto';
+import { PaymentUpdateOrderStateDto } from './dto/requests/payment-update-state-order.dto';
 
 @Controller('order-details')
 export class OrderDetailsController {
@@ -75,5 +77,21 @@ export class OrderDetailsController {
     @Body() state: UpdateOrderStateDto,
   ) {
     return this.orderDetailsService.changeStateOrderDetail(id, state);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('change-status-order/:id')
+  change_state_order(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() state: PaymentUpdateOrderStateDto,
+  ) {
+    return this.orderDetailsService.paymentChangeStateOrderDetail(id, state);
+  }
+
+  @Get('callback')
+  paymentCallback(@Query() query: any, @Res() res: any) {
+    console.log('callback');
+    console.log(query);
+    res.redirect('http://localhost:5173/success');
   }
 }

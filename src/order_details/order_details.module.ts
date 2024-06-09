@@ -1,3 +1,4 @@
+import { PaymentModule } from './../payment/payment.module';
 import { Module } from '@nestjs/common';
 import { OrderDetailsService } from './order_details.service';
 import { OrderDetailsController } from './order_details.controller';
@@ -14,6 +15,7 @@ import { CartModule } from 'src/cart/cart.module';
     UsersModule,
     BooksModule,
     CartModule,
+    PaymentModule,
   ],
   controllers: [OrderDetailsController],
   providers: [OrderDetailsService],

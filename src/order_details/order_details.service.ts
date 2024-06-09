@@ -1,3 +1,5 @@
+import { PaymentUpdateOrderStateDto } from './dto/requests/payment-update-state-order.dto';
+import { PaymentService } from './../payment/payment.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
 import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
@@ -29,6 +31,7 @@ export class OrderDetailsService {
     private readonly bookService: BooksService,
     private readonly userService: UsersService,
     private readonly cartService: CartService,
+    private readonly paymentService: PaymentService,
   ) {}
 
   async createOrderDetail(
@@ -55,10 +58,24 @@ export class OrderDetailsService {
       return orderItem;
     });
     await this.orderItemRepository.save(orderItems);
-    if (!(createOrderDetailDto.checkout_method === 'buynow')) {
+    if (
+      createOrderDetailDto?.type_method === 'Default' ||
+      createOrderDetailDto?.type_method === undefined
+    ) {
+      if (!(createOrderDetailDto.checkout_method === 'buynow')) {
+        await this.cartService.deleteItemsFromCart(`user-${userId}`, bookIds);
+      }
+      return 'Order created';
+    } else {
       await this.cartService.deleteItemsFromCart(`user-${userId}`, bookIds);
+      const paymentUrl = await this.paymentService.createPayment(
+        newOrder.total,
+        newOrder.id,
+        createOrderDetailDto.type_method,
+      );
+
+      return { message: 'Order created', paymentUrl };
     }
-    return 'Order created';
   }
 
   async getOrderDetailById(
@@ -200,6 +217,21 @@ export class OrderDetailsService {
     } else {
       orderDetail.status = PaymentStatus.Failed;
     }
+    await this.orderDetailRepository.save(orderDetail);
+    return {
+      success: true,
+      message: 'Change status order successfully',
+    };
+  }
+  async paymentChangeStateOrderDetail(
+    orderDetailId: string,
+    updateOrderStateDto: PaymentUpdateOrderStateDto,
+  ) {
+    const orderDetail = await this.getOrderItemsBookByOrderId(orderDetailId);
+
+    orderDetail.status = updateOrderStateDto.state;
+    await this.updateBookSoldQuantities(orderDetail.item);
+
     await this.orderDetailRepository.save(orderDetail);
     return {
       success: true,

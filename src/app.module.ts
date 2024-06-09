@@ -29,6 +29,7 @@ import { CartModule } from './cart/cart.module';
 import { LayoutMiddleware } from './middleware/layout.middleware';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AuthMiddleware } from './middleware/authenticate.middleware';
+import { PaymentModule } from './payment/payment.module';
 
 // import * as redisStore from 'cache-manager-redis-store';
 
@@ -69,6 +70,7 @@ import { AuthMiddleware } from './middleware/authenticate.middleware';
     BooksModule,
     CartModule,
     CloudinaryModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

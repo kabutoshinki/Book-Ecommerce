@@ -13,4 +13,7 @@ export class CreateOrderDetailDto {
 
   @IsOptional()
   checkout_method?: string;
+
+  @IsOptional()
+  type_method?: string;
 }
