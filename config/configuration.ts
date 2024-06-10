@@ -24,6 +24,20 @@ export default () => ({
     secret: process.env.API_SECRET,
     url: process.env.CLOUDINARY_URL,
   },
+  vnpay: {
+    tmn_code: process.env.TMN_CODE,
+    hash_secret: process.env.HASH_SECRET,
+    url: process.env.URL,
+    api: process.env.API,
+    return_url: process.env.RETURN_URL,
+  },
+  momo: {
+    partner_code: process.env.PARTNER_CODE,
+    access_key: process.env.ACCESS_KEY,
+    secret_key: process.env.SECRET_KEY,
+    redirect_url: process.env.REDIRECT_URL,
+    ipn_url: process.env.IPN_URL,
+  },
   firebase: {
     project_id: process.env.FIREBASE_PROJECT_ID,
     client_email: process.env.FIREBASE_CLIENT_EMAIL,

@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { HandlePaymentService } from './../interfaces/PaymentService';
 import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
@@ -5,13 +6,21 @@ import * as https from 'https';
 
 @Injectable()
 export class PaymentService implements HandlePaymentService {
+  constructor(private readonly configService: ConfigService) {}
   USD_TO_VND_RATE = 23000;
   private readonly momoConfig = {
-    partnerCode: 'MOMO',
-    accessKey: 'F8BBA842ECF85',
-    secretKey: 'K951B6PE1waDMi640xX08PD3vg6EkVlz',
-    redirectUrl: 'http://localhost:5173/loading',
-    ipnUrl: 'http://localhost:5173/loading',
+    partnerCode: this.configService.get('momo.partner_code'),
+    accessKey: this.configService.get('momo.access_key'),
+    secretKey: this.configService.get('secret_key'),
+    redirectUrl: this.configService.get('redirect_url'),
+    ipnUrl: this.configService.get('ipn_url'),
+  };
+  private readonly vnpayConfig = {
+    tmnCode: this.configService.get('vnpay.tmn_code'),
+    hashSecret: this.configService.get('vnpay.hash_secret'),
+    url: this.configService.get('vnpay.url'),
+    api: this.configService.get('vnpay.api'),
+    returnUrl: this.configService.get('vnpay.return_url'),
   };
 
   async createPayment(
@@ -40,7 +49,7 @@ export class PaymentService implements HandlePaymentService {
     const rawSignature = `accessKey=${accessKey}&amount=${parseFloat(
       (amount * this.USD_TO_VND_RATE).toFixed(2),
     )}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=payWithMethod`;
-
+    console.log(rawSignature);
     const signature = crypto
       .createHmac('sha256', secretKey)
       .update(rawSignature)
@@ -99,11 +108,56 @@ export class PaymentService implements HandlePaymentService {
     amount: number,
     orderInfo: string,
   ): Promise<any> {
-    // Implement the VNPay payment logic here
-    // This should return the payment URL or other necessary information
-    return {
-      payUrl: 'https://pay.vnpay.vn/...',
-      // other response data
+    const { tmnCode, hashSecret, url, returnUrl } = this.vnpayConfig;
+    const vnpOrderId = tmnCode + new Date().getTime();
+    const locale = 'vn';
+    const currCode = 'VND';
+    const ipAddr = '127.0.0.1';
+    const createDate = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace(/-/g, '')
+      .replace(/:/g, '')
+      .replace('T', '');
+    const orderType = 'billpayment';
+    const amountVnd = parseFloat(
+      (amount * this.USD_TO_VND_RATE * 100)?.toFixed(2),
+    ); // Ensure amount is converted to the smallest currency unit
+
+    let vnp_Params: any = {
+      vnp_Version: '2.1.0',
+      vnp_Command: 'pay',
+      vnp_TmnCode: tmnCode,
+      vnp_Locale: locale,
+      vnp_CurrCode: currCode,
+      vnp_TxnRef: vnpOrderId,
+      vnp_OrderInfo: orderInfo,
+      vnp_OrderType: orderType,
+      vnp_Amount: amountVnd,
+      vnp_ReturnUrl: returnUrl,
+      vnp_IpAddr: ipAddr,
+      vnp_CreateDate: createDate,
     };
+
+    vnp_Params = this.sortObject(vnp_Params);
+    const signData = new URLSearchParams(vnp_Params).toString();
+    const secureHash = crypto
+      .createHmac('sha512', hashSecret)
+      .update(Buffer.from(signData, 'utf-8'))
+      .digest('hex');
+    vnp_Params['vnp_SecureHash'] = secureHash;
+
+    const payUrl = `${url}?${new URLSearchParams(vnp_Params).toString()}`;
+
+    return { payUrl };
+  }
+
+  private sortObject(obj: any) {
+    const sorted: any = {};
+    const keys = Object.keys(obj).sort();
+    keys.forEach((key) => {
+      sorted[key] = obj[key];
+    });
+    return sorted;
   }
 }

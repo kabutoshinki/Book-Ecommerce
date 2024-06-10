@@ -19,10 +19,30 @@ import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { UpdateOrderStateDto } from './dto/requests/update-state-order.dto';
 import { PaymentUpdateOrderStateDto } from './dto/requests/payment-update-state-order.dto';
+import { PaymentStatus } from 'src/enums/payment-status.enums';
 
 @Controller('order-details')
 export class OrderDetailsController {
   constructor(private readonly orderDetailsService: OrderDetailsService) {}
+
+  @Get('callback')
+  async paymentCallback(@Query() query: any, @Res() res: any) {
+    if (query) {
+      if (query.vnp_ResponseCode == '00') {
+        await this.orderDetailsService.paymentChangeStateOrderDetail(
+          query.vnp_OrderInfo,
+          { state: PaymentStatus.PaymentSucceeded },
+        );
+        res.redirect('http://localhost:5173/success');
+      } else {
+        await this.orderDetailsService.paymentChangeStateOrderDetail(
+          query.vnp_OrderInfo,
+          { state: PaymentStatus.PaymentFailed },
+        );
+        res.redirect('http://localhost:5173/failed');
+      }
+    }
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post(':userId')
@@ -86,12 +106,5 @@ export class OrderDetailsController {
     @Body() state: PaymentUpdateOrderStateDto,
   ) {
     return this.orderDetailsService.paymentChangeStateOrderDetail(id, state);
-  }
-
-  @Get('callback')
-  paymentCallback(@Query() query: any, @Res() res: any) {
-    console.log('callback');
-    console.log(query);
-    res.redirect('http://localhost:5173/success');
   }
 }
