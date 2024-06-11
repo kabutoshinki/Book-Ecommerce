@@ -1,3 +1,4 @@
+import { RedisModule } from './../redis/redis.module';
 import { PaymentModule } from './../payment/payment.module';
 import { Module } from '@nestjs/common';
 import { OrderDetailsService } from './order_details.service';
@@ -16,6 +17,7 @@ import { CartModule } from 'src/cart/cart.module';
     BooksModule,
     CartModule,
     PaymentModule,
+    RedisModule,
   ],
   controllers: [OrderDetailsController],
   providers: [OrderDetailsService],

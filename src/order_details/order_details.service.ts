@@ -1,3 +1,4 @@
+import { RedisManageService } from './../redis/redis.service';
 import { PaymentUpdateOrderStateDto } from './dto/requests/payment-update-state-order.dto';
 import { PaymentService } from './../payment/payment.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -32,6 +33,7 @@ export class OrderDetailsService {
     private readonly userService: UsersService,
     private readonly cartService: CartService,
     private readonly paymentService: PaymentService,
+    private readonly redisService: RedisManageService,
   ) {}
 
   async createOrderDetail(
@@ -114,6 +116,13 @@ export class OrderDetailsService {
   async getItemsByOrderId(
     orderDetailId: string,
   ): Promise<OrderGetItemsResponseDto> {
+    const cacheKey = `order_item_${orderDetailId}`;
+    const cachedItems = await this.redisService.get(cacheKey);
+
+    if (cachedItems) {
+      return cachedItems;
+    }
+    console.log('go here');
     const orderDetail = await this.orderDetailRepository.findOne({
       where: { id: orderDetailId },
       relations: ['items.book'],
@@ -124,6 +133,12 @@ export class OrderDetailsService {
         `OrderDetail with id ${orderDetailId} not found`,
       );
     }
+
+    await this.redisService.set(
+      cacheKey,
+      OrderMapper.toOrderIdGetItemsResponseDto(orderDetail),
+      20,
+    );
 
     return OrderMapper.toOrderIdGetItemsResponseDto(orderDetail);
   }

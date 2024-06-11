@@ -1,3 +1,4 @@
+import { LockService } from './../lock/lock.service';
 import {
   BadRequestException,
   HttpCode,
@@ -29,9 +30,17 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly lockService: LockService,
   ) {}
 
   async create(userDTO: CreateUserDto): Promise<UserResponseDto> {
+    const lockKey = `lock:create-user:${userDTO.email}`;
+    const acquired = await this.lockService.acquireLock(lockKey, 10);
+    if (!acquired) {
+      throw new Error(
+        'Another registration attempt is in progress for this email',
+      );
+    }
     try {
       const userEntity = UserMapper.toUserEntity(userDTO);
       const salt = await bcrypt.genSalt();
@@ -41,6 +50,8 @@ export class UsersService {
       return UserMapper.toUserResponseDto(savedUser);
     } catch (error) {
       throw new BadRequestException('username or email is already exits');
+    } finally {
+      await this.lockService.releaseLock(lockKey);
     }
   }
 

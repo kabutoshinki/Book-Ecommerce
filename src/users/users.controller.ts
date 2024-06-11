@@ -40,9 +40,8 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('profile/:id')
-  @Roles(Role.ADMIN, Role.USER)
   @ApiBearerAuth('JWT-auth')
   getProfile(@Param('id') id: string) {
     return this.usersService.getProfile(id);

@@ -1,3 +1,4 @@
+import { LockModule } from './../lock/lock.module';
 import { OrderDetail } from '../order_details/entities/order_detail.entity';
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -10,6 +11,7 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
   imports: [
     TypeOrmModule.forFeature([User, Address, OrderDetail]),
     CloudinaryModule,
+    LockModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

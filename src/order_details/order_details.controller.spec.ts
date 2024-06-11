@@ -1,3 +1,5 @@
+import { RedisManageService } from './../redis/redis.service';
+import { PaymentService } from './../payment/payment.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrderDetailsController } from './order_details.controller';
 import { OrderDetailsService } from './order_details.service';
@@ -37,6 +39,14 @@ describe('OrderDetailsController', () => {
         },
         {
           provide: CartService,
+          useValue: {}, // Mock service
+        },
+        {
+          provide: PaymentService,
+          useValue: {}, // Mock service
+        },
+        {
+          provide: RedisManageService,
           useValue: {}, // Mock service
         },
       ],

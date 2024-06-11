@@ -12,6 +12,7 @@ import {
   Request,
   Query,
   Res,
+  CacheTTL,
 } from '@nestjs/common';
 import { OrderDetailsService } from './order_details.service';
 import { CreateOrderDetailDto } from './dto/requests/create-order_detail.dto';
@@ -19,7 +20,8 @@ import { UpdateOrderDetailDto } from './dto/requests/update-order_detail.dto';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { UpdateOrderStateDto } from './dto/requests/update-state-order.dto';
 import { PaymentUpdateOrderStateDto } from './dto/requests/payment-update-state-order.dto';
-import { PaymentStatus } from 'src/enums/payment-status.enums';
+import { PaymentStatus } from '../enums/payment-status.enums';
+import { CacheKey } from '@nestjs/cache-manager';
 
 @Controller('order-details')
 export class OrderDetailsController {

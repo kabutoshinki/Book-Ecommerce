@@ -30,6 +30,10 @@ import { LayoutMiddleware } from './middleware/layout.middleware';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AuthMiddleware } from './middleware/authenticate.middleware';
 import { PaymentModule } from './payment/payment.module';
+import { LockModule } from './lock/lock.module';
+import { RedisModule } from './redis/redis.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 // import * as redisStore from 'cache-manager-redis-store';
 
@@ -44,6 +48,13 @@ import { PaymentModule } from './payment/payment.module';
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 60000,
+        limit: 20,
+      },
+    ]),
     CacheModule.registerAsync({
       isGlobal: true,
       inject: [ConfigService],
@@ -57,6 +68,7 @@ import { PaymentModule } from './payment/payment.module';
         return { store };
       },
     }),
+
     AuthModule,
     UsersModule,
     AddressesModule,
@@ -71,9 +83,17 @@ import { PaymentModule } from './payment/payment.module';
     CartModule,
     CloudinaryModule,
     PaymentModule,
+    LockModule,
+    RedisModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) {}

@@ -16,12 +16,14 @@ import { AddToCartDto } from './dto/requests/add-to-cart.dto';
 import { UpdateCartDto } from './dto/requests/update-cart.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @Controller('cart')
 @ApiTags('Cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
+  @Throttle({ default: { limit: 2, ttl: 1000 } })
   @Post('add')
   async addToCart(@Body() addToCartDto: AddToCartDto) {
     this.cartService.addToCart(addToCartDto);
@@ -29,6 +31,7 @@ export class CartController {
     return 'Item added to cart';
   }
 
+  @SkipThrottle()
   @Get(':userId/quantity')
   async getCartQuantity(@Param('userId') userId: string): Promise<number> {
     return this.cartService.getCartQuantity(userId);

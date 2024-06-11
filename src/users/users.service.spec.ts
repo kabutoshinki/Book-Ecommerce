@@ -1,3 +1,4 @@
+import { LockService } from './../lock/lock.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -26,6 +27,10 @@ describe('UsersService', () => {
     uploadFile: jest.fn(),
     deleteFile: jest.fn(),
   };
+  const mockLockService = {
+    acquireLock: jest.fn(),
+    releaseLock: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -33,6 +38,7 @@ describe('UsersService', () => {
         UsersService,
         { provide: getRepositoryToken(User), useValue: mockUserRepository },
         { provide: CloudinaryService, useValue: mockCloudinaryService },
+        { provide: LockService, useValue: mockLockService },
       ],
     }).compile();
 
