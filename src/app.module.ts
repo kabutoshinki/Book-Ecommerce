@@ -61,14 +61,16 @@ import { APP_GUARD } from '@nestjs/core';
       useFactory: async (configService: ConfigService) => {
         const store = await redisStore({
           socket: {
-            host: 'localhost',
-            port: 6379,
+            host: configService.get('redis.host'),
+            port: configService.get('redis.port'),
           },
+          username: configService.get('redis.username'),
+          password: configService.get('redis.password'),
         });
         return { store };
       },
     }),
-
+    //
     AuthModule,
     UsersModule,
     AddressesModule,

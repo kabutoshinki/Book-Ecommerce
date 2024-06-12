@@ -15,8 +15,8 @@ export default () => ({
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
-    secret: process.env.REDIS_SECRET,
-    uri: process.env.REDIS_URI,
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
   },
   cloudinary: {
     name: process.env.CLOUD_NAME,
