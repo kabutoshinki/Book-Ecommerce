@@ -8,7 +8,6 @@ export class AppService {
   private readonly filePath = path.join(__dirname, '../../about.txt');
 
   constructor() {
-    // Create the file if it doesn't exist
     if (!fs.existsSync(this.filePath)) {
       fs.writeFileSync(this.filePath, '', 'utf8');
     }
