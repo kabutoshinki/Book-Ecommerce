@@ -34,6 +34,7 @@ import { LockModule } from './lock/lock.module';
 import { RedisModule } from './redis/redis.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { SearchModule } from './search/search.module';
 
 // import * as redisStore from 'cache-manager-redis-store';
 
@@ -64,8 +65,8 @@ import { APP_GUARD } from '@nestjs/core';
             host: configService.get('redis.host'),
             port: configService.get('redis.port'),
           },
-          username: configService.get('redis.username'),
-          password: configService.get('redis.password'),
+          // username: configService.get('redis.username'),
+          // password: configService.get('redis.password'),
         });
         return { store };
       },
@@ -87,6 +88,7 @@ import { APP_GUARD } from '@nestjs/core';
     PaymentModule,
     LockModule,
     RedisModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [

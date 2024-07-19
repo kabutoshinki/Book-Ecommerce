@@ -52,12 +52,12 @@ async function bootstrap() {
     }),
   );
   app.use(connectFlash());
-  app.use(
-    csurf({
-      cookie: true,
-      value: (req) => req.cookies['XSRF-TOKEN'],
-    }),
-  );
+  // app.use(
+  //   csurf({
+  //     cookie: true,
+  //     value: (req) => req.cookies['XSRF-TOKEN'],
+  //   }),
+  // );
 
   // app.use((req, res, next) => {
   //   const csrfToken = req.csrfToken();

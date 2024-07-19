@@ -20,7 +20,6 @@ import { Role } from '../enums/role.enum';
 import { RolesGuard } from '../guard/role.guard';
 import { RefreshTokenDto } from './dto/requests/refresh-token.dto';
 import { GoogleAuthGuard } from '../guard/google.guard';
-import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiOperation,

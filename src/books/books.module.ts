@@ -8,6 +8,7 @@ import { AuthorsModule } from 'src/authors/authors.module';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { PublishersModule } from 'src/publishers/publishers.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { SearchModule } from 'src/search/search.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
     CategoriesModule,
     PublishersModule,
     CloudinaryModule,
+    SearchModule,
   ],
   controllers: [BooksController],
   providers: [BooksService],

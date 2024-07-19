@@ -23,7 +23,8 @@ import { BookClientResponseDto } from './dto/responses/book-client-response.dto'
 import { BooksQueryDto } from './dto/requests/books-query.dto';
 import { BookReviewResponseDto } from './dto/responses/books-reviews-response.dto';
 import { GetBooksOptions } from 'src/interfaces/GetBooksOptions.interface';
-
+import { SearchService } from 'src/search/search.service';
+import { error } from 'console';
 @Injectable()
 export class BooksService {
   constructor(
@@ -34,6 +35,7 @@ export class BooksService {
     private readonly authorService: AuthorsService,
     private readonly publisherService: PublishersService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly searchService: SearchService,
   ) {}
   async create(createBookDto: CreateBookDto, file: Express.Multer.File) {
     const { discountId, publisherId, categoryIds, authorIds, ...bookData } =
@@ -71,8 +73,16 @@ export class BooksService {
         const authors = await this.authorService.findByIds(authorIds);
         book.authors = authors;
       }
-      await this.bookRepository.save(book);
-
+      const createdBook = await this.bookRepository.save(book);
+      await this.searchService.indexData('books_index', createdBook.id, {
+        title: createdBook.title,
+        description: createdBook.description,
+        summary: createdBook.summary,
+        sold_quantity: createdBook.sold_quantity,
+        image: createdBook.image,
+        price: createdBook.price,
+        createdAt: createdBook.created_at,
+      });
       return {
         success: true,
         message: 'Book created',
@@ -247,6 +257,29 @@ export class BooksService {
 
     const books = await this.bookRepository.find(queryOptions);
     return BookMapper.toBookClientResponseDtoList(books);
+  }
+
+  async searchBooks(limit: number, query: string, page = 1) {
+    console.log(query);
+    // Searching books in Elasticsearch
+    const result = await this.searchService.searchData(
+      'books_index',
+      query,
+      limit,
+      page,
+    );
+    console.log(result);
+
+    if (result.hits.length > 0) {
+      return {
+        total: result.total,
+        totalPages: result.totalPages,
+        currentPage: result.currentPage,
+        hits: result.hits,
+      };
+    } else {
+      throw new NotFoundException('No books found');
+    }
   }
 
   async update(

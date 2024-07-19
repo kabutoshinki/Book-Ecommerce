@@ -29,7 +29,7 @@ import { GetBooksOptionsDto } from './dto/requests/book-options.dto';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @UseGuards(IsAdminGuard)
+  // @UseGuards(IsAdminGuard)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -37,6 +37,7 @@ export class BooksController {
     @UploadedFile() file: Express.Multer.File,
     @Body() createBookDto: CreateBookDto,
   ) {
+    console.log(createBookDto);
     return this.booksService.create(createBookDto, file);
   }
 
@@ -78,6 +79,14 @@ export class BooksController {
     @Query('name') name,
   ): Promise<BookClientResponseDto[]> {
     return this.booksService.searchBooksByName(limit, name);
+  }
+  @Get('elastic-search')
+  async searchElasticBooks(
+    @Query('limit') limit = 10,
+    @Query('search') name: string,
+    @Query('page') page = 1,
+  ): Promise<any> {
+    return this.booksService.searchBooks(limit, name, page);
   }
 
   @Get('options')

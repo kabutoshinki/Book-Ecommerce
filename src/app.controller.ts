@@ -280,10 +280,10 @@ export class AppController {
     this.appService.writeFile(content);
   }
 
-  @Get('/token')
-  getCsrfToken(@Req() req): any {
-    return {
-      token: req.csrfToken(),
-    };
-  }
+  // @Get('/token')
+  // getCsrfToken(@Req() req): any {
+  //   return {
+  //     token: req.csrfToken(),
+  //   };
+  // }
 }
