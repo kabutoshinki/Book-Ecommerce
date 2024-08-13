@@ -17,6 +17,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   initializeFirebase(configService);
   app.useGlobalPipes(new ValidationPipe());
+
   app.use(
     helmet({
       contentSecurityPolicy: {
@@ -52,12 +53,12 @@ async function bootstrap() {
     }),
   );
   app.use(connectFlash());
-  app.use(
-    csurf({
-      cookie: true,
-      value: (req) => req.cookies['XSRF-TOKEN'],
-    }),
-  );
+  // app.use(
+  //   csurf({
+  //     cookie: true,
+  //     value: (req) => req.cookies['XSRF-TOKEN'],
+  //   }),
+  // );
 
   // app.use((req, res, next) => {
   //   const csrfToken = req.csrfToken();
@@ -87,7 +88,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '../..', '/public'));
   app.setBaseViewsDir(join(__dirname, '../..', '/views'));
   app.setViewEngine('ejs');
-
+  console.log(configService.get('redis.port'));
   await app.listen(configService.get(<string>'port'), () =>
     console.log(configService.get(<string>'port')),
   );

@@ -35,13 +35,13 @@ export class OrderDetailsController {
           query.vnp_OrderInfo,
           { state: PaymentStatus.PaymentSucceeded },
         );
-        res.redirect('http://localhost:5173/success');
+        res.redirect('http://localhost:5000/success');
       } else {
         await this.orderDetailsService.paymentChangeStateOrderDetail(
           query.vnp_OrderInfo,
           { state: PaymentStatus.PaymentFailed },
         );
-        res.redirect('http://localhost:5173/failed');
+        res.redirect('http://localhost:5000/failed');
       }
     }
   }

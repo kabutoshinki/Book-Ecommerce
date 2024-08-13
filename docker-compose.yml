@@ -1,0 +1,44 @@
+version: '3'
+services:
+  redis:
+    image: redis
+    container_name: redis-container
+    ports:
+      - '6380:6379'
+    networks:
+      - my-network
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: BookEcommerce
+    ports:
+      - '5434:5432'
+    networks:
+      - my-network
+
+  app:
+    build: .
+    container_name: my-nestjs-container
+    ports:
+      - '3000:3000'
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - PORT=3000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=admin
+      - DB_NAME=BookEcommerce
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
