@@ -39,7 +39,7 @@ async function bootstrap() {
         },
       },
     }),
-  ); 
+  );
   app.enableCors({
     origin: configService.get('cors_url'),
     credentials: true,
